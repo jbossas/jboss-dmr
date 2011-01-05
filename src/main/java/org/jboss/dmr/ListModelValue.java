@@ -127,7 +127,7 @@ final class ListModelValue extends ModelValue {
         return node;
     }
 
-    List<ModelNode> getValues() {
+    List<ModelNode> asList() {
         //noinspection ToArrayCallWithZeroLengthArrayArgument
         return Collections.unmodifiableList(Arrays.asList(list.toArray(NO_NODES)));
     }
@@ -144,7 +144,7 @@ final class ListModelValue extends ModelValue {
 
     void format(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
         final boolean multiLine = multiLineRequested && list.size() > 1;
-        final List<ModelNode> list = getValues();
+        final List<ModelNode> list = asList();
         final Iterator<ModelNode> iterator = list.iterator();
         builder.append('[');
         if (multiLine) {

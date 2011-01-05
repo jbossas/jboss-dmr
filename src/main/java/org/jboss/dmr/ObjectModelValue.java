@@ -118,8 +118,14 @@ final class ObjectModelValue extends ModelValue {
         return new ObjectModelValue(this);
     }
 
-    List<ModelNode> getValues() {
-        return new ArrayList<ModelNode>(map.values());
+    List<ModelNode> asList() {
+        final ArrayList<ModelNode> nodes = new ArrayList<ModelNode>();
+        for (Map.Entry<String, ModelNode> entry : map.entrySet()) {
+            final ModelNode node = new ModelNode();
+            node.set(entry.getKey(), entry.getValue());
+            nodes.add(node);
+        }
+        return nodes;
     }
 
     Set<String> getKeys() {

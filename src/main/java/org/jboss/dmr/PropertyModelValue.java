@@ -64,7 +64,7 @@ final class PropertyModelValue extends ModelValue {
         return Collections.singleton(property.getName());
     }
 
-    List<ModelNode> getValues() {
+    List<ModelNode> asList() {
         return Collections.singletonList(property.getValue());
     }
 

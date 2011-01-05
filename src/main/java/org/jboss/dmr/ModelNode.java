@@ -27,7 +27,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
@@ -394,7 +393,7 @@ public class ModelNode implements Serializable, Cloneable {
     }
 
     public List<ModelNode> asList() {
-        return value.getValues();
+        return value.asList();
     }
 
     public ModelNode get(String... name) {

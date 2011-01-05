@@ -123,7 +123,7 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
-    List<ModelNode> getValues() {
+    List<ModelNode> asList() {
         throw new IllegalArgumentException();
     }
 
