@@ -217,4 +217,8 @@ abstract class ModelValue implements Cloneable {
         format(builder, 0, true);
         return builder.toString();
     }
+
+    ModelValue resolve() {
+        return copy();
+    }
 }

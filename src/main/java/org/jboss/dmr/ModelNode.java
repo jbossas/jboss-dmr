@@ -133,6 +133,13 @@ public class ModelNode implements Serializable, Cloneable {
         value = BooleanModelValue.valueOf(newValue);
     }
 
+    public void setExpression(String newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
+        value = new ExpressionValue(newValue);
+    }
+
     public void set(String newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
@@ -297,6 +304,11 @@ public class ModelNode implements Serializable, Cloneable {
         return this;
     }
 
+    public ModelNode addExpression(String expression) {
+        add().setExpression(expression);
+        return this;
+    }
+
     public ModelNode add(String newValue) {
         add().set(newValue);
         return this;
@@ -406,6 +418,12 @@ public class ModelNode implements Serializable, Cloneable {
 
     public String toString() {
         return value.toString();
+    }
+
+    public ModelNode resolve() {
+        final ModelNode newNode = new ModelNode();
+        newNode.value = value.resolve();
+        return newNode;
     }
 
     /**

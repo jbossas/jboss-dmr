@@ -136,6 +136,14 @@ final class ListModelValue extends ModelValue {
         return new ListModelValue(this);
     }
 
+    ModelValue resolve() {
+        final ArrayList<ModelNode> copy = new ArrayList<ModelNode>(list.size());
+        for (ModelNode node : list) {
+            copy.add(node.resolve());
+        }
+        return new ListModelValue(copy);
+    }
+
     String asString() {
         StringBuilder builder = new StringBuilder();
         format(builder, 0, false);

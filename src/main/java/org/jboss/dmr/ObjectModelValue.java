@@ -41,11 +41,6 @@ final class ObjectModelValue extends ModelValue {
         map = new LinkedHashMap<String, ModelNode>();
     }
 
-    private ObjectModelValue(final ObjectModelValue value) {
-        super(ModelType.OBJECT);
-        map = new LinkedHashMap<String, ModelNode>(value.map);
-    }
-
     private ObjectModelValue(final Map<String, ModelNode> map) {
         super(ModelType.OBJECT);
         this.map = map;
@@ -115,7 +110,19 @@ final class ObjectModelValue extends ModelValue {
     }
 
     ModelValue copy() {
-        return new ObjectModelValue(this);
+        return copy(false);
+    }
+
+    ModelValue resolve() {
+        return copy(true);
+    }
+
+    ModelValue copy(boolean resolve) {
+        final LinkedHashMap<String, ModelNode> newMap = new LinkedHashMap<String, ModelNode>();
+        for (Map.Entry<String, ModelNode> entry : map.entrySet()) {
+            newMap.put(entry.getKey(), resolve ? entry.getValue().resolve() : entry.getValue().clone());
+        }
+        return new ObjectModelValue(newMap);
     }
 
     List<ModelNode> asList() {

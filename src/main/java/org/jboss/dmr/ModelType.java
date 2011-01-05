@@ -38,5 +38,6 @@ public enum ModelType {
     TYPE,
     OBJECT,
     PROPERTY,
+    EXPRESSION,
     UNDEFINED;
 }

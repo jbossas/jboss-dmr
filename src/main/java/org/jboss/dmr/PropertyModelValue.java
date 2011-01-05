@@ -80,6 +80,10 @@ final class PropertyModelValue extends ModelValue {
         return new PropertyModelValue(property.getName(), property.getValue());
     }
 
+    ModelValue resolve() {
+        return new PropertyModelValue(property.getName(), property.getValue().resolve());
+    }
+
     public boolean equals(Object other) {
         return other instanceof PropertyModelValue && equals((PropertyModelValue)other);
     }
