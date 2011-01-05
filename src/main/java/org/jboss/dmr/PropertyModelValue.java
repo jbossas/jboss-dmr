@@ -58,6 +58,11 @@ final class PropertyModelValue extends ModelValue {
         property.getValue().writeExternal(out);
     }
 
+    ModelValue protect() {
+        property.getValue().protect();
+        return this;
+    }
+
     String asString() {
         return String.format("(%s => %s)", quote(property.getName()), property.getValue());
     }
@@ -81,7 +86,7 @@ final class PropertyModelValue extends ModelValue {
     }
 
     List<ModelNode> asList() {
-        return Collections.singletonList(property.getValue());
+        return Collections.singletonList(new ModelNode(this));
     }
 
     ModelNode getChild(final String name) {
@@ -110,5 +115,9 @@ final class PropertyModelValue extends ModelValue {
 
     public int hashCode() {
         return property.getName().hashCode() * 31 + property.getValue().hashCode();
+    }
+
+    boolean has(final String key) {
+        return key.equals(property.getName());
     }
 }

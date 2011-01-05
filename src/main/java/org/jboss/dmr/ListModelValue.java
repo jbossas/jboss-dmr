@@ -77,6 +77,9 @@ final class ListModelValue extends ModelValue {
 
     ModelValue protect() {
         List<ModelNode> list = this.list;
+        for (ModelNode node : list) {
+            node.protect();
+        }
         return list.getClass() == ArrayList.class ? new ListModelValue(Collections.unmodifiableList(list)) : this;
     }
 
@@ -159,8 +162,7 @@ final class ListModelValue extends ModelValue {
     }
 
     List<ModelNode> asList() {
-        //noinspection ToArrayCallWithZeroLengthArrayArgument
-        return Collections.unmodifiableList(Arrays.asList(list.toArray(NO_NODES)));
+        return Collections.unmodifiableList(list);
     }
 
     ModelValue copy() {
@@ -228,5 +230,9 @@ final class ListModelValue extends ModelValue {
 
     public int hashCode() {
         return list.hashCode();
+    }
+
+    boolean has(final int index) {
+        return 0 <= index && index < list.size();
     }
 }

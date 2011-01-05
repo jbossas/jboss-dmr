@@ -75,7 +75,14 @@ final class ObjectModelValue extends ModelValue {
 
     ModelValue protect() {
         Map<String, ModelNode> map = this.map;
+        for (ModelNode node : map.values()) {
+            node.protect();
+        }
         return map.getClass() == LinkedHashMap.class ? new ObjectModelValue(Collections.unmodifiableMap(map)) : this;
+    }
+
+    ModelNode asObject() {
+        return new ModelNode(copy());
     }
 
     ModelNode getChild(final String name) {
@@ -221,5 +228,9 @@ final class ObjectModelValue extends ModelValue {
 
     public int hashCode() {
         return map.hashCode();
+    }
+
+    boolean has(final String key) {
+        return map.containsKey(key);
     }
 }

@@ -118,10 +118,6 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
-    boolean exists() {
-        return true;
-    }
-
     Set<String> getKeys() {
         throw new IllegalArgumentException();
     }
@@ -188,10 +184,6 @@ abstract class ModelValue implements Cloneable {
             return defVal;
         }
 
-        boolean exists() {
-            return false;
-        }
-
         public boolean equals(final Object other) {
             return other == this;
         }
@@ -227,5 +219,13 @@ abstract class ModelValue implements Cloneable {
 
     void writeExternal(final DataOutput out) throws IOException {
         // nothing by default
+    }
+
+    boolean has(final int index) {
+        return false;
+    }
+
+    boolean has(final String key) {
+        return false;
     }
 }
