@@ -101,6 +101,11 @@ public class ModelNode implements Serializable, Cloneable {
         return value.asBytes();
     }
 
+    // as property
+    // as property list
+    // as object
+    // as list
+
     public boolean exists() {
         return value.exists();
     }
@@ -360,6 +365,16 @@ public class ModelNode implements Serializable, Cloneable {
             }
         }
         return value.addChild();
+    }
+
+    public ModelNode addEmptyList() {
+        add().setEmptyList();
+        return this;
+    }
+
+    public ModelNode addEmptyObject() {
+        add().setEmptyObject();
+        return this;
     }
 
     public Set<String> keys() {
