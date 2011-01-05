@@ -452,4 +452,8 @@ public class ModelNode implements Serializable, Cloneable {
     void format(final StringBuilder builder, final int indent, boolean multiLine) {
         value.format(builder, indent, multiLine);
     }
+
+    public ModelType getType() {
+        return value.getType();
+    }
 }
