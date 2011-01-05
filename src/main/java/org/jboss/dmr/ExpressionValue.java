@@ -76,13 +76,12 @@ final class ExpressionValue extends ModelValue {
      */
     private static String replaceProperties(String value) {
         final StringBuilder builder = new StringBuilder();
-        final char[] chars = value.toCharArray();
-        final int len = chars.length;
+        final int len = value.length();
         int state = 0;
         int start = -1;
         int nameStart = -1;
-        for (int i = 0; i < len; i ++) {
-            char ch = chars[i];
+        for (int i = 0; i < len; i = value.offsetByCodePoints(i, 1)) {
+            int ch = value.codePointAt(i);
             switch (state) {
                 case INITIAL: {
                     switch (ch) {
@@ -91,7 +90,7 @@ final class ExpressionValue extends ModelValue {
                             continue;
                         }
                         default: {
-                            builder.append(ch);
+                            builder.appendCodePoint(ch);
                             continue;
                         }
                     }
@@ -100,7 +99,7 @@ final class ExpressionValue extends ModelValue {
                 case GOT_DOLLAR: {
                     switch (ch) {
                         case '$': {
-                            builder.append(ch);
+                            builder.appendCodePoint(ch);
                             state = INITIAL;
                             continue;
                         }
@@ -112,7 +111,7 @@ final class ExpressionValue extends ModelValue {
                         }
                         default: {
                             // invalid; emit and resume
-                            builder.append('$').append(ch);
+                            builder.append('$').appendCodePoint(ch);
                             state = INITIAL;
                             continue;
                         }
