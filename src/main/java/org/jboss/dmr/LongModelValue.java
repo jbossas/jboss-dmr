@@ -100,6 +100,9 @@ final class LongModelValue extends ModelValue {
         return Long.toString(value);
     }
 
+    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append(value).append('L');
+    }
 
     /**
      * Determine whether this object is equal to another.

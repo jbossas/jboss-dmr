@@ -385,7 +385,7 @@ public class ModelNode implements Externalizable, Cloneable {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
-        value = new BytesModelValue(newValue.clone());
+        value = new BytesModelValue(newValue.length == 0 ? newValue : newValue.clone());
     }
 
     /**
