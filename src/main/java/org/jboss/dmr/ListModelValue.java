@@ -22,6 +22,11 @@
 
 package org.jboss.dmr;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,6 +54,27 @@ final class ListModelValue extends ModelValue {
     ListModelValue(final List<ModelNode> list) {
         super(ModelType.LIST);
         this.list = list;
+    }
+
+    ListModelValue(final DataInput in) throws IOException {
+        super(ModelType.LIST);
+        final int count = in.readInt();
+        final ArrayList<ModelNode> list = new ArrayList<ModelNode>();
+        for (int i = 0; i < count; i ++) {
+            final ModelNode value = new ModelNode();
+            value.readExternal(in);
+            list.add(value);
+        }
+        this.list = list;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        final List<ModelNode> list = this.list;
+        final int size = list.size();
+        out.writeInt(size);
+        for (ModelNode node : list) {
+            node.writeExternal(out);
+        }
     }
 
     ModelValue protect() {

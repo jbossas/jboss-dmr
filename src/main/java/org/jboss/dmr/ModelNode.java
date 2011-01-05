@@ -22,7 +22,17 @@
 
 package org.jboss.dmr;
 
-import java.io.Serializable;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InvalidObjectException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -34,12 +44,9 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public class ModelNode implements Serializable, Cloneable {
+public class ModelNode implements Externalizable, Cloneable {
 
     private static final long serialVersionUID = 2030456323088551487L;
-
-    ModelNode() {
-    }
 
     private volatile ModelValue value = ModelValue.UNDEFINED;
 
@@ -472,5 +479,65 @@ public class ModelNode implements Serializable, Cloneable {
 
     public ModelType getType() {
         return value.getType();
+    }
+
+
+    public void writeExternal(final ObjectOutput out) throws IOException {
+        writeExternal((DataOutput) out);
+    }
+
+    public void writeExternal(final OutputStream out) throws IOException {
+        writeExternal((DataOutput) new DataOutputStream(out));
+    }
+
+    public void writeExternal(final DataOutputStream out) throws IOException {
+        writeExternal((DataOutput) out);
+    }
+
+    public void writeExternal(final DataOutput out) throws IOException {
+        final ModelValue value = this.value;
+        final ModelType type = value.getType();
+        out.write(type.getTypeChar());
+        value.writeExternal(out);
+    }
+
+    public void readExternal(final ObjectInput in) throws IOException {
+        readExternal((DataInput) in);
+    }
+
+    public void readExternal(final DataInputStream in) throws IOException {
+        readExternal((DataInput) in);
+    }
+
+    public void readExternal(final InputStream in) throws IOException {
+        readExternal((DataInput) new DataInputStream(in));
+    }
+
+    public void readExternal(final DataInput in) throws IOException {
+        byte[] b; // used by some of these
+        try {
+            ModelType type = ModelType.forChar((char) (in.readByte() & 0xff));
+            switch (type) {
+                case UNDEFINED: value = ModelValue.UNDEFINED; return;
+                case BIG_DECIMAL: value = new BigDecimalModelValue(in); return;
+                case BIG_INTEGER: b = new byte[in.readInt()]; in.readFully(b); value = new BigIntegerModelValue(new BigInteger(b)); return;
+                case BOOLEAN: value = BooleanModelValue.valueOf(in.readBoolean()); return;
+                case BYTES: b = new byte[in.readInt()]; in.readFully(b); new BytesModelValue(b); return;
+                case DOUBLE: value = new DoubleModelValue(in.readDouble()); return;
+                case EXPRESSION: value = new ExpressionValue(in.readUTF()); return;
+                case INT: value = new IntModelValue(in.readInt()); return;
+                case LIST: value = new ListModelValue(in); return;
+                case LONG: value = new LongModelValue(in.readLong()); return;
+                case OBJECT: value = new ObjectModelValue(in); return;
+                case PROPERTY: value = new PropertyModelValue(in); return;
+                case STRING: value = new StringModelValue(in.readUTF()); return;
+                case TYPE: value = TypeModelValue.of(ModelType.forChar((char) (in.readByte() & 0xff))); return;
+                default: throw new InvalidObjectException("Invalid type read: " + type);
+            }
+        } catch (IllegalArgumentException e) {
+            final InvalidObjectException ne = new InvalidObjectException(e.getMessage());
+            ne.initCause(e.getCause());
+            throw ne;
+        }
     }
 }

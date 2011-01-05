@@ -22,6 +22,8 @@
 
 package org.jboss.dmr;
 
+import java.io.DataOutput;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -41,6 +43,10 @@ final class BooleanModelValue extends ModelValue {
     private BooleanModelValue(final boolean value) {
         super(ModelType.BOOLEAN);
         this.value = value;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        out.writeBoolean(value);
     }
 
     long asLong() {

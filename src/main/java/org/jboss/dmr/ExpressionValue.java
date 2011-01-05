@@ -22,7 +22,9 @@
 
 package org.jboss.dmr;
 
+import java.io.DataOutput;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -36,6 +38,10 @@ final class ExpressionValue extends ModelValue {
             throw new IllegalArgumentException("expressionString is null");
         }
         this.expressionString = expressionString;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        out.writeUTF(expressionString);
     }
 
     String asString() {

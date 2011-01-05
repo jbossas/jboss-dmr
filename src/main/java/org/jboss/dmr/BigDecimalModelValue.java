@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -32,9 +35,19 @@ final class BigDecimalModelValue extends ModelValue {
 
     private final BigDecimal value;
 
-    public BigDecimalModelValue(final BigDecimal value) {
+    BigDecimalModelValue(final BigDecimal value) {
         super(ModelType.BIG_DECIMAL);
         this.value = value;
+    }
+
+    BigDecimalModelValue(final DataInput in) throws IOException {
+        super(ModelType.BIG_DECIMAL);
+        value = new BigDecimal(in.readUTF());
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        final BigDecimal value = this.value;
+        out.writeUTF(value.toString());
     }
 
     long asLong() {

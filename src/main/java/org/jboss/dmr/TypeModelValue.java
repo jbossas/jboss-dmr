@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import java.io.DataOutput;
+import java.io.IOException;
+
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
@@ -31,6 +34,10 @@ final class TypeModelValue extends ModelValue {
     private TypeModelValue(final ModelType value) {
         super(ModelType.TYPE);
         this.value = value;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        out.writeByte(value.getTypeChar());
     }
 
     private static final TypeModelValue BOOLEAN = new TypeModelValue(ModelType.BOOLEAN);

@@ -26,18 +26,48 @@ package org.jboss.dmr;
 * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
 */
 public enum ModelType {
-    LONG,
-    INT,
-    BOOLEAN,
-    STRING,
-    DOUBLE,
-    BIG_DECIMAL,
-    BIG_INTEGER,
-    BYTES,
-    LIST,
-    TYPE,
-    OBJECT,
-    PROPERTY,
-    EXPRESSION,
-    UNDEFINED;
+    LONG('J'),
+    INT('I'),
+    BOOLEAN('Z'),
+    STRING('s'),
+    DOUBLE('D'),
+    BIG_DECIMAL('d'),
+    BIG_INTEGER('i'),
+    BYTES('b'),
+    LIST('l'),
+    TYPE('t'),
+    OBJECT('o'),
+    PROPERTY('p'),
+    EXPRESSION('e'),
+    UNDEFINED('u');
+
+    final char typeChar;
+
+    ModelType(final char typeChar) {
+        this.typeChar = typeChar;
+    }
+
+    char getTypeChar() {
+        return typeChar;
+    }
+
+    static ModelType forChar(char c) {
+        switch (c) {
+             case 'J': return LONG;
+             case 'I': return INT;
+             case 'Z': return BOOLEAN;
+             case 's': return STRING;
+             case 'D': return DOUBLE;
+             case 'd': return BIG_DECIMAL;
+             case 'i': return BIG_INTEGER;
+             case 'b': return BYTES;
+             case 'l': return LIST;
+             case 't': return TYPE;
+             case 'o': return OBJECT;
+             case 'p': return PROPERTY;
+             case 'e': return EXPRESSION;
+             case 'u': return UNDEFINED;
+             default: throw new IllegalArgumentException("Invalid type character '" + c + "'");
+        }
+    }
 }

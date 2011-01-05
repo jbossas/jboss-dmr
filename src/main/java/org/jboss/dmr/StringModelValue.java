@@ -22,6 +22,8 @@
 
 package org.jboss.dmr;
 
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,6 +38,10 @@ final class StringModelValue extends ModelValue {
     StringModelValue(final String value) {
         super(ModelType.STRING);
         this.value = value;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        out.writeUTF(value);
     }
 
     long asLong() {

@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -220,5 +223,9 @@ abstract class ModelValue implements Cloneable {
 
     ModelValue resolve() {
         return copy();
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        // nothing by default
     }
 }

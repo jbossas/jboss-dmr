@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +43,19 @@ final class PropertyModelValue extends ModelValue {
     PropertyModelValue(final Property property) {
         super(ModelType.PROPERTY);
         this.property = property;
+    }
+
+    PropertyModelValue(final DataInput in) throws IOException {
+        super(ModelType.PROPERTY);
+        final ModelNode node = new ModelNode();
+        final String name = in.readUTF();
+        node.readExternal(in);
+        property = new Property(name, node);
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        out.writeUTF(property.getName());
+        property.getValue().writeExternal(out);
     }
 
     String asString() {

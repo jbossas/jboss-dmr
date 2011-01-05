@@ -22,6 +22,10 @@
 
 package org.jboss.dmr;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -44,6 +48,29 @@ final class ObjectModelValue extends ModelValue {
     private ObjectModelValue(final Map<String, ModelNode> map) {
         super(ModelType.OBJECT);
         this.map = map;
+    }
+
+    ObjectModelValue(final DataInput in) throws IOException {
+        super(ModelType.OBJECT);
+        final int count = in.readInt();
+        final LinkedHashMap<String, ModelNode> map = new LinkedHashMap<String, ModelNode>();
+        for (int i = 0; i < count; i ++) {
+            final String key = in.readUTF();
+            final ModelNode value = new ModelNode();
+            value.readExternal(in);
+            map.put(key, value);
+        }
+        this.map = map;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        final Map<String, ModelNode> map = this.map;
+        final int size = map.size();
+        out.writeInt(size);
+        for (Map.Entry<String, ModelNode> entry : map.entrySet()) {
+            out.writeUTF(entry.getKey());
+            entry.getValue().writeExternal(out);
+        }
     }
 
     ModelValue protect() {

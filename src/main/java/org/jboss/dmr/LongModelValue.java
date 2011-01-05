@@ -22,6 +22,8 @@
 
 package org.jboss.dmr;
 
+import java.io.DataOutput;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -35,6 +37,10 @@ final class LongModelValue extends ModelValue {
     LongModelValue(final long value) {
         super(ModelType.LONG);
         this.value = value;
+    }
+
+    void writeExternal(final DataOutput out) throws IOException {
+        out.writeLong(value);
     }
 
     long asLong() {
