@@ -31,38 +31,53 @@ import java.util.Set;
  */
 final class PropertyModelValue extends ModelValue {
 
-    private final String name;
-    private final ModelNode value;
+    private final Property property;
 
-    public PropertyModelValue(final String name, final ModelNode value) {
+    PropertyModelValue(final String name, final ModelNode value) {
+        this(new Property(name, value));
+    }
+
+    PropertyModelValue(final Property property) {
         super(ModelType.PROPERTY);
-        this.name = name;
-        this.value = value;
+        this.property = property;
     }
 
     String asString() {
-        return String.format("(%s => %s)", quote(name), value);
+        return String.format("(%s => %s)", quote(property.getName()), property.getValue());
+    }
+
+    Property asProperty() {
+        return property;
+    }
+
+    List<Property> asPropertyList() {
+        return Collections.singletonList(property);
+    }
+
+    ModelNode asObject() {
+        final ModelNode node = new ModelNode();
+        node.get(property.getName()).set(property.getValue());
+        return node;
     }
 
     Set<String> getKeys() {
-        return Collections.singleton(name);
+        return Collections.singleton(property.getName());
     }
 
     List<ModelNode> getValues() {
-        return Collections.singletonList(value);
+        return Collections.singletonList(property.getValue());
     }
 
     ModelNode getChild(final String name) {
-        return name.equals(this.name) ? value : null;
+        return property.getName().equals(property.getName()) ? property.getValue() : super.getChild(name);
     }
 
     ModelNode getChild(final int index) {
-        return index == 0 ? value : null;
+        return index == 0 ? property.getValue() : super.getChild(index);
     }
 
     ModelValue copy() {
-        // todo clone value
-        return new PropertyModelValue(name, value.clone());
+        return new PropertyModelValue(property.getName(), property.getValue());
     }
 
     public boolean equals(Object other) {
@@ -70,10 +85,10 @@ final class PropertyModelValue extends ModelValue {
     }
 
     public boolean equals(PropertyModelValue other) {
-        return this == other || other != null && other.name.equals(name) && other.value.equals(value);
+        return this == other || other != null && other.property.getName().equals(property.getName()) && other.property.getValue().equals(property.getValue());
     }
 
     public int hashCode() {
-        return name.hashCode() * 31 + value.hashCode();
+        return property.getName().hashCode() * 31 + property.getValue().hashCode();
     }
 }

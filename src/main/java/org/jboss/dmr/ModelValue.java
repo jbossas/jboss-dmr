@@ -87,6 +87,18 @@ abstract class ModelValue implements Cloneable {
 
     abstract String asString();
 
+    Property asProperty() {
+        throw new IllegalArgumentException();
+    }
+
+    List<Property> asPropertyList() {
+        throw new IllegalArgumentException();
+    }
+
+    ModelNode asObject() {
+        throw new IllegalArgumentException();
+    }
+
     ModelNode getChild(final String name) {
         throw new IllegalArgumentException();
     }

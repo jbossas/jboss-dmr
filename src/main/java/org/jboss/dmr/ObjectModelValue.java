@@ -98,6 +98,22 @@ final class ObjectModelValue extends ModelValue {
         return ! map.isEmpty();
     }
 
+    Property asProperty() {
+        if (map.size() == 1) {
+            final Map.Entry<String, ModelNode> entry = map.entrySet().iterator().next();
+            return new Property(entry.getKey(), entry.getValue());
+        }
+        return super.asProperty();
+    }
+
+    List<Property> asPropertyList() {
+        final List<Property> propertyList = new ArrayList<Property>();
+        for (Map.Entry<String, ModelNode> entry : map.entrySet()) {
+            propertyList.add(new Property(entry.getKey(), entry.getValue()));
+        }
+        return propertyList;
+    }
+
     ModelValue copy() {
         return new ObjectModelValue(this);
     }

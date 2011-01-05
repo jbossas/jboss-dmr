@@ -80,6 +80,40 @@ final class ListModelValue extends ModelValue {
         return asBoolean();
     }
 
+    Property asProperty() {
+        if (list.size() == 2) {
+            return new Property(list.get(0).asString(), list.get(1));
+        } else {
+            return super.asProperty();
+        }
+    }
+
+    List<Property> asPropertyList() {
+        final List<Property> propertyList = new ArrayList<Property>();
+        Iterator<ModelNode> i = list.iterator();
+        while (i.hasNext()) {
+            final ModelNode name = i.next();
+            if (i.hasNext()) {
+                final ModelNode value = i.next();
+                propertyList.add(new Property(name.asString(), value));
+            }
+        }
+        return propertyList;
+    }
+
+    ModelNode asObject() {
+        final ModelNode node = new ModelNode();
+        Iterator<ModelNode> i = list.iterator();
+        while (i.hasNext()) {
+            final ModelNode name = i.next();
+            if (i.hasNext()) {
+                final ModelNode value = i.next();
+                node.get(name.asString()).set(value);
+            }
+        }
+        return node;
+    }
+
     ModelNode getChild(final int index) {
         return list.get(index);
     }

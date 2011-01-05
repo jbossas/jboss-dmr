@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
@@ -101,10 +102,17 @@ public class ModelNode implements Serializable, Cloneable {
         return value.asBytes();
     }
 
-    // as property
-    // as property list
-    // as object
-    // as list
+    public Property asProperty() {
+        return value.asProperty();
+    }
+
+    public List<Property> asPropertyList() {
+        return value.asPropertyList();
+    }
+
+    public ModelNode asObject() {
+        return value.asObject();
+    }
 
     public boolean exists() {
         return value.exists();
@@ -166,6 +174,10 @@ public class ModelNode implements Serializable, Cloneable {
             throw new IllegalArgumentException("newValue is null");
         }
         value = TypeModelValue.of(newValue);
+    }
+
+    public void set(Property property) {
+        set(property.getName(), property.getValue());
     }
 
     public void set(String propertyName, ModelNode propertyValue) {
