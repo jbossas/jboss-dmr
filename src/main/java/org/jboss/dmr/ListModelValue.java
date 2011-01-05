@@ -144,6 +144,11 @@ final class ListModelValue extends ModelValue {
     }
 
     ModelNode getChild(final int index) {
+        final List<ModelNode> list = this.list;
+        final int size = list.size();
+        if (size <= index) {
+            list.addAll(Collections.nCopies(index - size + 1, new ModelNode()));
+        }
         return list.get(index);
     }
 
