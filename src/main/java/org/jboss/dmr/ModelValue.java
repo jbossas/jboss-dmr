@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,6 +23,7 @@
 package org.jboss.dmr;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
@@ -76,7 +77,11 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
-    BigDecimal asDecimal() {
+    BigDecimal asBigDecimal() {
+        throw new IllegalArgumentException();
+    }
+
+    BigInteger asBigInteger() {
         throw new IllegalArgumentException();
     }
 
@@ -106,7 +111,7 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
-    List<ModelNode> getList() {
+    List<ModelNode> getValues() {
         throw new IllegalArgumentException();
     }
 
@@ -124,6 +129,22 @@ abstract class ModelValue implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected static String quote(String orig) {
+        final int length = orig.length();
+        final StringBuilder builder = new StringBuilder(length + 32);
+        builder.append('"');
+        for (int i = 0; i < length; i = orig.offsetByCodePoints(i, 1)) {
+            final int cp = orig.codePointAt(i);
+            if (cp == '"' || cp == '\\') {
+                builder.append('\\').appendCodePoint(cp);
+            } else {
+                builder.appendCodePoint(cp);
+            }
+        }
+        builder.append('"');
+        return builder.toString();
     }
 
     ModelValue copy() {
@@ -168,4 +189,20 @@ abstract class ModelValue implements Cloneable {
     public abstract boolean equals(Object other);
 
     public abstract int hashCode();
+
+    protected static void indent(StringBuilder target, int count) {
+        for (int i = 0; i < count; i ++) {
+            target.append("    ");
+        }
+    }
+
+    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append(asString());
+    }
+
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        format(builder, 0, true);
+        return builder.toString();
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,16 +23,17 @@
 package org.jboss.dmr;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-final class DecimalModelValue extends ModelValue {
+final class BigDecimalModelValue extends ModelValue {
 
     private final BigDecimal value;
 
-    public DecimalModelValue(final BigDecimal value) {
-        super(ModelType.DECIMAL);
+    public BigDecimalModelValue(final BigDecimal value) {
+        super(ModelType.BIG_DECIMAL);
         this.value = value;
     }
 
@@ -68,12 +69,20 @@ final class DecimalModelValue extends ModelValue {
         return value.doubleValue();
     }
 
-    BigDecimal asDecimal() {
+    BigDecimal asBigDecimal() {
         return value;
+    }
+
+    BigInteger asBigInteger() {
+        return value.toBigInteger();
     }
 
     String asString() {
         return value.toString();
+    }
+
+    void format(final StringBuilder target, final int indent, final boolean ignored) {
+        target.append("big decimal ").append(value);
     }
 
     /**
@@ -83,7 +92,7 @@ final class DecimalModelValue extends ModelValue {
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     public boolean equals(Object other) {
-        return other instanceof DecimalModelValue && equals((DecimalModelValue)other);
+        return other instanceof BigDecimalModelValue && equals((BigDecimalModelValue)other);
     }
 
     /**
@@ -92,7 +101,7 @@ final class DecimalModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(DecimalModelValue other) {
+    public boolean equals(BigDecimalModelValue other) {
         return this == other || other != null && value.equals(other.value);
     }
 

@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -22,10 +22,13 @@
 
 package org.jboss.dmr;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -99,21 +102,45 @@ final class ObjectModelValue extends ModelValue {
         return new ObjectModelValue(this);
     }
 
+    List<ModelNode> getValues() {
+        return new ArrayList<ModelNode>(map.values());
+    }
+
+    Set<String> getKeys() {
+        return map.keySet();
+    }
+
     String asString() {
         StringBuilder builder = new StringBuilder();
+        format(builder, 0, false);
+        return builder.toString();
+    }
+
+    void format(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
         builder.append('{');
+        boolean multiLine = multiLineRequested && map.size() > 1;
+        if (multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        }
         final Iterator<Map.Entry<String, ModelNode>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, ModelNode> entry = iterator.next();
-            builder.append(entry.getKey());
-            builder.append("->");
-            builder.append(entry.getValue().asString());
+            builder.append(quote(entry.getKey()));
+            final ModelNode value = entry.getValue();
+            builder.append(" => ");
+            value.format(builder, indent + 1, multiLineRequested);
             if (iterator.hasNext()) {
-                builder.append(',');
+                if (multiLine) {
+                    indent(builder.append(",\n"), indent + 1);
+                } else {
+                    builder.append(',');
+                }
             }
         }
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        }
         builder.append('}');
-        return builder.toString();
     }
 
     /**

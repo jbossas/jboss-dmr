@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,6 +23,7 @@
 package org.jboss.dmr;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -78,8 +79,12 @@ final class BooleanModelValue extends ModelValue {
         return value ? TRUE_BYTES.clone() : FALSE_BYTES.clone();
     }
 
-    BigDecimal asDecimal() {
+    BigDecimal asBigDecimal() {
         return value ? BigDecimal.ONE : BigDecimal.ZERO;
+    }
+
+    BigInteger asBigInteger() {
+        return value ? BigInteger.ONE : BigInteger.ZERO;
     }
 
     String asString() {

@@ -28,58 +28,45 @@ import java.math.BigInteger;
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-final class LongModelValue extends ModelValue {
+final class BigIntegerModelValue extends ModelValue {
 
-    private final long value;
+    private final BigInteger value;
 
-    LongModelValue(final long value) {
-        super(ModelType.LONG);
+    public BigIntegerModelValue(final BigInteger value) {
+        super(ModelType.BIG_INTEGER);
         this.value = value;
     }
 
     long asLong() {
-        return value;
+        return value.longValue();
     }
 
     long asLong(final long defVal) {
-        return value;
+        return value.longValue();
     }
 
     int asInt() {
-        return (int) value;
+        return value.intValue();
     }
 
     int asInt(final int defVal) {
-        return (int) value;
+        return value.intValue();
     }
 
     boolean asBoolean() {
-        return value != 0;
+        return !value.equals(BigInteger.ZERO);
     }
 
     boolean asBoolean(final boolean defVal) {
-        return value != 0;
+        return !value.equals(BigInteger.ZERO);
     }
 
     double asDouble() {
-        return value;
+        return value.doubleValue();
     }
 
     double asDouble(final double defVal) {
-        return value;
-    }
-
-    byte[] asBytes() {
-        final byte[] bytes = new byte[8];
-        bytes[0] = (byte) (value >>> 56);
-        bytes[1] = (byte) (value >>> 48);
-        bytes[2] = (byte) (value >>> 40);
-        bytes[3] = (byte) (value >>> 32);
-        bytes[4] = (byte) (value >>> 24);
-        bytes[5] = (byte) (value >>> 16);
-        bytes[6] = (byte) (value >>> 8);
-        bytes[7] = (byte) (value);
-        return bytes;
+        return value.doubleValue();
     }
 
     BigDecimal asBigDecimal() {
@@ -87,13 +74,16 @@ final class LongModelValue extends ModelValue {
     }
 
     BigInteger asBigInteger() {
-        return BigInteger.valueOf(value);
+        return value;
     }
 
     String asString() {
-        return Long.toString(value);
+        return value.toString();
     }
 
+    void format(final StringBuilder target, final int indent, final boolean ignored) {
+        target.append("big integer ").append(value);
+    }
 
     /**
      * Determine whether this object is equal to another.
@@ -102,7 +92,7 @@ final class LongModelValue extends ModelValue {
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     public boolean equals(Object other) {
-        return other instanceof LongModelValue && equals((LongModelValue)other);
+        return other instanceof BigIntegerModelValue && equals((BigIntegerModelValue)other);
     }
 
     /**
@@ -111,11 +101,11 @@ final class LongModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(LongModelValue other) {
-        return this == other || other != null && other.value == value;
+    public boolean equals(BigIntegerModelValue other) {
+        return this == other || other != null && value.equals(other.value);
     }
 
     public int hashCode() {
-        return (int) value;
+        return value.hashCode();
     }
 }

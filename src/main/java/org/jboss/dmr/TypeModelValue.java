@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -35,7 +35,7 @@ final class TypeModelValue extends ModelValue {
 
     private static final TypeModelValue BOOLEAN = new TypeModelValue(ModelType.BOOLEAN);
     private static final TypeModelValue BYTES = new TypeModelValue(ModelType.BYTES);
-    private static final TypeModelValue DECIMAL = new TypeModelValue(ModelType.DECIMAL);
+    private static final TypeModelValue DECIMAL = new TypeModelValue(ModelType.BIG_DECIMAL);
     private static final TypeModelValue DOUBLE = new TypeModelValue(ModelType.DOUBLE);
     private static final TypeModelValue INT = new TypeModelValue(ModelType.INT);
     private static final TypeModelValue LONG = new TypeModelValue(ModelType.LONG);
@@ -52,7 +52,7 @@ final class TypeModelValue extends ModelValue {
             case BOOLEAN: return BOOLEAN;
             case STRING: return STRING;
             case DOUBLE: return DOUBLE;
-            case DECIMAL: return DECIMAL;
+            case BIG_DECIMAL: return DECIMAL;
             case BYTES: return BYTES;
             case LIST: return LIST;
             case TYPE: return TYPE;

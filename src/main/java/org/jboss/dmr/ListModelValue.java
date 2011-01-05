@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -90,7 +90,7 @@ final class ListModelValue extends ModelValue {
         return node;
     }
 
-    List<ModelNode> getList() {
+    List<ModelNode> getValues() {
         //noinspection ToArrayCallWithZeroLengthArrayArgument
         return Collections.unmodifiableList(Arrays.asList(list.toArray(NO_NODES)));
     }
@@ -101,17 +101,33 @@ final class ListModelValue extends ModelValue {
 
     String asString() {
         StringBuilder builder = new StringBuilder();
+        format(builder, 0, false);
+        return builder.toString();
+    }
+
+    void format(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
+        final boolean multiLine = multiLineRequested && list.size() > 1;
+        final List<ModelNode> list = getValues();
+        final Iterator<ModelNode> iterator = list.iterator();
         builder.append('[');
-        final Iterator<ModelNode> iterator = getList().iterator();
+        if (multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        }
         while (iterator.hasNext()) {
             final ModelNode entry = iterator.next();
-            builder.append(entry.asString());
+            entry.format(builder, indent + 1, multiLineRequested);
             if (iterator.hasNext()) {
-                builder.append(',');
+                if (multiLine) {
+                    indent(builder.append(",\n"), indent + 1);
+                } else {
+                    builder.append(',');
+                }
             }
         }
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        }
         builder.append(']');
-        return builder.toString();
     }
 
     /**

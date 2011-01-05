@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -24,6 +24,7 @@ package org.jboss.dmr;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -88,6 +89,18 @@ public class ModelNode implements Serializable, Cloneable {
         return value.asType();
     }
 
+    public BigDecimal asBigDecimal() {
+        return value.asBigDecimal();
+    }
+
+    public BigInteger asBigInteger() {
+        return value.asBigInteger();
+    }
+
+    public byte[] asBytes() {
+        return value.asBytes();
+    }
+
     public boolean exists() {
         return value.exists();
     }
@@ -109,31 +122,117 @@ public class ModelNode implements Serializable, Cloneable {
     }
 
     public void set(String newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
         value = new StringModelValue(newValue);
     }
 
     public void set(BigDecimal newValue) {
-        value = new DecimalModelValue(newValue);
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
+        value = new BigDecimalModelValue(newValue);
+    }
+
+    public void set(BigInteger newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
+        value = new BigIntegerModelValue(newValue);
     }
 
     public void set(ModelNode newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
         value = newValue.value.copy();
     }
 
     public void set(byte[] newValue) {
-        value = new BytesModelValue(newValue);
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
+        value = new BytesModelValue(newValue.clone());
     }
 
-    public void set(ModelType type) {
-        value = TypeModelValue.of(type);
+    public void set(ModelType newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
+        value = TypeModelValue.of(newValue);
     }
 
     public void set(String propertyName, ModelNode propertyValue) {
-        value = new PropertyModelValue(propertyName, propertyValue);
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, int propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, long propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, double propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, boolean propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, String propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, BigDecimal propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, BigInteger propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, byte[] propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+    }
+
+    public void set(String propertyName, ModelType propertyValue) {
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
     }
 
     public void set(List<ModelNode> newValue) {
         value = new ListModelValue(new ArrayList<ModelNode>(newValue));
+    }
+
+    public void setEmptyList() {
+        value = new ListModelValue();
+    }
+
+    public void setEmptyObject() {
+        value = new ObjectModelValue();
     }
 
     public void clear() {
@@ -192,8 +291,63 @@ public class ModelNode implements Serializable, Cloneable {
         return this;
     }
 
+    public ModelNode add(BigInteger newValue) {
+        add().set(newValue);
+        return this;
+    }
+
     public ModelNode add(ModelNode newValue) {
         add().set(newValue);
+        return this;
+    }
+
+    public ModelNode add(byte[] newValue) {
+        add().set(newValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, int propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, long propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, double propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, boolean propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, String propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, BigDecimal propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, BigInteger propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, ModelNode propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    public ModelNode add(String propertyName, byte[] propertyValue) {
+        add().set(propertyName, propertyValue);
         return this;
     }
 
@@ -213,7 +367,7 @@ public class ModelNode implements Serializable, Cloneable {
     }
 
     public List<ModelNode> asList() {
-        return value.getList();
+        return value.getValues();
     }
 
     public ModelNode get(String... name) {
@@ -225,7 +379,7 @@ public class ModelNode implements Serializable, Cloneable {
     }
 
     public String toString() {
-        return asString();
+        return value.toString();
     }
 
     /**
@@ -266,5 +420,9 @@ public class ModelNode implements Serializable, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    void format(final StringBuilder builder, final int indent, boolean multiLine) {
+        value.format(builder, indent, multiLine);
     }
 }

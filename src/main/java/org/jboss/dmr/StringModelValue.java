@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -24,6 +24,7 @@ package org.jboss.dmr;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -77,8 +78,12 @@ final class StringModelValue extends ModelValue {
         }
     }
 
-    BigDecimal asDecimal() {
+    BigDecimal asBigDecimal() {
         return new BigDecimal(value);
+    }
+
+    BigInteger asBigInteger() {
+        return new BigInteger(value);
     }
 
     String asString() {
@@ -87,6 +92,10 @@ final class StringModelValue extends ModelValue {
 
     ModelType asType() {
         return ModelType.valueOf(value);
+    }
+
+    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append(quote(value));
     }
 
     /**

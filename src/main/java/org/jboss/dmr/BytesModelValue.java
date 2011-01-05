@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2010, Red Hat, Inc., and individual contributors
+ * Copyright 2011, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -78,13 +78,32 @@ final class BytesModelValue extends ModelValue {
         return Double.longBitsToDouble(asLong());
     }
 
-    BigDecimal asDecimal() {
+    BigDecimal asBigDecimal() {
         return new BigDecimal(new BigInteger(bytes));
+    }
+
+    BigInteger asBigInteger() {
+        return new BigInteger(bytes);
+    }
+
+    byte[] asBytes() {
+        return bytes.clone();
     }
 
     String asString() {
         StringBuilder builder = new StringBuilder(bytes.length * 4 + 4);
-        builder.append("{ ");
+        format(builder, 0, false);
+        return builder.toString();
+    }
+
+    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append("bytes {");
+        if (multiLine) {
+            builder.append('\n');
+            indent(builder, indent + 1);
+        } else {
+            builder.append(' ');
+        }
         for (int i = 0, length = bytes.length; i < length; i++) {
             final byte b = bytes[i];
             if (b >= 0 && b < 0x10) {
@@ -93,11 +112,24 @@ final class BytesModelValue extends ModelValue {
                 builder.append(Integer.toHexString(b & 0xff));
             }
             if (i != length - 1) {
-                builder.append(", ");
+                if (multiLine && (i & 7) == 7) {
+                    indent(builder.append(",\n"), indent + 1);
+                } else {
+                    builder.append(", ");
+                }
             }
         }
-        builder.append(" }");
-        return builder.toString();
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        } else {
+            builder.append(' ');
+        }
+        builder.append('}');
+    }
+
+    void formatMultiLine(final StringBuilder target, final int indent) {
+        final int length = bytes.length;
+        format(target, indent, length > 8);
     }
 
     /**

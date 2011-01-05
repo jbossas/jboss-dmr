@@ -41,14 +41,14 @@ final class PropertyModelValue extends ModelValue {
     }
 
     String asString() {
-        return String.format("\"%s\" => %s", name, value);
+        return String.format("(%s => %s)", quote(name), value);
     }
 
     Set<String> getKeys() {
         return Collections.singleton(name);
     }
 
-    List<ModelNode> getList() {
+    List<ModelNode> getValues() {
         return Collections.singletonList(value);
     }
 
