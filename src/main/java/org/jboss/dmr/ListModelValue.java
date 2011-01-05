@@ -25,8 +25,6 @@ package org.jboss.dmr;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -147,7 +145,9 @@ final class ListModelValue extends ModelValue {
         final List<ModelNode> list = this.list;
         final int size = list.size();
         if (size <= index) {
-            list.addAll(Collections.nCopies(index - size + 1, new ModelNode()));
+            for (int i = 0; i < index - size + 1; i ++) {
+                list.add(new ModelNode());
+            }
         }
         return list.get(index);
     }
