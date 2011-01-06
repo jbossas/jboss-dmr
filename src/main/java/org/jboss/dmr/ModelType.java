@@ -26,19 +26,19 @@ package org.jboss.dmr;
 * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
 */
 public enum ModelType {
-    LONG('J'),
-    INT('I'),
-    BOOLEAN('Z'),
-    STRING('s'),
-    DOUBLE('D'),
     BIG_DECIMAL('d'),
     BIG_INTEGER('i'),
+    BOOLEAN('Z'),
     BYTES('b'),
+    DOUBLE('D'),
+    EXPRESSION('e'),
+    INT('I'),
     LIST('l'),
-    TYPE('t'),
+    LONG('J'),
     OBJECT('o'),
     PROPERTY('p'),
-    EXPRESSION('e'),
+    STRING('s'),
+    TYPE('t'),
     UNDEFINED('u');
 
     final char typeChar;

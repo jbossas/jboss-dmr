@@ -53,6 +53,10 @@ final class PropertyModelValue extends ModelValue {
         property = new Property(name, node);
     }
 
+    PropertyModelValue(final String key, final ModelNode node, final boolean copy) {
+        this(new Property(key, node, copy));
+    }
+
     void writeExternal(final DataOutput out) throws IOException {
         out.writeUTF(property.getName());
         property.getValue().writeExternal(out);

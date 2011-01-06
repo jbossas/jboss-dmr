@@ -30,8 +30,12 @@ public final class Property implements Cloneable {
     private final ModelNode value;
 
     public Property(final String name, final ModelNode value) {
+        this(name, value, true);
+    }
+
+    Property(final String name, final ModelNode value, final boolean copy) {
         this.name = name;
-        this.value = value.clone();
+        this.value = copy ? value.clone() : value;
     }
 
     public String getName() {

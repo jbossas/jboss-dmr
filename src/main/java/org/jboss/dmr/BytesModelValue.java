@@ -113,9 +113,9 @@ final class BytesModelValue extends ModelValue {
         for (int i = 0, length = bytes.length; i < length; i++) {
             final byte b = bytes[i];
             if (b >= 0 && b < 0x10) {
-                builder.append('0').append('0' + b);
+                builder.append("0x0").append(Integer.toHexString(b & 0xff));
             } else {
-                builder.append(Integer.toHexString(b & 0xff));
+                builder.append("0x").append(Integer.toHexString(b & 0xff));
             }
             if (i != length - 1) {
                 if (multiLine && (i & 7) == 7) {

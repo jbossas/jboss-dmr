@@ -33,6 +33,8 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -274,140 +276,168 @@ public class ModelNode implements Externalizable, Cloneable {
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(int newValue) {
+    public ModelNode set(int newValue) {
         checkProtect();
         value = new IntModelValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(long newValue) {
+    public ModelNode set(long newValue) {
         checkProtect();
         value = new LongModelValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(double newValue) {
+    public ModelNode set(double newValue) {
         checkProtect();
         value = new DoubleModelValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(boolean newValue) {
+    public ModelNode set(boolean newValue) {
         checkProtect();
         value = BooleanModelValue.valueOf(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given expression value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void setExpression(String newValue) {
+    public ModelNode setExpression(String newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = new ExpressionValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(String newValue) {
+    public ModelNode set(String newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = new StringModelValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(BigDecimal newValue) {
+    public ModelNode set(BigDecimal newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = new BigDecimalModelValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(BigInteger newValue) {
+    public ModelNode set(BigInteger newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = new BigIntegerModelValue(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.  The value is copied from the parameter.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(ModelNode newValue) {
+    public ModelNode set(ModelNode newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = newValue.value.copy();
+        return this;
+    }
+
+    void setNoCopy(final ModelNode child) {
+        value = child.value;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(byte[] newValue) {
+    public ModelNode set(byte[] newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = new BytesModelValue(newValue.length == 0 ? newValue : newValue.clone());
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(ModelType newValue) {
+    public ModelNode set(ModelType newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         value = TypeModelValue.of(newValue);
+        return this;
     }
 
     /**
      * Change this node's value to the given value.
      *
      * @param newValue the new value
+     * @return this node
      */
-    public void set(Property newValue) {
+    public ModelNode set(Property newValue) {
         set(newValue.getName(), newValue.getValue());
+        return this;
     }
 
     /**
@@ -415,12 +445,17 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, ModelNode propertyValue) {
+    public ModelNode set(String propertyName, ModelNode propertyValue) {
         checkProtect();
-        final ModelNode node = new ModelNode();
-        node.set(propertyValue);
-        value = new PropertyModelValue(propertyName, node);
+        value = new PropertyModelValue(propertyName, propertyValue, true);
+        return this;
+    }
+
+    ModelNode setNoCopy(final String propertyName, final ModelNode propertyValue) {
+        value = new PropertyModelValue(propertyName, propertyValue, false);
+        return this;
     }
 
     /**
@@ -428,12 +463,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, int propertyValue) {
+    public ModelNode set(String propertyName, int propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -441,12 +478,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, long propertyValue) {
+    public ModelNode set(String propertyName, long propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -454,12 +493,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, double propertyValue) {
+    public ModelNode set(String propertyName, double propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -467,12 +508,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, boolean propertyValue) {
+    public ModelNode set(String propertyName, boolean propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -480,12 +523,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, String propertyValue) {
+    public ModelNode set(String propertyName, String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -493,12 +538,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property expression value
+     * @return this node
      */
-    public void setExpression(String propertyName, String propertyValue) {
+    public ModelNode setExpression(String propertyName, String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.setExpression(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -506,12 +553,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, BigDecimal propertyValue) {
+    public ModelNode set(String propertyName, BigDecimal propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -519,12 +568,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, BigInteger propertyValue) {
+    public ModelNode set(String propertyName, BigInteger propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -532,12 +583,14 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, byte[] propertyValue) {
+    public ModelNode set(String propertyName, byte[] propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
@@ -545,54 +598,67 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param propertyName the property name
      * @param propertyValue the property value
+     * @return this node
      */
-    public void set(String propertyName, ModelType propertyValue) {
+    public ModelNode set(String propertyName, ModelType propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
+        return this;
     }
 
     /**
      * Change this node's value to a list whose values are copied from the given collection.
      *
      * @param newValue the list value
+     * @return this node
      */
-    public void set(Collection<ModelNode> newValue) {
+    public ModelNode set(Collection<ModelNode> newValue) {
         checkProtect();
         final ArrayList<ModelNode> list = new ArrayList<ModelNode>(newValue.size());
         for (ModelNode node : newValue) {
             if (node == null) {
-                newValue.add(new ModelNode());
+                list.add(new ModelNode());
             } else {
-                newValue.add(node.clone());
+                list.add(node.clone());
             }
         }
         value = new ListModelValue(list);
+        return this;
     }
 
     /**
      * Change this node's value to an empty list.
+     *
+     * @return this node
      */
-    public void setEmptyList() {
+    public ModelNode setEmptyList() {
         checkProtect();
         value = new ListModelValue();
+        return this;
     }
 
     /**
      * Change this node's value to an empty object.
+     *
+     * @return this node
      */
-    public void setEmptyObject() {
+    public ModelNode setEmptyObject() {
         checkProtect();
         value = new ObjectModelValue();
+        return this;
     }
 
     /**
      * Clear this node's value and change its type to {@link ModelType#UNDEFINED}.
+     *
+     * @return this node
      */
-    public void clear() {
+    public ModelNode clear() {
         checkProtect();
         value = ModelValue.UNDEFINED;
+        return this;
     }
 
     /**
@@ -738,6 +804,11 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public ModelNode add(ModelNode newValue) {
         add().set(newValue);
+        return this;
+    }
+
+    ModelNode addNoCopy(final ModelNode child) {
+        add().value = child.value;
         return this;
     }
 
