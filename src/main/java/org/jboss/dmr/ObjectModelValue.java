@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -232,5 +233,11 @@ final class ObjectModelValue extends ModelValue {
 
     boolean has(final String key) {
         return map.containsKey(key);
+    }
+
+    ModelNode requireChild(final String name) throws NoSuchElementException {
+        final ModelNode node = map.get(name);
+        if (node != null) return node;
+        return super.requireChild(name);
     }
 }

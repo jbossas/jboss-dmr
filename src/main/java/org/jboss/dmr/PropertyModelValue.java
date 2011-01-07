@@ -27,6 +27,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -94,7 +95,7 @@ final class PropertyModelValue extends ModelValue {
     }
 
     ModelNode getChild(final String name) {
-        return property.getName().equals(property.getName()) ? property.getValue() : super.getChild(name);
+        return property.getName().equals(name) ? property.getValue() : super.getChild(name);
     }
 
     ModelNode getChild(final int index) {
@@ -123,5 +124,9 @@ final class PropertyModelValue extends ModelValue {
 
     boolean has(final String key) {
         return key.equals(property.getName());
+    }
+
+    ModelNode requireChild(final String name) throws NoSuchElementException {
+        return property.getName().equals(name) ? property.getValue() : super.requireChild(name);
     }
 }

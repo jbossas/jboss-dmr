@@ -40,6 +40,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -681,6 +682,21 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Require the existence of a child of this node with the given name, returning the child.  If no such child exists,
+     * an exception is thrown.
+     * <p>
+     * When called on property values, the name must match the property name.
+     *
+     * @param name the child name
+     * @return the child
+     * @throws NoSuchElementException if the element does not exist
+     */
+    public ModelNode require(String name) throws NoSuchElementException {
+        ModelValue value = this.value;
+        return value.requireChild(name);
+    }
+
+    /**
      * Get the child of this node with the given index.  If no such child exists, create it (adding list entries as needed).
      * If the node is undefined, it will be initialized to be of type {@link ModelType#LIST}.
      * <p>
@@ -697,6 +713,21 @@ public class ModelNode implements Externalizable, Cloneable {
             return (this.value = new ListModelValue()).getChild(index);
         }
         return value.getChild(index);
+    }
+
+    /**
+     * Require the existence of a child of this node with the given index, returning the child.  If no such child exists,
+     * an exception is thrown.
+     * <p>
+     * When called on property values, the index must be zero.
+     *
+     * @param index the child index
+     * @return the child
+     * @throws NoSuchElementException if the element does not exist
+     */
+    public ModelNode require(int index) {
+        ModelValue value = this.value;
+        return value.requireChild(index);
     }
 
     /**

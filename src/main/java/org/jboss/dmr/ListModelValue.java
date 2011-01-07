@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -234,5 +235,13 @@ final class ListModelValue extends ModelValue {
 
     boolean has(final int index) {
         return 0 <= index && index < list.size();
+    }
+
+    ModelNode requireChild(final int index) throws NoSuchElementException {
+        try {
+            return list.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            return super.requireChild(index);
+        }
     }
 }

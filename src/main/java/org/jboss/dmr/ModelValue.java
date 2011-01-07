@@ -28,6 +28,7 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -227,5 +228,13 @@ abstract class ModelValue implements Cloneable {
 
     boolean has(final String key) {
         return false;
+    }
+
+    ModelNode requireChild(final String name) throws NoSuchElementException {
+        throw new NoSuchElementException("No child '" + name + "' exists");
+    }
+
+    ModelNode requireChild(final int index) throws NoSuchElementException {
+        throw new NoSuchElementException("No child exists at index [" + index + "]");
     }
 }
