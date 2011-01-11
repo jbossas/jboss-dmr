@@ -194,7 +194,7 @@ final class ListModelValue extends ModelValue {
         }
         while (iterator.hasNext()) {
             final ModelNode entry = iterator.next();
-            entry.format(builder, indent + 1, multiLineRequested);
+            entry.format(builder, multiLine ? indent + 1 : indent, multiLineRequested);
             if (iterator.hasNext()) {
                 if (multiLine) {
                     indent(builder.append(",\n"), indent + 1);

@@ -192,7 +192,7 @@ final class ObjectModelValue extends ModelValue {
             builder.append(quote(entry.getKey()));
             final ModelNode value = entry.getValue();
             builder.append(" => ");
-            value.format(builder, indent + 1, multiLineRequested);
+            value.format(builder, multiLine ? indent + 1 : indent, multiLineRequested);
             if (iterator.hasNext()) {
                 if (multiLine) {
                     indent(builder.append(",\n"), indent + 1);
