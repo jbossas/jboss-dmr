@@ -692,8 +692,21 @@ public class ModelNode implements Externalizable, Cloneable {
      * @throws NoSuchElementException if the element does not exist
      */
     public ModelNode require(String name) throws NoSuchElementException {
-        ModelValue value = this.value;
         return value.requireChild(name);
+    }
+
+    /**
+     * Remove a child of this node, returning the child.  If no such child exists,
+     * an exception is thrown.
+     * <p>
+     * When called on property values, the name must match the property name.
+     *
+     * @param name the child name
+     * @return the child
+     * @throws NoSuchElementException if the element does not exist
+     */
+    public ModelNode remove(String name) throws NoSuchElementException {
+        return value.removeChild(name);
     }
 
     /**
@@ -726,7 +739,6 @@ public class ModelNode implements Externalizable, Cloneable {
      * @throws NoSuchElementException if the element does not exist
      */
     public ModelNode require(int index) {
-        ModelValue value = this.value;
         return value.requireChild(index);
     }
 
