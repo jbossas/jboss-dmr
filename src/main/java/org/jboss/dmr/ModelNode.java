@@ -33,8 +33,6 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -437,6 +435,9 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return this node
      */
     public ModelNode set(Property newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
         set(newValue.getName(), newValue.getValue());
         return this;
     }
@@ -616,6 +617,9 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return this node
      */
     public ModelNode set(Collection<ModelNode> newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
         checkProtect();
         final ArrayList<ModelNode> list = new ArrayList<ModelNode>(newValue.size());
         for (ModelNode node : newValue) {

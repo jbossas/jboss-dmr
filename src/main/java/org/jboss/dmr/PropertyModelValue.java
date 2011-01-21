@@ -43,6 +43,9 @@ final class PropertyModelValue extends ModelValue {
 
     PropertyModelValue(final Property property) {
         super(ModelType.PROPERTY);
+        if (property == null) {
+            throw new IllegalArgumentException("property is null");
+        }
         this.property = property;
     }
 

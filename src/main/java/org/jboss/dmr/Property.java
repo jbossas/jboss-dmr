@@ -34,6 +34,12 @@ public final class Property implements Cloneable {
     }
 
     Property(final String name, final ModelNode value, final boolean copy) {
+        if (name == null) {
+            throw new IllegalArgumentException("name is null");
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
         this.name = name;
         this.value = copy ? value.clone() : value;
     }
@@ -46,6 +52,7 @@ public final class Property implements Cloneable {
         return value;
     }
 
+    @Override
     public Property clone() {
         return new Property(name, value.clone());
     }
