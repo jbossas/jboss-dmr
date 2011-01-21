@@ -26,7 +26,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -120,10 +119,13 @@ final class ListModelValue extends ModelValue {
         final List<Property> propertyList = new ArrayList<Property>();
         Iterator<ModelNode> i = list.iterator();
         while (i.hasNext()) {
-            final ModelNode name = i.next();
-            if (i.hasNext()) {
+            final ModelNode node = i.next();
+            if (node.getType() == ModelType.PROPERTY) {
+                propertyList.add(node.asProperty());
+            }
+            else if (i.hasNext()) {
                 final ModelNode value = i.next();
-                propertyList.add(new Property(name.asString(), value));
+                propertyList.add(new Property(node.asString(), value));
             }
         }
         return propertyList;
