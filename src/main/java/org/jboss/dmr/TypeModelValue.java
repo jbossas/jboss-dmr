@@ -29,6 +29,12 @@ import java.io.IOException;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
 final class TypeModelValue extends ModelValue {
+
+    /**
+     * JSON Key used to identify TypeModelValue.
+     */
+    public static final String TYPE_KEY = "TYPE_MODEL_VALUE";
+
     private final ModelType value;
 
     private TypeModelValue(final ModelType value) {
@@ -36,6 +42,7 @@ final class TypeModelValue extends ModelValue {
         this.value = value;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeByte(value.getTypeChar());
     }
@@ -52,7 +59,7 @@ final class TypeModelValue extends ModelValue {
     private static final TypeModelValue TYPE = new TypeModelValue(ModelType.TYPE);
     private static final TypeModelValue UNDEFINED = new TypeModelValue(ModelType.UNDEFINED);
 
-    static TypeModelValue of(ModelType type) {
+    static TypeModelValue of(final ModelType type) {
         switch (type) {
             case LONG: return LONG;
             case INT: return INT;
@@ -68,20 +75,43 @@ final class TypeModelValue extends ModelValue {
         }
     }
 
+    @Override
     boolean asBoolean() {
         return value != ModelType.UNDEFINED;
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return value != ModelType.UNDEFINED;
     }
 
+    @Override
     String asString() {
         return value.toString();
     }
 
+    @Override
     ModelType asType() {
         return value;
+    }
+
+    @Override
+    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append('{');
+        if(multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        } else {
+            builder.append(' ');
+        }
+        builder.append(jsonEscape(TYPE_KEY));
+        builder.append(" : ");
+        builder.append(jsonEscape(asString()));
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        } else {
+            builder.append(' ');
+        }
+        builder.append('}');
     }
 
     /**
@@ -90,7 +120,8 @@ final class TypeModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof TypeModelValue && equals((TypeModelValue)other);
     }
 
@@ -100,10 +131,11 @@ final class TypeModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(TypeModelValue other) {
+    public boolean equals(final TypeModelValue other) {
         return this == other || other != null && other.value == value;
     }
 
+    @Override
     public int hashCode() {
         return value.hashCode();
     }

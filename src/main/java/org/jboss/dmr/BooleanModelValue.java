@@ -45,66 +45,81 @@ final class BooleanModelValue extends ModelValue {
         this.value = value;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeBoolean(value);
     }
 
+    @Override
     long asLong() {
         return value ? 1 : 0;
     }
 
+    @Override
     long asLong(final long defVal) {
         return value ? 1 : 0;
     }
 
+    @Override
     int asInt() {
         return value ? 1 : 0;
     }
 
+    @Override
     int asInt(final int defVal) {
         return value ? 1 : 0;
     }
 
+    @Override
     boolean asBoolean() {
         return value;
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return value;
     }
 
+    @Override
     double asDouble() {
         return value ? 1.0 : 0.0;
     }
 
+    @Override
     double asDouble(final double defVal) {
         return value ? 1.0 : 0.0;
     }
 
+    @Override
     byte[] asBytes() {
         return value ? TRUE_BYTES.clone() : FALSE_BYTES.clone();
     }
 
+    @Override
     BigDecimal asBigDecimal() {
         return value ? BigDecimal.ONE : BigDecimal.ZERO;
     }
 
+    @Override
     BigInteger asBigInteger() {
         return value ? BigInteger.ONE : BigInteger.ZERO;
     }
 
+    @Override
     String asString() {
         return Boolean.toString(value);
     }
 
-    static BooleanModelValue valueOf(boolean value) {
+    static BooleanModelValue valueOf(final boolean value) {
         return value ? TRUE : FALSE;
     }
 
+    @Override
     public boolean equals(final Object other) {
         return other == this;
     }
 
+    @Override
     public int hashCode() {
         return Boolean.valueOf(value).hashCode();
     }

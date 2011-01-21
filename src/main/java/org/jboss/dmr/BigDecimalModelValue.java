@@ -45,55 +45,68 @@ final class BigDecimalModelValue extends ModelValue {
         value = new BigDecimal(in.readUTF());
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         final BigDecimal value = this.value;
         out.writeUTF(value.toString());
     }
 
+    @Override
     long asLong() {
         return value.longValue();
     }
 
+    @Override
     long asLong(final long defVal) {
         return value.longValue();
     }
 
+    @Override
     int asInt() {
         return value.intValue();
     }
 
+    @Override
     int asInt(final int defVal) {
         return value.intValue();
     }
 
+    @Override
     boolean asBoolean() {
         return !value.equals(BigDecimal.ZERO);
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return !value.equals(BigDecimal.ZERO);
     }
 
+    @Override
     double asDouble() {
         return value.doubleValue();
     }
 
+    @Override
     double asDouble(final double defVal) {
         return value.doubleValue();
     }
 
+    @Override
     BigDecimal asBigDecimal() {
         return value;
     }
 
+    @Override
     BigInteger asBigInteger() {
         return value.toBigInteger();
     }
 
+    @Override
     String asString() {
         return value.toString();
     }
 
+    @Override
     void format(final StringBuilder target, final int indent, final boolean ignored) {
         target.append("big decimal ").append(value);
     }
@@ -104,7 +117,8 @@ final class BigDecimalModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof BigDecimalModelValue && equals((BigDecimalModelValue)other);
     }
 
@@ -114,10 +128,11 @@ final class BigDecimalModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(BigDecimalModelValue other) {
+    public boolean equals(final BigDecimalModelValue other) {
         return this == other || other != null && value.equals(other.value);
     }
 
+    @Override
     public int hashCode() {
         return value.hashCode();
     }

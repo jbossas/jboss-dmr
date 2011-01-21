@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 import org.yuanheng.cookcc.CookCCOption;
 import org.yuanheng.cookcc.CookCCToken;
 import org.yuanheng.cookcc.Lex;
@@ -168,7 +169,7 @@ class ModelNodeParser extends Parser {
     private ModelNode result;
 
     @Rule(lhs = "complete", rhs = "node", args = "1")
-    protected int parse(ModelNode node) {
+    protected int parse(final ModelNode node) {
         result = node;
         return 0;
     }
@@ -177,12 +178,12 @@ class ModelNodeParser extends Parser {
         @Rule(lhs = "node", rhs = "BIG DECIMAL DEC_VAL", args = "3"),
         @Rule(lhs = "node", rhs = "BIG DECIMAL INT_VAL", args = "3")
     })
-    protected ModelNode parseBigDecimal(String arg) {
+    protected ModelNode parseBigDecimal(final String arg) {
         return new ModelNode().set(new BigDecimal(arg));
     }
 
     @Rule(lhs = "node", rhs = "BIG INTEGER INT_VAL", args = "3")
-    protected ModelNode parseBigInteger(String arg) {
+    protected ModelNode parseBigInteger(final String arg) {
         return new ModelNode().set(new BigInteger(arg));
     }
 
@@ -197,7 +198,7 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "bytes", rhs = "BYTES OPEN_BRACE INT_VAL", args = "3")
     })
-    protected ByteArrayOutputStream startBytesInt(String val) {
+    protected ByteArrayOutputStream startBytesInt(final String val) {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write(Integer.parseInt(val));
         return baos;
@@ -206,7 +207,7 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "bytes", rhs = "BYTES OPEN_BRACE INT_HEX_VAL", args = "3")
     })
-    protected ByteArrayOutputStream startBytesHex(String val) {
+    protected ByteArrayOutputStream startBytesHex(final String val) {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         baos.write(Integer.parseInt(val.substring(2), 16));
         return baos;
@@ -215,7 +216,7 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "bytes", rhs = "bytes COMMA INT_VAL", args = "1 3")
     })
-    protected ByteArrayOutputStream nextByteInt(ByteArrayOutputStream baos, String val) {
+    protected ByteArrayOutputStream nextByteInt(final ByteArrayOutputStream baos, final String val) {
         baos.write(Integer.parseInt(val));
         return baos;
     }
@@ -223,7 +224,7 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "bytes", rhs = "bytes COMMA INT_HEX_VAL", args = "1 3")
     })
-    protected ByteArrayOutputStream nextByteHex(ByteArrayOutputStream baos, String val) {
+    protected ByteArrayOutputStream nextByteHex(final ByteArrayOutputStream baos, final String val) {
         baos.write(Integer.parseInt(val.substring(2), 16));
         return baos;
     }
@@ -233,7 +234,7 @@ class ModelNodeParser extends Parser {
         // allow a trailing ,
         @Rule(lhs = "node", rhs = "bytes COMMA CLOSE_BRACE", args = "1")
     })
-    protected ModelNode finishBytes(ByteArrayOutputStream baos) {
+    protected ModelNode finishBytes(final ByteArrayOutputStream baos) {
         return new ModelNode().set(baos.toByteArray());
     }
 
@@ -247,42 +248,42 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "DEC_VAL", args = "1")
     })
-    protected ModelNode parseDouble(String arg) {
+    protected ModelNode parseDouble(final String arg) {
         return new ModelNode().set(Double.parseDouble(arg));
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "EXPRESSION STR_VAL", args = "2")
     })
-    protected ModelNode parseExpression(String arg) {
+    protected ModelNode parseExpression(final String arg) {
         return new ModelNode().setExpression(arg);
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "INT_VAL", args = "1")
     })
-    protected ModelNode parseInt(String arg) {
+    protected ModelNode parseInt(final String arg) {
         return new ModelNode().set(Integer.parseInt(arg));
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "INT_HEX_VAL", args = "1")
     })
-    protected ModelNode parseIntHex(String arg) {
+    protected ModelNode parseIntHex(final String arg) {
         return new ModelNode().set(Integer.parseInt(arg.substring(2), 16));
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "LONG_VAL", args = "1")
     })
-    protected ModelNode parseLong(String arg) {
+    protected ModelNode parseLong(final String arg) {
         return new ModelNode().set(Long.parseLong(arg));
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "LONG_HEX_VAL", args = "1")
     })
-    protected ModelNode parseLongHex(String arg) {
+    protected ModelNode parseLongHex(final String arg) {
         return new ModelNode().set(Long.parseLong(arg.substring(2), 16));
     }
 
@@ -296,14 +297,14 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "list", rhs = "OPEN_BRACKET node", args = "2")
     })
-    protected ModelNode parseStartList(ModelNode child) {
+    protected ModelNode parseStartList(final ModelNode child) {
         return new ModelNode().addNoCopy(child);
     }
 
     @Rules(rules = {
         @Rule(lhs = "list", rhs = "list COMMA node", args = "1 3")
     })
-    protected ModelNode parseListItem(ModelNode list, ModelNode child) {
+    protected ModelNode parseListItem(final ModelNode list, final ModelNode child) {
         return list.addNoCopy(child);
     }
 
@@ -311,7 +312,7 @@ class ModelNodeParser extends Parser {
         @Rule(lhs = "node", rhs = "list CLOSE_BRACKET", args = "1"),
         @Rule(lhs = "node", rhs = "list COMMA CLOSE_BRACKET", args = "1")
     })
-    protected ModelNode finishList(ModelNode list) {
+    protected ModelNode finishList(final ModelNode list) {
         return list;
     }
 
@@ -325,7 +326,7 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "object", rhs = "OPEN_BRACE STR_VAL ARROW node", args = "2 4")
     })
-    protected ModelNode parseStartObject(String key, ModelNode child) {
+    protected ModelNode parseStartObject(final String key, final ModelNode child) {
         final ModelNode node = new ModelNode();
         node.get(key).setNoCopy(child);
         return node;
@@ -334,7 +335,7 @@ class ModelNodeParser extends Parser {
     @Rules(rules = {
         @Rule(lhs = "object", rhs = "object COMMA STR_VAL ARROW node", args = "1 3 5")
     })
-    protected ModelNode parseObjectItem(ModelNode object, String key, ModelNode child) {
+    protected ModelNode parseObjectItem(final ModelNode object, final String key, final ModelNode child) {
         object.get(key).setNoCopy(child);
         return object;
     }
@@ -343,28 +344,28 @@ class ModelNodeParser extends Parser {
         @Rule(lhs = "node", rhs = "object CLOSE_BRACE", args = "1"),
         @Rule(lhs = "node", rhs = "object COMMA CLOSE_BRACE", args = "1")
     })
-    protected ModelNode finishObject(ModelNode object) {
+    protected ModelNode finishObject(final ModelNode object) {
         return object;
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "OPEN_PAREN STR_VAL ARROW node CLOSE_PAREN", args = "2 4")
     })
-    protected ModelNode parseProperty(String key, ModelNode value) {
+    protected ModelNode parseProperty(final String key, final ModelNode value) {
         return new ModelNode().setNoCopy(key, value);
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "STR_VAL", args = "1")
     })
-    protected ModelNode parseString(String arg) {
+    protected ModelNode parseString(final String arg) {
         return new ModelNode().set(arg);
     }
 
     @Rules(rules = {
         @Rule(lhs = "node", rhs = "TYPE_VAL", args = "1")
     })
-    protected ModelNode parseType(String arg) {
+    protected ModelNode parseType(final String arg) {
         return new ModelNode().set(ModelType.valueOf(arg));
     }
 

@@ -39,42 +39,52 @@ final class DoubleModelValue extends ModelValue {
         this.value = value;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeDouble(value);
     }
 
+    @Override
     long asLong() {
         return (long) value;
     }
 
+    @Override
     long asLong(final long defVal) {
         return (long) value;
     }
 
+    @Override
     int asInt() {
         return (int) value;
     }
 
+    @Override
     int asInt(final int defVal) {
         return (int) value;
     }
 
+    @Override
     boolean asBoolean() {
         return value != 0;
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return value != 0;
     }
 
+    @Override
     double asDouble() {
         return value;
     }
 
+    @Override
     double asDouble(final double defVal) {
         return value;
     }
 
+    @Override
     byte[] asBytes() {
         final long value = Double.doubleToLongBits(this.value);
         final byte[] bytes = new byte[8];
@@ -89,14 +99,17 @@ final class DoubleModelValue extends ModelValue {
         return bytes;
     }
 
+    @Override
     BigDecimal asBigDecimal() {
         return new BigDecimal(value);
     }
 
+    @Override
     BigInteger asBigInteger() {
         return BigInteger.valueOf((long) value);
     }
 
+    @Override
     String asString() {
         return Double.toString(value);
     }
@@ -107,7 +120,8 @@ final class DoubleModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof DoubleModelValue && equals((DoubleModelValue)other);
     }
 
@@ -117,10 +131,11 @@ final class DoubleModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(DoubleModelValue other) {
+    public boolean equals(final DoubleModelValue other) {
         return this == other || other != null && other.value == value;
     }
 
+    @Override
     public int hashCode() {
         return Double.valueOf(value).hashCode();
     }

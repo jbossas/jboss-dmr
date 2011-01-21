@@ -39,42 +39,52 @@ final class IntModelValue extends ModelValue {
         this.value = value;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeInt(value);
     }
 
+    @Override
     long asLong() {
         return value;
     }
 
+    @Override
     long asLong(final long defVal) {
         return value;
     }
 
+    @Override
     int asInt() {
         return value;
     }
 
+    @Override
     int asInt(final int defVal) {
         return value;
     }
 
+    @Override
     boolean asBoolean() {
         return value != 0;
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return value != 0;
     }
 
+    @Override
     double asDouble() {
         return value;
     }
 
+    @Override
     double asDouble(final double defVal) {
         return value;
     }
 
+    @Override
     byte[] asBytes() {
         final byte[] bytes = new byte[4];
         bytes[0] = (byte) (value >>> 24);
@@ -84,14 +94,17 @@ final class IntModelValue extends ModelValue {
         return bytes;
     }
 
+    @Override
     BigDecimal asBigDecimal() {
         return new BigDecimal(value);
     }
 
+    @Override
     BigInteger asBigInteger() {
         return BigInteger.valueOf(value);
     }
 
+    @Override
     String asString() {
         return Integer.toString(value);
     }
@@ -102,7 +115,8 @@ final class IntModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof IntModelValue && equals((IntModelValue)other);
     }
 
@@ -112,10 +126,11 @@ final class IntModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(IntModelValue other) {
+    public boolean equals(final IntModelValue other) {
         return this == other || other != null && value == other.value;
     }
 
+    @Override
     public int hashCode() {
         return value;
     }

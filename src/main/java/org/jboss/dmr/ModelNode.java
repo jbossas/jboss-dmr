@@ -100,7 +100,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param defVal the default value if no conversion is possible
      * @return the long value
      */
-    public long asLong(long defVal) {
+    public long asLong(final long defVal) {
         return value.asLong(defVal);
     }
 
@@ -122,7 +122,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param defVal the default value if no conversion is possible
      * @return the int value
      */
-    public int asInt(int defVal) {
+    public int asInt(final int defVal) {
         return value.asInt(defVal);
     }
 
@@ -144,7 +144,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param defVal the default value if no conversion is possible
      * @return the boolean value
      */
-    public boolean asBoolean(boolean defVal) {
+    public boolean asBoolean(final boolean defVal) {
         return value.asBoolean(defVal);
     }
 
@@ -176,7 +176,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param defVal the default value if no conversion is possible
      * @return the int value
      */
-    public double asDouble(double defVal) {
+    public double asDouble(final double defVal) {
         return value.asDouble(defVal);
     }
 
@@ -279,7 +279,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(int newValue) {
+    public ModelNode set(final int newValue) {
         checkProtect();
         value = new IntModelValue(newValue);
         return this;
@@ -291,7 +291,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(long newValue) {
+    public ModelNode set(final long newValue) {
         checkProtect();
         value = new LongModelValue(newValue);
         return this;
@@ -303,7 +303,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(double newValue) {
+    public ModelNode set(final double newValue) {
         checkProtect();
         value = new DoubleModelValue(newValue);
         return this;
@@ -315,7 +315,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(boolean newValue) {
+    public ModelNode set(final boolean newValue) {
         checkProtect();
         value = BooleanModelValue.valueOf(newValue);
         return this;
@@ -327,7 +327,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode setExpression(String newValue) {
+    public ModelNode setExpression(final String newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -342,7 +342,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(String newValue) {
+    public ModelNode set(final String newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -357,7 +357,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(BigDecimal newValue) {
+    public ModelNode set(final BigDecimal newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -372,7 +372,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(BigInteger newValue) {
+    public ModelNode set(final BigInteger newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -387,7 +387,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(ModelNode newValue) {
+    public ModelNode set(final ModelNode newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -406,7 +406,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(byte[] newValue) {
+    public ModelNode set(final byte[] newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -421,7 +421,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(ModelType newValue) {
+    public ModelNode set(final ModelType newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -436,7 +436,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value
      * @return this node
      */
-    public ModelNode set(Property newValue) {
+    public ModelNode set(final Property newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -451,7 +451,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, ModelNode propertyValue) {
+    public ModelNode set(final String propertyName, final ModelNode propertyValue) {
         checkProtect();
         value = new PropertyModelValue(propertyName, propertyValue, true);
         return this;
@@ -469,7 +469,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, int propertyValue) {
+    public ModelNode set(final String propertyName, final int propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -484,7 +484,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, long propertyValue) {
+    public ModelNode set(final String propertyName, final long propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -499,7 +499,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, double propertyValue) {
+    public ModelNode set(final String propertyName, final double propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -514,7 +514,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, boolean propertyValue) {
+    public ModelNode set(final String propertyName, final boolean propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -529,7 +529,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, String propertyValue) {
+    public ModelNode set(final String propertyName, final String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -544,7 +544,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property expression value
      * @return this node
      */
-    public ModelNode setExpression(String propertyName, String propertyValue) {
+    public ModelNode setExpression(final String propertyName, final String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.setExpression(propertyValue);
@@ -559,7 +559,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, BigDecimal propertyValue) {
+    public ModelNode set(final String propertyName, final BigDecimal propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -574,7 +574,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, BigInteger propertyValue) {
+    public ModelNode set(final String propertyName, final BigInteger propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -589,7 +589,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, byte[] propertyValue) {
+    public ModelNode set(final String propertyName, final byte[] propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -604,7 +604,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode set(String propertyName, ModelType propertyValue) {
+    public ModelNode set(final String propertyName, final ModelType propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.set(propertyValue);
@@ -618,13 +618,13 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the list value
      * @return this node
      */
-    public ModelNode set(Collection<ModelNode> newValue) {
+    public ModelNode set(final Collection<ModelNode> newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
         final ArrayList<ModelNode> list = new ArrayList<ModelNode>(newValue.size());
-        for (ModelNode node : newValue) {
+        for (final ModelNode node : newValue) {
             if (node == null) {
                 list.add(new ModelNode());
             } else {
@@ -678,7 +678,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the child
      * @throws IllegalArgumentException if this node does not support getting a child with the given name
      */
-    public ModelNode get(String name) {
+    public ModelNode get(final String name) {
         ModelValue value = this.value;
         if ((value = this.value) == ModelValue.UNDEFINED) {
             checkProtect();
@@ -697,7 +697,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the child
      * @throws NoSuchElementException if the element does not exist
      */
-    public ModelNode require(String name) throws NoSuchElementException {
+    public ModelNode require(final String name) throws NoSuchElementException {
         return value.requireChild(name);
     }
 
@@ -711,7 +711,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the child
      * @throws NoSuchElementException if the element does not exist
      */
-    public ModelNode remove(String name) throws NoSuchElementException {
+    public ModelNode remove(final String name) throws NoSuchElementException {
         return value.removeChild(name);
     }
 
@@ -725,8 +725,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the child
      * @throws IllegalArgumentException if this node does not support getting a child with the given index
      */
-    public ModelNode get(int index) {
-        ModelValue value = this.value;
+    public ModelNode get(final int index) {
+        final ModelValue value = this.value;
         if (value == ModelValue.UNDEFINED) {
             checkProtect();
             return (this.value = new ListModelValue()).getChild(index);
@@ -744,7 +744,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the child
      * @throws NoSuchElementException if the element does not exist
      */
-    public ModelNode require(int index) {
+    public ModelNode require(final int index) {
         return value.requireChild(index);
     }
 
@@ -755,7 +755,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(int newValue) {
+    public ModelNode add(final int newValue) {
         add().set(newValue);
         return this;
     }
@@ -767,7 +767,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(long newValue) {
+    public ModelNode add(final long newValue) {
         add().set(newValue);
         return this;
     }
@@ -779,7 +779,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(double newValue) {
+    public ModelNode add(final double newValue) {
         add().set(newValue);
         return this;
     }
@@ -791,7 +791,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(boolean newValue) {
+    public ModelNode add(final boolean newValue) {
         add().set(newValue);
         return this;
     }
@@ -803,7 +803,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode addExpression(String newValue) {
+    public ModelNode addExpression(final String newValue) {
         add().setExpression(newValue);
         return this;
     }
@@ -815,7 +815,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(String newValue) {
+    public ModelNode add(final String newValue) {
         add().set(newValue);
         return this;
     }
@@ -827,7 +827,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(BigDecimal newValue) {
+    public ModelNode add(final BigDecimal newValue) {
         add().set(newValue);
         return this;
     }
@@ -839,7 +839,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(BigInteger newValue) {
+    public ModelNode add(final BigInteger newValue) {
         add().set(newValue);
         return this;
     }
@@ -851,7 +851,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(ModelNode newValue) {
+    public ModelNode add(final ModelNode newValue) {
         add().set(newValue);
         return this;
     }
@@ -868,7 +868,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param newValue the new value to add
      * @return this node
      */
-    public ModelNode add(byte[] newValue) {
+    public ModelNode add(final byte[] newValue) {
         add().set(newValue);
         return this;
     }
@@ -881,7 +881,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, int propertyValue) {
+    public ModelNode add(final String propertyName, final int propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -894,7 +894,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, long propertyValue) {
+    public ModelNode add(final String propertyName, final long propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -907,7 +907,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, double propertyValue) {
+    public ModelNode add(final String propertyName, final double propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -920,7 +920,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, boolean propertyValue) {
+    public ModelNode add(final String propertyName, final boolean propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -933,7 +933,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, String propertyValue) {
+    public ModelNode add(final String propertyName, final String propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -946,7 +946,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, BigDecimal propertyValue) {
+    public ModelNode add(final String propertyName, final BigDecimal propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -959,7 +959,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, BigInteger propertyValue) {
+    public ModelNode add(final String propertyName, final BigInteger propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -972,7 +972,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, ModelNode propertyValue) {
+    public ModelNode add(final String propertyName, final ModelNode propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -985,7 +985,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyValue the property value
      * @return this node
      */
-    public ModelNode add(String propertyName, byte[] propertyValue) {
+    public ModelNode add(final String propertyName, final byte[] propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }
@@ -1036,7 +1036,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param index the index
      * @return {@code true} if there is a (possibly undefined) node at the given index
      */
-    public boolean has(int index) {
+    public boolean has(final int index) {
         return value.has(index);
     }
 
@@ -1047,7 +1047,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param key the name
      * @return {@code true} if there is a (possibly undefined) node at the given key
      */
-    public boolean has(String key) {
+    public boolean has(final String key) {
         return value.has(key);
     }
 
@@ -1102,9 +1102,9 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the child
      * @throws IllegalArgumentException if a node does not support getting a child with the given name path
      */
-    public ModelNode get(String... names) {
+    public ModelNode get(final String... names) {
         ModelNode current = this;
-        for (String part : names) {
+        for (final String part : names) {
             current = current.get(part);
         }
         return current;
@@ -1115,8 +1115,19 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @return the string representation
      */
+    @Override
     public String toString() {
         return value.toString();
+    }
+
+    /**
+     * Get a JSON string representation of this model node, formatted nicely, if requested.
+     * @param compact Flag that indicates whether or not the string should be all on
+     * 	one line (i.e. {@code true}) or should be printed on multiple lines ({@code false}).
+     * @return The JSON string.
+     */
+    public String toJSONString(final boolean compact) {
+        return value.toJSONString(compact);
     }
 
     /**
@@ -1125,7 +1136,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param input the input string
      * @return the model node
      */
-    public static ModelNode fromString(String input) {
+    public static ModelNode fromString(final String input) {
         final ModelNodeParser parser = new ModelNodeParser();
         try {
             parser.setInput(new ByteArrayInputStream(input.getBytes("US-ASCII")));
@@ -1133,7 +1144,7 @@ public class ModelNode implements Externalizable, Cloneable {
                 throw new IllegalArgumentException("Parser error");
             }
             return parser.getResult();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
@@ -1147,7 +1158,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param stream the source stream
      * @return the model node
      */
-    public static ModelNode fromStream(InputStream stream) throws IOException {
+    public static ModelNode fromStream(final InputStream stream) throws IOException {
         final ModelNodeParser parser = new ModelNodeParser();
         parser.setInput(stream);
         if (parser.yyParse() > 0) {
@@ -1174,7 +1185,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof ModelNode && equals((ModelNode)other);
     }
 
@@ -1184,7 +1196,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(ModelNode other) {
+    public boolean equals(final ModelNode other) {
         return this == other || other != null && other.value.equals(value);
     }
 
@@ -1194,6 +1206,7 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @return the hash code
      */
+    @Override
     public int hashCode() {
         //noinspection NonFinalFieldReferencedInHashCode
         return value.hashCode();
@@ -1204,14 +1217,19 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @return the clone
      */
+    @Override
     public ModelNode clone() {
         final ModelNode clone = new ModelNode();
         clone.value = value.copy();
         return clone;
     }
 
-    void format(final StringBuilder builder, final int indent, boolean multiLine) {
+    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
         value.format(builder, indent, multiLine);
+    }
+
+    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
+        value.formatAsJSON(builder, indent, multiLine);
     }
 
     /**
@@ -1229,6 +1247,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param out the target to which the content should be written
      * @throws IOException if an I/O error occurs
      */
+    @Override
     public void writeExternal(final ObjectOutput out) throws IOException {
         writeExternal((DataOutput) out);
     }
@@ -1272,6 +1291,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param in the source from which the content should be read
      * @throws IOException if an I/O error occurs
      */
+    @Override
     public void readExternal(final ObjectInput in) throws IOException {
         readExternal((DataInput) in);
     }
@@ -1306,7 +1326,7 @@ public class ModelNode implements Externalizable, Cloneable {
         checkProtect();
         byte[] b; // used by some of these
         try {
-            ModelType type = ModelType.forChar((char) (in.readByte() & 0xff));
+            final ModelType type = ModelType.forChar((char) (in.readByte() & 0xff));
             switch (type) {
                 case UNDEFINED: value = ModelValue.UNDEFINED; return;
                 case BIG_DECIMAL: value = new BigDecimalModelValue(in); return;
@@ -1324,7 +1344,7 @@ public class ModelNode implements Externalizable, Cloneable {
                 case TYPE: value = TypeModelValue.of(ModelType.forChar((char) (in.readByte() & 0xff))); return;
                 default: throw new InvalidObjectException("Invalid type read: " + type);
             }
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             final InvalidObjectException ne = new InvalidObjectException(e.getMessage());
             ne.initCause(e.getCause());
             throw ne;

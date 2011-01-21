@@ -30,6 +30,12 @@ import java.io.IOException;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
 final class ExpressionValue extends ModelValue {
+
+    /**
+     * JSON Key used to identify ExpressionValue.
+     */
+    public static final String TYPE_KEY = "EXPRESSION_VALUE";
+
     private final String expressionString;
 
     ExpressionValue(final String expressionString) {
@@ -40,30 +46,55 @@ final class ExpressionValue extends ModelValue {
         this.expressionString = expressionString;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeUTF(expressionString);
     }
 
+    @Override
     String asString() {
         return expressionString;
     }
 
+    @Override
     void format(final StringBuilder builder, final int indent, final boolean multiLine) {
         builder.append("expression ").append(quote(expressionString));
     }
 
-    public boolean equals(Object other) {
+    @Override
+    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append('{');
+        if(multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        } else {
+            builder.append(' ');
+        }
+        builder.append(jsonEscape(TYPE_KEY));
+        builder.append(" : ");
+        builder.append(jsonEscape(asString()));
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        } else {
+            builder.append(' ');
+        }
+        builder.append('}');
+    }
+
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof ExpressionValue && equals((ExpressionValue)other);
     }
 
-    public boolean equals(ExpressionValue other) {
+    public boolean equals(final ExpressionValue other) {
         return this == other || other != null && expressionString.equals(other.expressionString);
     }
 
+    @Override
     public int hashCode() {
         return expressionString.hashCode();
     }
 
+    @Override
     ModelValue resolve() {
         return new StringModelValue(replaceProperties(expressionString));
     }
@@ -80,14 +111,14 @@ final class ExpressionValue extends ModelValue {
      * @param value
      * @return
      */
-    private static String replaceProperties(String value) {
+    private static String replaceProperties(final String value) {
         final StringBuilder builder = new StringBuilder();
         final int len = value.length();
         int state = 0;
         int start = -1;
         int nameStart = -1;
         for (int i = 0; i < len; i = value.offsetByCodePoints(i, 1)) {
-            int ch = value.codePointAt(i);
+            final int ch = value.codePointAt(i);
             switch (state) {
                 case INITIAL: {
                     switch (ch) {

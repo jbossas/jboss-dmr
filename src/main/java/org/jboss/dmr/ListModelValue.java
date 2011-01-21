@@ -44,7 +44,7 @@ final class ListModelValue extends ModelValue {
         list = new ArrayList<ModelNode>();
     }
 
-    private ListModelValue(ListModelValue orig) {
+    private ListModelValue(final ListModelValue orig) {
         super(ModelType.LIST);
         list = new ArrayList<ModelNode>(orig.list);
     }
@@ -66,47 +66,56 @@ final class ListModelValue extends ModelValue {
         this.list = list;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         final List<ModelNode> list = this.list;
         final int size = list.size();
         out.writeInt(size);
-        for (ModelNode node : list) {
+        for (final ModelNode node : list) {
             node.writeExternal(out);
         }
     }
 
+    @Override
     ModelValue protect() {
-        List<ModelNode> list = this.list;
-        for (ModelNode node : list) {
+        final List<ModelNode> list = this.list;
+        for (final ModelNode node : list) {
             node.protect();
         }
         return list.getClass() == ArrayList.class ? new ListModelValue(Collections.unmodifiableList(list)) : this;
     }
 
+    @Override
     long asLong() {
         return asInt();
     }
 
+    @Override
     long asLong(final long defVal) {
         return asInt();
     }
 
+    @Override
     int asInt() {
         return list.size();
     }
 
+    @Override
     int asInt(final int defVal) {
         return asInt();
     }
 
+    @Override
     boolean asBoolean() {
         return ! list.isEmpty();
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return asBoolean();
     }
 
+    @Override
     Property asProperty() {
         if (list.size() == 2) {
             return new Property(list.get(0).asString(), list.get(1));
@@ -115,9 +124,10 @@ final class ListModelValue extends ModelValue {
         }
     }
 
+    @Override
     List<Property> asPropertyList() {
         final List<Property> propertyList = new ArrayList<Property>();
-        Iterator<ModelNode> i = list.iterator();
+        final Iterator<ModelNode> i = list.iterator();
         while (i.hasNext()) {
             final ModelNode node = i.next();
             if (node.getType() == ModelType.PROPERTY) {
@@ -131,9 +141,10 @@ final class ListModelValue extends ModelValue {
         return propertyList;
     }
 
+    @Override
     ModelNode asObject() {
         final ModelNode node = new ModelNode();
-        Iterator<ModelNode> i = list.iterator();
+        final Iterator<ModelNode> i = list.iterator();
         while (i.hasNext()) {
             final ModelNode name = i.next();
             if (name.getType() == ModelType.PROPERTY) {
@@ -147,6 +158,7 @@ final class ListModelValue extends ModelValue {
         return node;
     }
 
+    @Override
     ModelNode getChild(final int index) {
         final List<ModelNode> list = this.list;
         final int size = list.size();
@@ -158,34 +170,40 @@ final class ListModelValue extends ModelValue {
         return list.get(index);
     }
 
+    @Override
     ModelNode addChild() {
-        ModelNode node = new ModelNode();
+        final ModelNode node = new ModelNode();
         list.add(node);
         return node;
     }
 
+    @Override
     List<ModelNode> asList() {
         return Collections.unmodifiableList(list);
     }
 
+    @Override
     ModelValue copy() {
         return new ListModelValue(this);
     }
 
+    @Override
     ModelValue resolve() {
         final ArrayList<ModelNode> copy = new ArrayList<ModelNode>(list.size());
-        for (ModelNode node : list) {
+        for (final ModelNode node : list) {
             copy.add(node.resolve());
         }
         return new ListModelValue(copy);
     }
 
+    @Override
     String asString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         format(builder, 0, false);
         return builder.toString();
     }
 
+    @Override
     void format(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
         final boolean multiLine = multiLineRequested && list.size() > 1;
         final List<ModelNode> list = asList();
@@ -211,13 +229,40 @@ final class ListModelValue extends ModelValue {
         builder.append(']');
     }
 
+    @Override
+    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
+        final boolean multiLine = multiLineRequested && list.size() > 1;
+        final List<ModelNode> list = asList();
+        final Iterator<ModelNode> iterator = list.iterator();
+        builder.append('[');
+        if (multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        }
+        while (iterator.hasNext()) {
+            final ModelNode entry = iterator.next();
+            entry.formatAsJSON(builder, multiLine ? indent + 1 : indent, multiLineRequested);
+            if (iterator.hasNext()) {
+                if (multiLine) {
+                    indent(builder.append(",\n"), indent + 1);
+                } else {
+                    builder.append(',');
+                }
+            }
+        }
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        }
+        builder.append(']');
+    }
+
     /**
      * Determine whether this object is equal to another.
      *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof ListModelValue && equals((ListModelValue)other);
     }
 
@@ -227,22 +272,25 @@ final class ListModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(ListModelValue other) {
+    public boolean equals(final ListModelValue other) {
         return this == other || other != null && list.equals(other.list);
     }
 
+    @Override
     public int hashCode() {
         return list.hashCode();
     }
 
+    @Override
     boolean has(final int index) {
         return 0 <= index && index < list.size();
     }
 
+    @Override
     ModelNode requireChild(final int index) throws NoSuchElementException {
         try {
             return list.get(index);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (final IndexOutOfBoundsException e) {
             return super.requireChild(index);
         }
     }

@@ -61,74 +61,90 @@ final class PropertyModelValue extends ModelValue {
         this(new Property(key, node, copy));
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeUTF(property.getName());
         property.getValue().writeExternal(out);
     }
 
+    @Override
     ModelValue protect() {
         property.getValue().protect();
         return this;
     }
 
+    @Override
     String asString() {
         return String.format("(%s => %s)", quote(property.getName()), property.getValue());
     }
 
+    @Override
     Property asProperty() {
         return property;
     }
 
+    @Override
     List<Property> asPropertyList() {
         return Collections.singletonList(property);
     }
 
+    @Override
     ModelNode asObject() {
         final ModelNode node = new ModelNode();
         node.get(property.getName()).set(property.getValue());
         return node;
     }
 
+    @Override
     Set<String> getKeys() {
         return Collections.singleton(property.getName());
     }
 
+    @Override
     List<ModelNode> asList() {
         return Collections.singletonList(new ModelNode(this));
     }
 
+    @Override
     ModelNode getChild(final String name) {
         return property.getName().equals(name) ? property.getValue() : super.getChild(name);
     }
 
+    @Override
     ModelNode getChild(final int index) {
         return index == 0 ? property.getValue() : super.getChild(index);
     }
 
+    @Override
     ModelValue copy() {
         return new PropertyModelValue(property.getName(), property.getValue());
     }
 
+    @Override
     ModelValue resolve() {
         return new PropertyModelValue(property.getName(), property.getValue().resolve());
     }
 
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof PropertyModelValue && equals((PropertyModelValue)other);
     }
 
-    public boolean equals(PropertyModelValue other) {
+    public boolean equals(final PropertyModelValue other) {
         return this == other || other != null && other.property.getName().equals(property.getName()) && other.property.getValue().equals(property.getValue());
     }
 
+    @Override
     public int hashCode() {
         return property.getName().hashCode() * 31 + property.getValue().hashCode();
     }
 
+    @Override
     boolean has(final String key) {
         return key.equals(property.getName());
     }
 
+    @Override
     ModelNode requireChild(final String name) throws NoSuchElementException {
         return property.getName().equals(name) ? property.getValue() : super.requireChild(name);
     }

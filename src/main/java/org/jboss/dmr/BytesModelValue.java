@@ -33,6 +33,11 @@ import java.util.Arrays;
  */
 final class BytesModelValue extends ModelValue {
 
+    /**
+     * JSON Key used to identify BytesModelValue.
+     */
+    public static final String TYPE_KEY = "BYTES_VALUE";
+
     private final byte[] bytes;
 
     BytesModelValue(final byte[] bytes) {
@@ -40,10 +45,12 @@ final class BytesModelValue extends ModelValue {
         this.bytes = bytes;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.write(bytes);
     }
 
+    @Override
     long asLong() {
         final byte[] bytes = this.bytes;
         final int length = bytes.length;
@@ -56,10 +63,12 @@ final class BytesModelValue extends ModelValue {
         return v;
     }
 
+    @Override
     long asLong(final long defVal) {
         return asLong();
     }
 
+    @Override
     int asInt() {
         final byte[] bytes = this.bytes;
         final int length = bytes.length;
@@ -72,36 +81,70 @@ final class BytesModelValue extends ModelValue {
         return v;
     }
 
+    @Override
     int asInt(final int defVal) {
         return asInt();
     }
 
+    @Override
     double asDouble() {
         return Double.longBitsToDouble(asLong());
     }
 
+    @Override
     double asDouble(final double defVal) {
         return Double.longBitsToDouble(asLong());
     }
 
+    @Override
     BigDecimal asBigDecimal() {
         return new BigDecimal(new BigInteger(bytes));
     }
 
+    @Override
     BigInteger asBigInteger() {
         return new BigInteger(bytes);
     }
 
+    @Override
     byte[] asBytes() {
         return bytes.clone();
     }
 
+    @Override
     String asString() {
-        StringBuilder builder = new StringBuilder(bytes.length * 4 + 4);
+        final StringBuilder builder = new StringBuilder(bytes.length * 4 + 4);
         format(builder, 0, false);
         return builder.toString();
     }
 
+    @Override
+    public String toJSONString(final boolean compact) {
+        final StringBuilder builder = new StringBuilder(bytes.length * 4 + 4);
+        formatAsJSON(builder, 0, !compact);
+        return builder.toString();
+    }
+
+    @Override
+    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
+        builder.append('{');
+        if(multiLine) {
+            indent(builder.append('\n'), indent + 1);
+        } else {
+            builder.append(' ');
+        }
+        builder.append(jsonEscape(TYPE_KEY));
+        builder.append(" : ");
+        builder.append(jsonEscape(Base64.encodeBytes(bytes)));
+        if (multiLine) {
+            indent(builder.append('\n'), indent);
+        } else {
+            builder.append(' ');
+        }
+        builder.append('}');
+    }
+
+    @Override
     void format(final StringBuilder builder, final int indent, final boolean multiLine) {
         builder.append("bytes {");
         if (multiLine) {
@@ -144,7 +187,8 @@ final class BytesModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof BytesModelValue && equals((BytesModelValue)other);
     }
 
@@ -154,10 +198,11 @@ final class BytesModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(BytesModelValue other) {
+    public boolean equals(final BytesModelValue other) {
         return this == other || other != null && Arrays.equals(bytes, other.bytes);
     }
 
+    @Override
     public int hashCode() {
         return Arrays.hashCode(bytes) + 71;
     }

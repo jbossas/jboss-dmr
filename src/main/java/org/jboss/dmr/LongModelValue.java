@@ -39,42 +39,52 @@ final class LongModelValue extends ModelValue {
         this.value = value;
     }
 
+    @Override
     void writeExternal(final DataOutput out) throws IOException {
         out.writeLong(value);
     }
 
+    @Override
     long asLong() {
         return value;
     }
 
+    @Override
     long asLong(final long defVal) {
         return value;
     }
 
+    @Override
     int asInt() {
         return (int) value;
     }
 
+    @Override
     int asInt(final int defVal) {
         return (int) value;
     }
 
+    @Override
     boolean asBoolean() {
         return value != 0;
     }
 
+    @Override
     boolean asBoolean(final boolean defVal) {
         return value != 0;
     }
 
+    @Override
     double asDouble() {
         return value;
     }
 
+    @Override
     double asDouble(final double defVal) {
         return value;
     }
 
+    @Override
     byte[] asBytes() {
         final byte[] bytes = new byte[8];
         bytes[0] = (byte) (value >>> 56);
@@ -88,18 +98,22 @@ final class LongModelValue extends ModelValue {
         return bytes;
     }
 
+    @Override
     BigDecimal asBigDecimal() {
         return new BigDecimal(value);
     }
 
+    @Override
     BigInteger asBigInteger() {
         return BigInteger.valueOf(value);
     }
 
+    @Override
     String asString() {
         return Long.toString(value);
     }
 
+    @Override
     void format(final StringBuilder builder, final int indent, final boolean multiLine) {
         builder.append(value).append('L');
     }
@@ -110,7 +124,8 @@ final class LongModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(Object other) {
+    @Override
+    public boolean equals(final Object other) {
         return other instanceof LongModelValue && equals((LongModelValue)other);
     }
 
@@ -120,10 +135,11 @@ final class LongModelValue extends ModelValue {
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
-    public boolean equals(LongModelValue other) {
+    public boolean equals(final LongModelValue other) {
         return this == other || other != null && other.value == value;
     }
 
+    @Override
     public int hashCode() {
         return (int) value;
     }
