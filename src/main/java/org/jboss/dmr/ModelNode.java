@@ -22,6 +22,7 @@
 
 package org.jboss.dmr;
 
+import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutput;
@@ -33,6 +34,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -1093,6 +1095,43 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public String toString() {
         return value.toString();
+    }
+
+    /**
+     * Get a model node from a string representation of the model node.
+     *
+     * @param input the input string
+     * @return the model node
+     */
+    public static ModelNode fromString(String input) {
+        final ModelNodeParser parser = new ModelNodeParser();
+        try {
+            parser.setInput(new ByteArrayInputStream(input.getBytes("US-ASCII")));
+            if (parser.yyParse() > 0) {
+                throw new IllegalArgumentException("Parser error");
+            }
+            return parser.getResult();
+        } catch (IOException e) {
+            final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
+            n.setStackTrace(e.getStackTrace());
+            throw n;
+        }
+    }
+
+    /**
+     * Get a model node from a text representation of the model node.  The stream must be encoded in
+     * US-ASCII encoding.
+     *
+     * @param stream the source stream
+     * @return the model node
+     */
+    public static ModelNode fromStream(InputStream stream) throws IOException {
+        final ModelNodeParser parser = new ModelNodeParser();
+        parser.setInput(stream);
+        if (parser.yyParse() > 0) {
+            throw new IOException("Parser error");
+        }
+        return parser.getResult();
     }
 
     /**
