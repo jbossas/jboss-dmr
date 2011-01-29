@@ -1052,6 +1052,28 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Determine whether this node has a defined child with the given index.  Property node types always contain exactly one
+     * value.
+     *
+     * @param index the index
+     * @return {@code true} if there is a node at the given index and its {@link #getType() type} is not {@link ModelType.UNDEFINED}
+     */
+    public boolean hasDefined(int index) {
+        return value.has(index) && get(index).isDefined();
+    }
+
+    /**
+     * Determine whether this node has a defined child with the given name.  Property node types always contain exactly one
+     * value with a key equal to the property name.
+     *
+     * @param key the name
+     * @return {@code true} if there is a node at the given index and its {@link #getType() type} is not {@link ModelType.UNDEFINED}
+     */
+    public boolean hasDefined(String key) {
+        return value.has(key) && get(key).isDefined();
+    }
+
+    /**
      * Get the set of keys contained in this object.  Property node types always contain exactly one value with a key
      * equal to the property name.  Other non-object types will return an empty set.
      *
