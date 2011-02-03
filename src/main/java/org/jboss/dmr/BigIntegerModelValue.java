@@ -22,6 +22,7 @@
 
 package org.jboss.dmr;
 
+import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -39,9 +40,18 @@ final class BigIntegerModelValue extends ModelValue {
         this.value = value;
     }
 
+    BigIntegerModelValue(final DataInput in) throws IOException {
+        super(ModelType.BIG_INTEGER);
+        byte[] b = new byte[in.readInt()];
+        in.readFully(b);
+        this.value = new BigInteger(b);
+    }
+
     @Override
     void writeExternal(final DataOutput out) throws IOException {
-        out.write(value.toByteArray());
+        byte[] b = value.toByteArray();
+        out.writeInt(b.length);
+        out.write(b);
     }
 
     @Override

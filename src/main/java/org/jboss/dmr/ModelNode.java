@@ -34,7 +34,6 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -1324,15 +1323,14 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public void readExternal(final DataInput in) throws IOException {
         checkProtect();
-        byte[] b; // used by some of these
         try {
             final ModelType type = ModelType.forChar((char) (in.readByte() & 0xff));
             switch (type) {
                 case UNDEFINED: value = ModelValue.UNDEFINED; return;
                 case BIG_DECIMAL: value = new BigDecimalModelValue(in); return;
-                case BIG_INTEGER: b = new byte[in.readInt()]; in.readFully(b); value = new BigIntegerModelValue(new BigInteger(b)); return;
+                case BIG_INTEGER: value = new BigIntegerModelValue(in); return;
                 case BOOLEAN: value = BooleanModelValue.valueOf(in.readBoolean()); return;
-                case BYTES: b = new byte[in.readInt()]; in.readFully(b); new BytesModelValue(b); return;
+                case BYTES: value = new BytesModelValue(in); return;
                 case DOUBLE: value = new DoubleModelValue(in.readDouble()); return;
                 case EXPRESSION: value = new ExpressionValue(in.readUTF()); return;
                 case INT: value = new IntModelValue(in.readInt()); return;
