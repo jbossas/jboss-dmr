@@ -148,4 +148,13 @@ final class PropertyModelValue extends ModelValue {
     ModelNode requireChild(final String name) throws NoSuchElementException {
         return property.getName().equals(name) ? property.getValue() : super.requireChild(name);
     }
+
+    @Override
+    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
+        builder.append('{');
+        builder.append(quote(property.getName()));
+        builder.append(" : ");
+        property.getValue().formatAsJSON(builder, indent, multiLineRequested);
+        builder.append('}');
+    }
 }

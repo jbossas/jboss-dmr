@@ -250,6 +250,11 @@ abstract class ModelValue implements Cloneable {
         }
 
         @Override
+        void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
+            builder.append("null");
+        }
+
+        @Override
         public int hashCode() {
             return 7113;
         }
