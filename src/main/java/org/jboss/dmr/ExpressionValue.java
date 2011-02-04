@@ -25,6 +25,7 @@ package org.jboss.dmr;
 import java.io.DataOutput;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -57,32 +58,33 @@ final class ExpressionValue extends ModelValue {
     }
 
     @Override
-    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append("expression ").append(quote(expressionString));
+    void format(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append("expression ");
+        writer.append(quote(expressionString));
     }
 
     @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append('{');
-        if(multiLine) {
-            indent(builder.append('\n'), indent + 1);
-        } else {
-            builder.append(' ');
-        }
-        builder.append(jsonEscape(TYPE_KEY));
-        builder.append(" : ");
-        builder.append(jsonEscape(asString()));
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append('{');
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent + 1);
         } else {
-            builder.append(' ');
+            writer.append(' ');
         }
-        builder.append('}');
+        writer.append(jsonEscape(TYPE_KEY));
+        writer.append(" : ");
+        writer.append(jsonEscape(asString()));
+        if (multiLine) {
+            indent(writer.append('\n'), indent);
+        } else {
+            writer.append(' ');
+        }
+        writer.append('}');
     }
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof ExpressionValue && equals((ExpressionValue)other);
+        return other instanceof ExpressionValue && equals((ExpressionValue) other);
     }
 
     public boolean equals(final ExpressionValue other) {
@@ -108,6 +110,7 @@ final class ExpressionValue extends ModelValue {
     /**
      * Replace properties of the form:
      * <code>${<i>&lt;name&gt;[</i>,<i>&lt;name2&gt;[</i>,<i>&lt;name3&gt;...]][</i>:<i>&lt;default&gt;]</i>}</code>
+     * 
      * @param value
      * @return
      */
@@ -207,7 +210,8 @@ final class ExpressionValue extends ModelValue {
                     }
                     continue;
                 }
-                default: throw new IllegalStateException();
+                default:
+                    throw new IllegalStateException();
             }
         }
         switch (state) {

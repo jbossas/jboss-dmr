@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -21,7 +23,7 @@ public class StringModelValueTest {
 
     @Test
     public void testWriteExternal() {
-        //TODO implement test
+        // TODO implement test
     }
 
     @Test
@@ -30,7 +32,7 @@ public class StringModelValueTest {
         assertEquals(5l, value.asLong());
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testAsLongWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
         assertEquals(5l, value.asLong());
@@ -42,7 +44,7 @@ public class StringModelValueTest {
         assertEquals(5l, value.asLong(10l));
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testAsLongWithDefaultWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
         assertEquals(5l, value.asLong(10l));
@@ -54,7 +56,7 @@ public class StringModelValueTest {
         assertEquals(5, value.asInt());
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testAsIntWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
         assertEquals(5, value.asInt());
@@ -66,7 +68,7 @@ public class StringModelValueTest {
         assertEquals(5, value.asInt(10));
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testAsIntWithDefaultWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
         assertEquals(5, value.asInt(10));
@@ -85,7 +87,7 @@ public class StringModelValueTest {
     }
 
     @Test
-    public void  testAsBooleanWithDefault() {
+    public void testAsBooleanWithDefault() {
         final StringModelValue value1 = new StringModelValue("5");
         assertEquals(false, value1.asBoolean(true));
 
@@ -102,7 +104,7 @@ public class StringModelValueTest {
         assertEquals(Double.valueOf(5), Double.valueOf(value.asDouble()));
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testAsDoubleWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
         assertEquals(Double.valueOf(5), Double.valueOf(value.asDouble()));
@@ -114,7 +116,7 @@ public class StringModelValueTest {
         assertEquals(Double.valueOf(5), Double.valueOf(value.asDouble(10.0)));
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test(expected = NumberFormatException.class)
     public void testAsDoubleWithDefaultWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
         assertEquals(Double.valueOf(5), Double.valueOf(value.asDouble(10.0)));
@@ -150,7 +152,7 @@ public class StringModelValueTest {
         assertEquals(ModelType.BIG_DECIMAL, bigDecimal.asType());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAsTypeWithUnknownType() {
         final StringModelValue value = new StringModelValue("hello");
         value.asType();
@@ -160,17 +162,19 @@ public class StringModelValueTest {
     @Test
     public void testFormat() {
         final StringModelValue value = new StringModelValue("5");
-        final StringBuilder builder = new StringBuilder();
-        value.format(builder, 0, false);
-        assertEquals("\"5\"", builder.toString());
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        value.format(writer, 0, false);
+        assertEquals("\"5\"", stringWriter.toString());
     }
 
     @Test
     public void testFormatAsJSON() {
         final StringModelValue value = new StringModelValue("5");
-        final StringBuilder builder = new StringBuilder();
-        value.formatAsJSON(builder, 0, false);
-        assertEquals("\"5\"", builder.toString());
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        value.formatAsJSON(writer, 0, false);
+        assertEquals("\"5\"", stringWriter.toString());
     }
 
     @Test
@@ -179,11 +183,11 @@ public class StringModelValueTest {
         final StringModelValue value2 = new StringModelValue("5");
         final StringModelValue value3 = new StringModelValue("10");
 
-        assertEquals(true, value1.equals((Object)value1));
-        assertEquals(true, value1.equals((Object)value2));
-        assertEquals(true, value2.equals((Object)value1));
-        assertEquals(false, value1.equals((Object)value3));
-        assertEquals(false, value1.equals((Object)null));
+        assertEquals(true, value1.equals((Object) value1));
+        assertEquals(true, value1.equals((Object) value2));
+        assertEquals(true, value2.equals((Object) value1));
+        assertEquals(false, value1.equals((Object) value3));
+        assertEquals(false, value1.equals((Object) null));
         assertEquals(false, value1.equals("some string"));
     }
 
@@ -197,7 +201,7 @@ public class StringModelValueTest {
         assertEquals(true, value1.equals(value2));
         assertEquals(true, value2.equals(value1));
         assertEquals(false, value1.equals(value3));
-        assertEquals(false, value1.equals((StringModelValue)null));
+        assertEquals(false, value1.equals((StringModelValue) null));
     }
 
     @Test
@@ -210,6 +214,5 @@ public class StringModelValueTest {
         assertEquals(true, value1.hashCode() == value2.hashCode());
         assertEquals(false, value1.hashCode() == value3.hashCode());
     }
-
 
 }

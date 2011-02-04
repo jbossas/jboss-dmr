@@ -3,6 +3,8 @@ package org.jboss.dmr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -20,7 +22,7 @@ public class BigIntegerModelValueTest {
 
     @Test
     public void testWriteExternal() {
-        //TODO implement test
+        // TODO implement test
     }
 
     @Test
@@ -98,9 +100,10 @@ public class BigIntegerModelValueTest {
     @Test
     public void testFormat() {
         final BigIntegerModelValue value = new BigIntegerModelValue(new BigInteger("5"));
-        final StringBuilder builder = new StringBuilder();
-        value.format(builder, 0, false);
-        assertEquals("big integer 5", builder.toString());
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        value.format(writer, 0, false);
+        assertEquals("big integer 5", stringWriter.toString());
     }
 
     @Test
@@ -117,11 +120,11 @@ public class BigIntegerModelValueTest {
         final BigIntegerModelValue value1 = new BigIntegerModelValue(BigInteger.ONE);
         final BigIntegerModelValue value2 = new BigIntegerModelValue(BigInteger.ONE);
         final BigIntegerModelValue value3 = new BigIntegerModelValue(BigInteger.TEN);
-        assertEquals(true, value1.equals((Object)value1));
-        assertEquals(true, value1.equals((Object)value2));
-        assertEquals(true, value2.equals((Object)value1));
-        assertEquals(false, value1.equals((Object)value3));
-        assertEquals(false, value1.equals((Object)null));
+        assertEquals(true, value1.equals((Object) value1));
+        assertEquals(true, value1.equals((Object) value2));
+        assertEquals(true, value2.equals((Object) value1));
+        assertEquals(false, value1.equals((Object) value3));
+        assertEquals(false, value1.equals((Object) null));
         assertEquals(false, value1.equals("Some String"));
     }
 

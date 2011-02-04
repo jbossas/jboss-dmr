@@ -24,6 +24,7 @@ package org.jboss.dmr;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -115,29 +116,29 @@ final class StringModelValue extends ModelValue {
     }
 
     @Override
-    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append(quote(value));
+    void format(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append(quote(value));
     }
 
     @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append(jsonEscape(asString()));
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append(jsonEscape(asString()));
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
     public boolean equals(final Object other) {
-        return other instanceof StringModelValue && equals((StringModelValue)other);
+        return other instanceof StringModelValue && equals((StringModelValue) other);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */

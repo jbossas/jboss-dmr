@@ -25,6 +25,8 @@ package org.jboss.dmr;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -54,7 +56,7 @@ final class ObjectModelValue extends ModelValue {
         super(ModelType.OBJECT);
         final int count = in.readInt();
         final LinkedHashMap<String, ModelNode> map = new LinkedHashMap<String, ModelNode>();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             final String key = in.readUTF();
             final ModelNode value = new ModelNode();
             value.readExternal(in);
@@ -132,12 +134,12 @@ final class ObjectModelValue extends ModelValue {
 
     @Override
     boolean asBoolean() {
-        return ! map.isEmpty();
+        return !map.isEmpty();
     }
 
     @Override
     boolean asBoolean(final boolean defVal) {
-        return ! map.isEmpty();
+        return !map.isEmpty();
     }
 
     @Override
@@ -194,81 +196,82 @@ final class ObjectModelValue extends ModelValue {
 
     @Override
     String asString() {
-        final StringBuilder builder = new StringBuilder();
-        format(builder, 0, false);
-        return builder.toString();
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        format(writer, 0, false);
+        return stringWriter.toString();
     }
 
     @Override
-    void format(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
-        builder.append('{');
+    void format(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
+        writer.append('{');
         final boolean multiLine = multiLineRequested && map.size() > 1;
         if (multiLine) {
-            indent(builder.append('\n'), indent + 1);
+            indent(writer.append('\n'), indent + 1);
         }
         final Iterator<Map.Entry<String, ModelNode>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, ModelNode> entry = iterator.next();
-            builder.append(quote(entry.getKey()));
+            writer.append(quote(entry.getKey()));
             final ModelNode value = entry.getValue();
-            builder.append(" => ");
-            value.format(builder, multiLine ? indent + 1 : indent, multiLineRequested);
+            writer.append(" => ");
+            value.format(writer, multiLine ? indent + 1 : indent, multiLineRequested);
             if (iterator.hasNext()) {
                 if (multiLine) {
-                    indent(builder.append(",\n"), indent + 1);
+                    indent(writer.append(",\n"), indent + 1);
                 } else {
-                    builder.append(',');
+                    writer.append(',');
                 }
             }
         }
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent);
         }
-        builder.append('}');
+        writer.append('}');
     }
 
     @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
-        builder.append('{');
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
+        writer.append('{');
         final boolean multiLine = multiLineRequested && map.size() > 1;
-        if(multiLine) {
-            indent(builder.append('\n'), indent + 1);
+        if (multiLine) {
+            indent(writer.append('\n'), indent + 1);
         }
         final Iterator<Map.Entry<String, ModelNode>> iterator = map.entrySet().iterator();
         while (iterator.hasNext()) {
             final Map.Entry<String, ModelNode> entry = iterator.next();
-            builder.append(quote(entry.getKey()));
-            builder.append(" : ");
+            writer.append(quote(entry.getKey()));
+            writer.append(" : ");
             final ModelNode value = entry.getValue();
-            value.formatAsJSON(builder, multiLine ? indent + 1 : indent, multiLineRequested);
+            value.formatAsJSON(writer, multiLine ? indent + 1 : indent, multiLineRequested);
             if (iterator.hasNext()) {
                 if (multiLine) {
-                    indent(builder.append(",\n"), indent + 1);
+                    indent(writer.append(",\n"), indent + 1);
                 } else {
-                    builder.append(", ");
+                    writer.append(", ");
                 }
             }
         }
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent);
         }
-        builder.append('}');
+        writer.append('}');
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
     public boolean equals(final Object other) {
-        return other instanceof ObjectModelValue && equals((ObjectModelValue)other);
+        return other instanceof ObjectModelValue && equals((ObjectModelValue) other);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */

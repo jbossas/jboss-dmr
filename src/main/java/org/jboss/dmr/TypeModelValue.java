@@ -24,6 +24,7 @@ package org.jboss.dmr;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
@@ -61,17 +62,28 @@ final class TypeModelValue extends ModelValue {
 
     static TypeModelValue of(final ModelType type) {
         switch (type) {
-            case LONG: return LONG;
-            case INT: return INT;
-            case BOOLEAN: return BOOLEAN;
-            case STRING: return STRING;
-            case DOUBLE: return DOUBLE;
-            case BIG_DECIMAL: return DECIMAL;
-            case BYTES: return BYTES;
-            case LIST: return LIST;
-            case TYPE: return TYPE;
-            case OBJECT: return OBJECT;
-            default: return UNDEFINED;
+            case LONG:
+                return LONG;
+            case INT:
+                return INT;
+            case BOOLEAN:
+                return BOOLEAN;
+            case STRING:
+                return STRING;
+            case DOUBLE:
+                return DOUBLE;
+            case BIG_DECIMAL:
+                return DECIMAL;
+            case BYTES:
+                return BYTES;
+            case LIST:
+                return LIST;
+            case TYPE:
+                return TYPE;
+            case OBJECT:
+                return OBJECT;
+            default:
+                return UNDEFINED;
         }
     }
 
@@ -96,38 +108,38 @@ final class TypeModelValue extends ModelValue {
     }
 
     @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append('{');
-        if(multiLine) {
-            indent(builder.append('\n'), indent + 1);
-        } else {
-            builder.append(' ');
-        }
-        builder.append(jsonEscape(TYPE_KEY));
-        builder.append(" : ");
-        builder.append(jsonEscape(asString()));
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append('{');
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent + 1);
         } else {
-            builder.append(' ');
+            writer.append(' ');
         }
-        builder.append('}');
+        writer.append(jsonEscape(TYPE_KEY));
+        writer.append(" : ");
+        writer.append(jsonEscape(asString()));
+        if (multiLine) {
+            indent(writer.append('\n'), indent);
+        } else {
+            writer.append(' ');
+        }
+        writer.append('}');
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
     public boolean equals(final Object other) {
-        return other instanceof TypeModelValue && equals((TypeModelValue)other);
+        return other instanceof TypeModelValue && equals((TypeModelValue) other);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */

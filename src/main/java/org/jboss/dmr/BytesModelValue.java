@@ -25,6 +25,8 @@ package org.jboss.dmr;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -65,7 +67,7 @@ final class BytesModelValue extends ModelValue {
         final int length = bytes.length;
         final int cnt = Math.min(8, length);
         long v = 0L;
-        for (int i = 0; i < cnt; i ++) {
+        for (int i = 0; i < cnt; i++) {
             v <<= 8;
             v |= bytes[length - cnt + i] & 0xff;
         }
@@ -83,7 +85,7 @@ final class BytesModelValue extends ModelValue {
         final int length = bytes.length;
         final int cnt = Math.min(4, length);
         int v = 0;
-        for (int i = 0; i < cnt; i ++) {
+        for (int i = 0; i < cnt; i++) {
             v <<= 8;
             v |= bytes[length - cnt + i] & 0xff;
         }
@@ -122,88 +124,82 @@ final class BytesModelValue extends ModelValue {
 
     @Override
     String asString() {
-        final StringBuilder builder = new StringBuilder(bytes.length * 4 + 4);
-        format(builder, 0, false);
-        return builder.toString();
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        format(writer, 0, false);
+        return stringWriter.toString();
     }
 
     @Override
-    public String toJSONString(final boolean compact) {
-        final StringBuilder builder = new StringBuilder(bytes.length * 4 + 4);
-        formatAsJSON(builder, 0, !compact);
-        return builder.toString();
-    }
-
-    @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append('{');
-        if(multiLine) {
-            indent(builder.append('\n'), indent + 1);
-        } else {
-            builder.append(' ');
-        }
-        builder.append(jsonEscape(TYPE_KEY));
-        builder.append(" : ");
-        builder.append(jsonEscape(Base64.encodeBytes(bytes)));
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append('{');
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent + 1);
         } else {
-            builder.append(' ');
+            writer.append(' ');
         }
-        builder.append('}');
+        writer.append(jsonEscape(TYPE_KEY));
+        writer.append(" : ");
+        writer.append(jsonEscape(Base64.encodeBytes(bytes)));
+        if (multiLine) {
+            indent(writer.append('\n'), indent);
+        } else {
+            writer.append(' ');
+        }
+        writer.append('}');
     }
 
     @Override
-    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append("bytes {");
+    void format(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append("bytes {");
         if (multiLine) {
-            builder.append('\n');
-            indent(builder, indent + 1);
+            writer.append('\n');
+            indent(writer, indent + 1);
         } else {
-            builder.append(' ');
+            writer.append(' ');
         }
         for (int i = 0, length = bytes.length; i < length; i++) {
             final byte b = bytes[i];
             if (b >= 0 && b < 0x10) {
-                builder.append("0x0").append(Integer.toHexString(b & 0xff));
+                writer.append("0x0").append(Integer.toHexString(b & 0xff));
             } else {
-                builder.append("0x").append(Integer.toHexString(b & 0xff));
+                writer.append("0x").append(Integer.toHexString(b & 0xff));
             }
             if (i != length - 1) {
                 if (multiLine && (i & 7) == 7) {
-                    indent(builder.append(",\n"), indent + 1);
+                    indent(writer.append(",\n"), indent + 1);
                 } else {
-                    builder.append(", ");
+                    writer.append(", ");
                 }
             }
         }
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent);
         } else {
-            builder.append(' ');
+            writer.append(' ');
         }
-        builder.append('}');
+        writer.append('}');
     }
 
-    void formatMultiLine(final StringBuilder target, final int indent) {
+    void formatMultiLine(final PrintWriter writer, final int indent) {
         final int length = bytes.length;
-        format(target, indent, length > 8);
+        format(writer, indent, length > 8);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
     public boolean equals(final Object other) {
-        return other instanceof BytesModelValue && equals((BytesModelValue)other);
+        return other instanceof BytesModelValue && equals((BytesModelValue) other);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */

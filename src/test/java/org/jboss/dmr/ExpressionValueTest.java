@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.junit.Test;
 
 public class ExpressionValueTest {
@@ -24,7 +27,7 @@ public class ExpressionValueTest {
         assertEquals("", value.asString());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testExpressionValueWithNullExpression() {
         new ExpressionValue(null);
         fail("Expected IllegalArgumentException.");
@@ -32,7 +35,7 @@ public class ExpressionValueTest {
 
     @Test
     public void testWriteExternal() {
-        //TODO implement test.
+        // TODO implement test.
     }
 
     @Test
@@ -44,21 +47,24 @@ public class ExpressionValueTest {
     @Test
     public void testFormat() {
         final ExpressionValue value = new ExpressionValue("some expression");
-        final StringBuilder builder = new StringBuilder();
-        value.format(builder, 0, false);
-        assertEquals("expression \"some expression\"", builder.toString());
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        value.format(writer, 0, false);
+        assertEquals("expression \"some expression\"", stringWriter.toString());
     }
 
     @Test
     public void testFormatAsJSON() {
         final ExpressionValue value = new ExpressionValue("some expression");
-        final StringBuilder builder1 = new StringBuilder();
-        value.formatAsJSON(builder1, 0, false);
-        assertEquals("{ \"EXPRESSION_VALUE\" : \"some expression\" }",builder1.toString());
+        final StringWriter stringWriter1 = new StringWriter();
+        final PrintWriter writer1 = new PrintWriter(stringWriter1, true);
+        value.formatAsJSON(writer1, 0, false);
+        assertEquals("{ \"EXPRESSION_VALUE\" : \"some expression\" }", stringWriter1.toString());
 
-        final StringBuilder builder2 = new StringBuilder();
-        value.formatAsJSON(builder2, 0, true);
-        assertEquals("{\n    \"EXPRESSION_VALUE\" : \"some expression\"\n}",builder2.toString());
+        final StringWriter stringWriter2 = new StringWriter();
+        final PrintWriter writer2 = new PrintWriter(stringWriter2, true);
+        value.formatAsJSON(writer2, 0, true);
+        assertEquals("{\n    \"EXPRESSION_VALUE\" : \"some expression\"\n}", stringWriter2.toString());
     }
 
     @Test
@@ -67,12 +73,12 @@ public class ExpressionValueTest {
         final ExpressionValue value2 = new ExpressionValue("some expression");
         final ExpressionValue value3 = new ExpressionValue("some other expression");
 
-        assertEquals(true, value1.equals((Object)value1));
-        assertEquals(true, value1.equals((Object)value2));
-        assertEquals(true, value2.equals((Object)value1));
-        assertEquals(false, value1.equals((Object)value3));
-        assertEquals(false, value3.equals((Object)value1));
-        assertEquals(false, value1.equals((Object)null));
+        assertEquals(true, value1.equals((Object) value1));
+        assertEquals(true, value1.equals((Object) value2));
+        assertEquals(true, value2.equals((Object) value1));
+        assertEquals(false, value1.equals((Object) value3));
+        assertEquals(false, value3.equals((Object) value1));
+        assertEquals(false, value1.equals((Object) null));
         assertEquals(false, value1.equals("some string"));
     }
 
@@ -87,7 +93,7 @@ public class ExpressionValueTest {
         assertEquals(true, value2.equals(value1));
         assertEquals(false, value1.equals(value3));
         assertEquals(false, value3.equals(value1));
-        assertEquals(false, value1.equals((ExpressionValue)null));
+        assertEquals(false, value1.equals((ExpressionValue) null));
     }
 
     @Test

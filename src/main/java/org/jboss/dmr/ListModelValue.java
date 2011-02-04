@@ -25,6 +25,8 @@ package org.jboss.dmr;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -58,7 +60,7 @@ final class ListModelValue extends ModelValue {
         super(ModelType.LIST);
         final int count = in.readInt();
         final ArrayList<ModelNode> list = new ArrayList<ModelNode>();
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count; i++) {
             final ModelNode value = new ModelNode();
             value.readExternal(in);
             list.add(value);
@@ -107,7 +109,7 @@ final class ListModelValue extends ModelValue {
 
     @Override
     boolean asBoolean() {
-        return ! list.isEmpty();
+        return !list.isEmpty();
     }
 
     @Override
@@ -132,8 +134,7 @@ final class ListModelValue extends ModelValue {
             final ModelNode node = i.next();
             if (node.getType() == ModelType.PROPERTY) {
                 propertyList.add(node.asProperty());
-            }
-            else if (i.hasNext()) {
+            } else if (i.hasNext()) {
                 final ModelNode value = i.next();
                 propertyList.add(new Property(node.asString(), value));
             }
@@ -163,7 +164,7 @@ final class ListModelValue extends ModelValue {
         final List<ModelNode> list = this.list;
         final int size = list.size();
         if (size <= index) {
-            for (int i = 0; i < index - size + 1; i ++) {
+            for (int i = 0; i < index - size + 1; i++) {
                 list.add(new ModelNode());
             }
         }
@@ -198,77 +199,78 @@ final class ListModelValue extends ModelValue {
 
     @Override
     String asString() {
-        final StringBuilder builder = new StringBuilder();
-        format(builder, 0, false);
-        return builder.toString();
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        format(writer, 0, false);
+        return stringWriter.toString();
     }
 
     @Override
-    void format(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
+    void format(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
         final boolean multiLine = multiLineRequested && list.size() > 1;
         final List<ModelNode> list = asList();
         final Iterator<ModelNode> iterator = list.iterator();
-        builder.append('[');
+        writer.append('[');
         if (multiLine) {
-            indent(builder.append('\n'), indent + 1);
+            indent(writer.append('\n'), indent + 1);
         }
         while (iterator.hasNext()) {
             final ModelNode entry = iterator.next();
-            entry.format(builder, multiLine ? indent + 1 : indent, multiLineRequested);
+            entry.format(writer, multiLine ? indent + 1 : indent, multiLineRequested);
             if (iterator.hasNext()) {
                 if (multiLine) {
-                    indent(builder.append(",\n"), indent + 1);
+                    indent(writer.append(",\n"), indent + 1);
                 } else {
-                    builder.append(',');
+                    writer.append(',');
                 }
             }
         }
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent);
         }
-        builder.append(']');
+        writer.append(']');
     }
 
     @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
         final boolean multiLine = multiLineRequested && list.size() > 1;
         final List<ModelNode> list = asList();
         final Iterator<ModelNode> iterator = list.iterator();
-        builder.append('[');
+        writer.append('[');
         if (multiLine) {
-            indent(builder.append('\n'), indent + 1);
+            indent(writer.append('\n'), indent + 1);
         }
         while (iterator.hasNext()) {
             final ModelNode entry = iterator.next();
-            entry.formatAsJSON(builder, multiLine ? indent + 1 : indent, multiLineRequested);
+            entry.formatAsJSON(writer, multiLine ? indent + 1 : indent, multiLineRequested);
             if (iterator.hasNext()) {
                 if (multiLine) {
-                    indent(builder.append(",\n"), indent + 1);
+                    indent(writer.append(",\n"), indent + 1);
                 } else {
-                    builder.append(',');
+                    writer.append(',');
                 }
             }
         }
         if (multiLine) {
-            indent(builder.append('\n'), indent);
+            indent(writer.append('\n'), indent);
         }
-        builder.append(']');
+        writer.append(']');
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
     public boolean equals(final Object other) {
-        return other instanceof ListModelValue && equals((ListModelValue)other);
+        return other instanceof ListModelValue && equals((ListModelValue) other);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */

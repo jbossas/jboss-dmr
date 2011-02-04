@@ -24,6 +24,8 @@ package org.jboss.dmr;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -170,43 +172,44 @@ abstract class ModelValue implements Cloneable {
         builder.append('"');
         for (int i = 0; i < length; i = orig.offsetByCodePoints(i,1)) {
             final int cp = orig.codePointAt(i);
-            switch(cp) {
-            case '"':
-                builder.append("\\\"");
-                break;
-            case '\\':
-                builder.append("\\\\");
-                break;
-            case '\b':
-                builder.append("\\b");
-                break;
-            case '\f':
-                builder.append("\\f");
-                break;
-            case '\n':
-                builder.append("\\n");
-                break;
-            case '\r':
-                builder.append("\\r");
-                break;
-            case '\t':
-                builder.append("\\t");
-                break;
-            case '/':
-                builder.append("\\/");
-                break;
-            default:
-                if((cp >= '\u0000' && cp <='\u001F') || (cp >= '\u007F' && cp <= '\u009F') || (cp >= '\u2000' && cp <= '\u20FF')){
-                    final String hexString = Integer.toHexString(cp);
-                    builder.append("\\u");
-                    for(int k=0; k < 4-hexString.length(); k++) {
-                        builder.append('0');
+            switch (cp) {
+                case '"':
+                    builder.append("\\\"");
+                    break;
+                case '\\':
+                    builder.append("\\\\");
+                    break;
+                case '\b':
+                    builder.append("\\b");
+                    break;
+                case '\f':
+                    builder.append("\\f");
+                    break;
+                case '\n':
+                    builder.append("\\n");
+                    break;
+                case '\r':
+                    builder.append("\\r");
+                    break;
+                case '\t':
+                    builder.append("\\t");
+                    break;
+                case '/':
+                    builder.append("\\/");
+                    break;
+                default:
+                    if ((cp >= '\u0000' && cp <= '\u001F') || (cp >= '\u007F' && cp <= '\u009F')
+                            || (cp >= '\u2000' && cp <= '\u20FF')) {
+                        final String hexString = Integer.toHexString(cp);
+                        builder.append("\\u");
+                        for (int k = 0; k < 4 - hexString.length(); k++) {
+                            builder.append('0');
+                        }
+                        builder.append(hexString.toUpperCase());
+                    } else {
+                        builder.appendCodePoint(cp);
                     }
-                    builder.append(hexString.toUpperCase());
-                } else {
-                    builder.appendCodePoint(cp);
-                }
-                break;
+                    break;
             }
         }
         builder.append('"');
@@ -250,8 +253,8 @@ abstract class ModelValue implements Cloneable {
         }
 
         @Override
-        void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-            builder.append("null");
+        void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+            writer.append("null");
         }
 
         @Override
@@ -266,44 +269,80 @@ abstract class ModelValue implements Cloneable {
     @Override
     public abstract int hashCode();
 
-    protected static void indent(final StringBuilder target, final int count) {
-        for (int i = 0; i < count; i ++) {
-            target.append("    ");
+    /**
+     * Adds the number of indentations (4 spaces each) specified to the writer's output.
+     * 
+     * @param writer The PrintWriter instance containing the current output.
+     * @param count The number of indentations to be written.
+     */
+    protected static void indent(final PrintWriter writer, final int count) {
+        for (int i = 0; i < count; i++) {
+            writer.append("    ");
         }
     }
 
-    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append(asString());
+    /**
+     * Formats the current value object as part of a DMR string.
+     * 
+     * @param writer A PrintWriter instance containing the generated DMR string representation.
+     * @param indent The number of tabs to indent the current generated string.
+     * @param multiLine Flag indicating whether or not the string should begin on a new line.
+     */
+    void format(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append(asString());
     }
 
     /**
      * Formats the current value object as part of a JSON string.
-     * @param builder A StringBuilder instance containing the JSON string.
+     * 
+     * @param writer A PrintWriter instance containing the JSON string.
      * @param indent The number of tabs to indent the current generated string.
      * @param multiLine Flag that indicates whether or not the string should
      * 	begin on a new line.
      */
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-        builder.append(asString());
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+        writer.append(asString());
     }
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        format(builder, 0, true);
-        return builder.toString();
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        outputDMRString(writer, false);
+        return stringWriter.toString();
+    }
+
+    /**
+     * Outputs the DMR representation of this value to the supplied PrintWriter instance.
+     * 
+     * @param writer A PrintWriter instance use to output the DMR string.
+     * @param compact Flag indicating whether or not to include new lines in the generated string representation.
+     */
+    public void outputDMRString(final PrintWriter writer, final boolean compact) {
+        format(writer, 0, !compact);
     }
 
     /**
      * Converts this value to a JSON string representation.
-     * @param compact Flag indicating whether or not to include new lines
-     * 	in the generated string representation.
-     * @return The JSON formatted string.
+     * 
+     * @param compact Flag indicating whether or not to include new lines in the generated string representation.
+     * @return The JSON formatted string representation of this value.
      */
     public String toJSONString(final boolean compact) {
-        final StringBuilder builder = new StringBuilder();
-        formatAsJSON(builder, 0, !compact);
-        return builder.toString();
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        outputJSONString(writer, compact);
+        return stringWriter.toString();
+    }
+
+    /**
+     * Outputs this value as a JSON string representation to the supplied PrintWriter instance.
+     * 
+     * @param writer A PrintWriter instance use to output the JSON string.
+     * @param compact Flag indicating whether or not to include new lines in the generated string representation.
+     */
+    public void outputJSONString(final PrintWriter writer, final boolean compact) {
+        formatAsJSON(writer, 0, !compact);
     }
 
     ModelValue resolve() {

@@ -25,6 +25,7 @@ package org.jboss.dmr;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,6 +35,11 @@ import java.util.Set;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
 final class PropertyModelValue extends ModelValue {
+
+    /**
+     * JSON Key used to identify PropertyModelValue.
+     */
+    public static final String TYPE_KEY = "PROPERTY_VALUE";
 
     private final Property property;
 
@@ -127,11 +133,12 @@ final class PropertyModelValue extends ModelValue {
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof PropertyModelValue && equals((PropertyModelValue)other);
+        return other instanceof PropertyModelValue && equals((PropertyModelValue) other);
     }
 
     public boolean equals(final PropertyModelValue other) {
-        return this == other || other != null && other.property.getName().equals(property.getName()) && other.property.getValue().equals(property.getValue());
+        return this == other || other != null && other.property.getName().equals(property.getName())
+                && other.property.getValue().equals(property.getValue());
     }
 
     @Override
@@ -150,11 +157,39 @@ final class PropertyModelValue extends ModelValue {
     }
 
     @Override
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLineRequested) {
-        builder.append('{');
-        builder.append(quote(property.getName()));
-        builder.append(" : ");
-        property.getValue().formatAsJSON(builder, indent, multiLineRequested);
-        builder.append('}');
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
+        writer.append('{');
+        if (multiLineRequested) {
+            indent(writer.append('\n'), indent + 1);
+        } else {
+            writer.append(' ');
+        }
+        writer.append(jsonEscape(TYPE_KEY));
+        writer.append(" : ");
+        formatPropertyAsJSON(writer, indent + 1, multiLineRequested);
+        if (multiLineRequested) {
+            indent(writer.append('\n'), indent);
+        } else {
+            writer.append(' ');
+        }
+        writer.append('}');
+    }
+
+    private void formatPropertyAsJSON(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
+        writer.append('{');
+        if (multiLineRequested) {
+            indent(writer.append('\n'), indent + 1);
+        } else {
+            writer.append(' ');
+        }
+        writer.append(jsonEscape(property.getName()));
+        writer.append(" : ");
+        property.getValue().formatAsJSON(writer, indent + 1, multiLineRequested);
+        if (multiLineRequested) {
+            indent(writer.append('\n'), indent);
+        } else {
+            writer.append(' ');
+        }
+        writer.append('}');
     }
 }

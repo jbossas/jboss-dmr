@@ -25,6 +25,7 @@ package org.jboss.dmr;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -107,24 +108,25 @@ final class BigDecimalModelValue extends ModelValue {
     }
 
     @Override
-    void format(final StringBuilder target, final int indent, final boolean ignored) {
-        target.append("big decimal ").append(value);
+    void format(final PrintWriter writer, final int indent, final boolean ignored) {
+        writer.append("big decimal ");
+        writer.append(asString());
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
     @Override
     public boolean equals(final Object other) {
-        return other instanceof BigDecimalModelValue && equals((BigDecimalModelValue)other);
+        return other instanceof BigDecimalModelValue && equals((BigDecimalModelValue) other);
     }
 
     /**
      * Determine whether this object is equal to another.
-     *
+     * 
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */

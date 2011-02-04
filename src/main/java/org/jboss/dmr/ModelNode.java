@@ -34,6 +34,7 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
+
+
 
 /**
  * A dynamic model representation node object.
@@ -1120,6 +1123,18 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Output the DMR string representation of this model node, formatted nicely, if requested to the supplied PrintWriter
+     * instance.
+     * 
+     * @param writer A PrintWriter instance used to output the DMR string.
+     * @param compact Flag that indicates whether or not the string should be all on one line (i.e. {@code true}) or should be
+     *        printed on multiple lines ({@code false}).
+     */
+    public void outputDMRString(final PrintWriter writer, final boolean compact) {
+        value.outputDMRString(writer, compact);
+    }
+
+    /**
      * Get a JSON string representation of this model node, formatted nicely, if requested.
      * @param compact Flag that indicates whether or not the string should be all on
      * 	one line (i.e. {@code true}) or should be printed on multiple lines ({@code false}).
@@ -1127,6 +1142,18 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public String toJSONString(final boolean compact) {
         return value.toJSONString(compact);
+    }
+
+    /**
+     * Output the JSON string representation of this model node, formatted nicely, if requested to the supplied PrintWriter
+     * instance.
+     * 
+     * @param writer A PrintWriter instance used to output the JSON string.
+     * @param compact Flag that indicates whether or not the string should be all on one line (i.e. {@code true}) or should be
+     *        printed on multiple lines ({@code false}).
+     */
+    public void outputJSONString(final PrintWriter writer, final boolean compact) {
+        value.outputJSONString(writer, compact);
     }
 
     /**
@@ -1140,7 +1167,22 @@ public class ModelNode implements Externalizable, Cloneable {
         try {
             parser.setInput(new ByteArrayInputStream(input.getBytes("US-ASCII")));
             if (parser.yyParse() > 0) {
-                throw new IllegalArgumentException("Parser error");
+                throw new IllegalArgumentException("DMR parser error");
+            }
+            return parser.getResult();
+        } catch (final IOException e) {
+            final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
+            n.setStackTrace(e.getStackTrace());
+            throw n;
+        }
+    }
+
+    public static ModelNode fromJSONString(final String input) {
+        final JSONParserImpl parser = new JSONParserImpl();
+        try {
+            parser.setInput(new ByteArrayInputStream(input.getBytes("US-ASCII")));
+            if(parser.yyParse() > 0) {
+                throw new IllegalArgumentException("JSON parser error");
             }
             return parser.getResult();
         } catch (final IOException e) {
@@ -1159,6 +1201,21 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public static ModelNode fromStream(final InputStream stream) throws IOException {
         final ModelNodeParser parser = new ModelNodeParser();
+        parser.setInput(stream);
+        if (parser.yyParse() > 0) {
+            throw new IOException("Parser error");
+        }
+        return parser.getResult();
+    }
+    
+    /**
+     * Get a model node from a JSON text representation of the model node. The stream must be encoded in US-ASCII encoding.
+     * 
+     * @param stream the source stream
+     * @return the model node
+     */
+    public static ModelNode fromJSONStream(final InputStream stream) throws IOException {
+        final JSONParserImpl parser = new JSONParserImpl();
         parser.setInput(stream);
         if (parser.yyParse() > 0) {
             throw new IOException("Parser error");
@@ -1238,12 +1295,12 @@ public class ModelNode implements Externalizable, Cloneable {
         return clone;
     }
 
-    void format(final StringBuilder builder, final int indent, final boolean multiLine) {
-        value.format(builder, indent, multiLine);
+    void format(final PrintWriter writer, final int indent, final boolean multiLine) {
+        value.format(writer, indent, multiLine);
     }
 
-    void formatAsJSON(final StringBuilder builder, final int indent, final boolean multiLine) {
-        value.formatAsJSON(builder, indent, multiLine);
+    void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
+        value.formatAsJSON(writer, indent, multiLine);
     }
 
     /**

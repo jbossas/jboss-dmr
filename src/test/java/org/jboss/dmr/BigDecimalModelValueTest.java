@@ -3,16 +3,8 @@ package org.jboss.dmr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -30,7 +22,7 @@ public class BigDecimalModelValueTest {
 
     @Test
     public void testWriteExternal() {
-        //TODO implement test
+        // TODO implement test
     }
 
     @Test
@@ -108,9 +100,10 @@ public class BigDecimalModelValueTest {
     @Test
     public void testFormat() {
         final BigDecimalModelValue value = new BigDecimalModelValue(new BigDecimal(5));
-        final StringBuilder builder = new StringBuilder();
-        value.format(builder, 0, false);
-        assertEquals("big decimal 5", builder.toString());
+        final StringWriter stringWriter = new StringWriter();
+        final PrintWriter writer = new PrintWriter(stringWriter, true);
+        value.format(writer, 0, false);
+        assertEquals("big decimal 5", stringWriter.toString());
     }
 
     @Test
@@ -127,11 +120,11 @@ public class BigDecimalModelValueTest {
         final BigDecimalModelValue value1 = new BigDecimalModelValue(BigDecimal.ONE);
         final BigDecimalModelValue value2 = new BigDecimalModelValue(BigDecimal.ONE);
         final BigDecimalModelValue value3 = new BigDecimalModelValue(BigDecimal.TEN);
-        assertEquals(true, value1.equals((Object)value1));
-        assertEquals(true, value1.equals((Object)value2));
-        assertEquals(true, value2.equals((Object)value1));
-        assertEquals(false, value1.equals((Object)value3));
-        assertEquals(false, value1.equals((Object)null));
+        assertEquals(true, value1.equals((Object) value1));
+        assertEquals(true, value1.equals((Object) value2));
+        assertEquals(true, value2.equals((Object) value1));
+        assertEquals(false, value1.equals((Object) value3));
+        assertEquals(false, value1.equals((Object) null));
         assertEquals(false, value1.equals("Some String"));
     }
 
