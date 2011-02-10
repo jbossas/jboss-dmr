@@ -1167,6 +1167,21 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Reads base64 data from the passed stream,
+     * and deserializes the decoded result.
+     *
+     * @see #writeBase64(OutputStream)
+     * @return the decoded model node
+     * @throws IOException if the passed stream has an issue
+     */
+    public static ModelNode fromBase64(InputStream stream) throws IOException {
+        Base64.InputStream bstream = new Base64.InputStream(stream);
+        ModelNode node = new ModelNode();
+        node.readExternal(bstream);
+        return node;
+    }
+
+    /**
      * Return a copy of this model node, with all system property expressions locally resolved.  The caller must have
      * permission to access all of the system properties named in the node tree.
      *
@@ -1347,6 +1362,19 @@ public class ModelNode implements Externalizable, Cloneable {
             ne.initCause(e.getCause());
             throw ne;
         }
+    }
+
+
+    /**
+     * Encodes the serialized representation in base64 form
+     * and writes it to the specified output stream.
+     *
+     * @param stream the stream to write to
+     * @throws IOException if the specified stream has an issue
+     */
+    public void writeBase64(OutputStream stream) throws IOException {
+        OutputStream bstream = new Base64.OutputStream(stream);
+        writeExternal(bstream);
     }
 
     private void checkProtect() {
