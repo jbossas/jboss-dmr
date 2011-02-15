@@ -194,9 +194,6 @@ abstract class ModelValue implements Cloneable {
                 case '\t':
                     builder.append("\\t");
                     break;
-                case '/':
-                    builder.append("\\/");
-                    break;
                 default:
                     if ((cp >= '\u0000' && cp <= '\u001F') || (cp >= '\u007F' && cp <= '\u009F')
                             || (cp >= '\u2000' && cp <= '\u20FF')) {

@@ -123,7 +123,7 @@ class ModelNodeParser extends Parser {
         return yyText();
     }
 
-    @Lex(pattern = "\\\"([^\"\\\\]+|\\.)*\\\"", token = "STR_VAL")
+    @Lex(pattern = "\\\"([^\"\\\\]+|\\\\.)*\\\"", token = "STR_VAL")
     protected String parseStringValue() {
         final String yyText = yyText();
         final int length = yyText.length();

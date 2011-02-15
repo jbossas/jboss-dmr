@@ -67,7 +67,7 @@ public class JSONParserImpl extends JSONParser {
             @Lex(pattern = ",", token = "COMMA"), @Lex(pattern = ":", token = "COLON"), @Lex(pattern = "true", token = "TRUE"),
             @Lex(pattern = "false", token = "FALSE"), @Lex(pattern = "big", token = "BIG"),
             @Lex(pattern = "decimal", token = "DECIMAL"), @Lex(pattern = "integer", token = "INTEGER"),
-            @Lex(pattern = "undefined", token = "UNDEFINED") })
+            @Lex(pattern = "null", token = "UNDEFINED") })
     protected Void parseToken() {
         return null;
     }
@@ -81,7 +81,7 @@ public class JSONParserImpl extends JSONParser {
         return yyText();
     }
 
-    @Lex(pattern = "\\\"([^\"\\\\]+|\\.)*\\\"", token = "STR_VAL")
+    @Lex(pattern = "\\\"([^\"\\\\]+|\\\\.)*\\\"", token = "STR_VAL")
     protected String parseStringValue() {
         final String yyText = yyText();
         final int length = yyText.length();
