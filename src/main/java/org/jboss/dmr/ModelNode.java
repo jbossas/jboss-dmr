@@ -1130,8 +1130,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param compact Flag that indicates whether or not the string should be all on one line (i.e. {@code true}) or should be
      *        printed on multiple lines ({@code false}).
      */
-    public void outputDMRString(final PrintWriter writer, final boolean compact) {
-        value.outputDMRString(writer, compact);
+    public void writeString(final PrintWriter writer, final boolean compact) {
+        value.writeString(writer, compact);
     }
 
     /**
@@ -1152,8 +1152,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param compact Flag that indicates whether or not the string should be all on one line (i.e. {@code true}) or should be
      *        printed on multiple lines ({@code false}).
      */
-    public void outputJSONString(final PrintWriter writer, final boolean compact) {
-        value.outputJSONString(writer, compact);
+    public void writeJSONString(final PrintWriter writer, final boolean compact) {
+        value.writeJSONString(writer, compact);
     }
 
     /**

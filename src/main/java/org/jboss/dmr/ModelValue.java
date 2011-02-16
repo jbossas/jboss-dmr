@@ -305,7 +305,7 @@ abstract class ModelValue implements Cloneable {
     public String toString() {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        outputDMRString(writer, false);
+        writeString(writer, false);
         return stringWriter.toString();
     }
 
@@ -315,7 +315,7 @@ abstract class ModelValue implements Cloneable {
      * @param writer A PrintWriter instance use to output the DMR string.
      * @param compact Flag indicating whether or not to include new lines in the generated string representation.
      */
-    public void outputDMRString(final PrintWriter writer, final boolean compact) {
+    public void writeString(final PrintWriter writer, final boolean compact) {
         format(writer, 0, !compact);
     }
 
@@ -328,7 +328,7 @@ abstract class ModelValue implements Cloneable {
     public String toJSONString(final boolean compact) {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        outputJSONString(writer, compact);
+        writeJSONString(writer, compact);
         return stringWriter.toString();
     }
 
@@ -338,7 +338,7 @@ abstract class ModelValue implements Cloneable {
      * @param writer A PrintWriter instance use to output the JSON string.
      * @param compact Flag indicating whether or not to include new lines in the generated string representation.
      */
-    public void outputJSONString(final PrintWriter writer, final boolean compact) {
+    public void writeJSONString(final PrintWriter writer, final boolean compact) {
         formatAsJSON(writer, 0, !compact);
     }
 

@@ -20,7 +20,7 @@ public class ModelValueTest {
         final ModelValue value = new IntModelValue(5);
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        value.outputDMRString(writer, false);
+        value.writeString(writer, false);
         assertEquals("5", stringWriter.toString());
     }
 
@@ -60,7 +60,7 @@ public class ModelValueTest {
         final ModelValue value = new IntModelValue(5);
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        value.outputJSONString(writer, true);
+        value.writeJSONString(writer, true);
         assertEquals("5", stringWriter.toString());
     }
 }

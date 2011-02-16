@@ -74,7 +74,7 @@ public class ModelNodeTest {
     public void testOutputDMRString() {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        node.outputDMRString(writer, false);
+        node.writeString(writer, false);
         final String dmrString = stringWriter.toString();
         assertThat(dmrString, containsString("\"description\" => \"A managable resource\","));
         assertThat(dmrString, containsString("\"type\" => OBJECT,"));
@@ -146,7 +146,7 @@ public class ModelNodeTest {
     public void testOutputJSONString() {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        node.outputJSONString(writer, false);
+        node.writeJSONString(writer, false);
         final String json = stringWriter.toString();
         assertNotNull(json);
         assertEquals(true, json.contains("\n"));
