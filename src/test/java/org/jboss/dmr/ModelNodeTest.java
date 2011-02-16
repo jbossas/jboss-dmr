@@ -3,8 +3,12 @@ package org.jboss.dmr;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -248,5 +252,29 @@ public class ModelNodeTest {
         assertThat(parsedNode.toString(), containsString("\"max-long-value\" => big integer 9223372036854775807,"));
         assertThat(parsedNode.toString(), containsString("\"property-value\" => (\"property\" => UNDEFINED),"));
         assertThat(parsedNode.toString(), containsString("\"expression-value\" => expression \"$expression\""));
+    }
+
+    @Test
+    public void testWriteBase64() {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            node.writeBase64(os);
+            assertEquals(652, os.toByteArray().length);
+        } catch (final IOException e) {
+            fail("IOException not expected: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testFromBase64() {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            node.writeBase64(os);
+            ModelNode newNode = ModelNode.fromBase64(new ByteArrayInputStream(os.toByteArray()));
+            assertNotNull(newNode);
+            assertEquals(node, newNode);
+        } catch (final IOException e) {
+            fail("IOException not expected: " + e.getMessage());
+        }
     }
 }
