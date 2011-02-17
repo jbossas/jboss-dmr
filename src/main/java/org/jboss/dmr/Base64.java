@@ -314,9 +314,8 @@ public class Base64 {
      */
     private static int findActualEncodedBlockSize(final byte[] block) {
         int i;
-        for (i = 0; i < block.length; i++) {
-            if (block[i] == -1) {
-                i--; // Reset to the previous, valid index
+        for (i = (block.length - 1); i >= 0; i--) {
+            if (block[i] != -1) {
                 break;
             }
         }
