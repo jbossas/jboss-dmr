@@ -25,8 +25,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.FilterInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -98,22 +96,22 @@ public class Base64 {
      * @throws IOException if an error occurs during decoding.
      */
     private static final byte[] decodeBytes(final byte[] bytes) throws IOException {
-        final DataInputStream dis = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(bytes)));
+        final java.io.InputStream is = new BufferedInputStream(new ByteArrayInputStream(bytes));
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(baos));
+        final java.io.OutputStream os = new BufferedOutputStream(baos);
         final byte[] currentBlock = new byte[DECODE_BLOCK_SIZE_BYTES];
         byte[] decodedBytes = null;
 
         try {
             // Continue to read bytes from the stream until none are available.
-            while (dis.available() > 0) {
-                dos.write(decodeBlock(dis, currentBlock));
+            while (is.available() > 0) {
+                os.write(decodeBlock(is, currentBlock));
             }
-            dos.flush();
+            os.flush();
             decodedBytes = baos.toByteArray();
         } finally {
-            dis.close();
-            dos.close();
+            is.close();
+            os.close();
         }
 
         return decodedBytes;
@@ -127,22 +125,22 @@ public class Base64 {
      * @throws IOException if an error occurs during encoding.
      */
     private static final byte[] encodeBytes(final byte[] bytes) throws IOException {
-        final DataInputStream dis = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(bytes)));
+        final java.io.InputStream is = new BufferedInputStream(new ByteArrayInputStream(bytes));
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(baos));
+        final java.io.OutputStream os = new BufferedOutputStream(baos);
         byte[] currentBlock = new byte[ENCODE_BLOCK_SIZE_BYTES];
         byte[] encodedBytes = null;
 
         try {
             // Continue to read bytes from the stream until none are available.
-            while (dis.available() > 0) {
-                dos.write(encodeBlock(dis, currentBlock));
+            while (is.available() > 0) {
+                os.write(encodeBlock(is, currentBlock));
             }
-            dos.flush();
+            os.flush();
             encodedBytes = baos.toByteArray();
         } finally {
-            dis.close();
-            dos.close();
+            is.close();
+            os.close();
         }
 
         return encodedBytes;
@@ -152,31 +150,35 @@ public class Base64 {
      * Encodes the next block of data read from the supplied input stream and writes the encoded value to the supplied output
      * stream.
      * 
-     * @param dis The source of the data to be encoded.
+     * @param is The source of the data to be encoded.
      * @param buffer Buffer used to hold the data while performing the encoding.
+     * @return The encoded bytes.
      * @throws IOException if an error occurs while attempting to read, or encode the data.
      */
-    private static byte[] encodeBlock(final DataInputStream dis, final byte[] buffer) throws IOException {
+    private static byte[] encodeBlock(final java.io.InputStream is, final byte[] buffer) throws IOException {
         int numBytesRead = 0;
 
         /*
-         * If there is a full block (or more) available, grab the next block for encoding. Otherwise, we will need to add
-         * padding, so determine just how many bytes can be read into the current block.
+         * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that there are
+         * not any left over bytes from the previous read affecting the padding of the last block.
          */
-        if (dis.available() >= ENCODE_BLOCK_SIZE_BYTES) {
-            dis.readFully(buffer);
-            numBytesRead = buffer.length;
-        } else {
-            /*
-             * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that there
-             * are not any left over bytes from the previous read affecting the padding of the last block.
-             */
-            clearBuffer(buffer, ENCODE_BLOCK_SIZE_BYTES);
-            numBytesRead = dis.read(buffer);
-        }
+        clearBuffer(buffer, ENCODE_BLOCK_SIZE_BYTES);
 
-        // Encode the block as Base 64
-        return encodeData(buffer, numBytesRead);
+        /*
+         * Read one block (3 bytes) of data at a time and encode it as base 64 data.
+         */
+        numBytesRead = is.read(buffer);
+
+        /*
+         * If the block read did not equal the full block size AND it is not the last block, throw an exception, as the
+         * algorithm cannot continue. Otherwise, encode the block.
+         */
+        if (is.available() > 0 && numBytesRead != ENCODE_BLOCK_SIZE_BYTES) {
+            throw new IOException("Failed to read full block of data for encoding.");
+        } else {
+            // Encode the block as Base 64
+            return encodeData(buffer, numBytesRead);
+        }
     }
 
     /**
@@ -185,6 +187,7 @@ public class Base64 {
      * @param block The block of data to be encoded.
      * @param numberOfBytes The number of bytes read during the encoding process for this block. This value is important to
      *        determine if special padding is required.
+     * @return The encoded bytes.
      * @throws IOException if an error occurs while attempting to encode the data.
      */
     private static byte[] encodeData(final byte[] block, final int numberOfBytes) throws IOException {
@@ -236,23 +239,40 @@ public class Base64 {
      * Decodes the next block of data read from the supplied input stream and writes the decoded value to the supplied output
      * stream.
      * 
-     * @param dis The source of the data to be decoded.
+     * @param is The source of the data to be decoded.
      * @param buffer Buffer used to hold the data while performing the decoding.
+     * @return The decoded bytes.
      * @throws IOException if an error occurs while attempting to read, or decode the data.
      */
-    private static byte[] decodeBlock(final DataInputStream dis, final byte[] buffer) throws IOException {
+    private static byte[] decodeBlock(final java.io.InputStream is, final byte[] buffer) throws IOException {
+        /*
+         * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that there are
+         * not any left over bytes from the previous read affecting the padding of the last block.
+         */
+        clearBuffer(buffer, DECODE_BLOCK_SIZE_BYTES);
+
         /*
          * Read one block (4 bytes) of Base 64 encoded data at a time and decode to the original byte values, removing any
          * padding present if necessary.
          */
-        dis.readFully(buffer);
-        return decodeData(translateBlock(buffer));
+        int numberRead = is.read(buffer);
+
+        /*
+         * If the block read did not equal the full block size AND it is not the last block, throw an exception, as the
+         * algorithm cannot continue. Otherwise, decode the block.
+         */
+        if (is.available() > 0 && numberRead != DECODE_BLOCK_SIZE_BYTES) {
+            throw new IOException("Failed to read full block of data for decoding.");
+        } else {
+            return decodeData(translateBlock(buffer));
+        }
     }
 
     /**
      * Decodes a block of base 64 encoded data.
      * 
      * @param block The block of data to be decoded.
+     * @return The decoded bytes.
      * @throws IOException if an error happens during decoding of the data.
      */
     private static byte[] decodeData(final byte[] block) throws IOException {
@@ -392,9 +412,9 @@ public class Base64 {
                 // Make sure that we have not read beyond the end of the wrapped stream.
                 if (in.available() > 0) {
                     if (operation == Operations.ENCODE) {
-                        tempBuffer = encodeBlock(new DataInputStream(in), new byte[ENCODE_BLOCK_SIZE_BYTES]);
+                        tempBuffer = encodeBlock(in, new byte[ENCODE_BLOCK_SIZE_BYTES]);
                     } else {
-                        tempBuffer = decodeBlock(new DataInputStream(in), new byte[DECODE_BLOCK_SIZE_BYTES]);
+                        tempBuffer = decodeBlock(in, new byte[DECODE_BLOCK_SIZE_BYTES]);
                     }
                     position = 0;
                 } else {
