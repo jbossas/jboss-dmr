@@ -34,5 +34,4 @@ public class Base64Test {
             fail("IOException not expected.");
         }
     }
-
 }

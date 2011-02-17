@@ -515,8 +515,21 @@ public class Base64 {
             }
         }
 
-        @Override
-        public void flush() throws IOException {
+        /**
+         * Closes this stream by writing any pending data to the underlying stream. NOTE: THIS METHOD DOES NOT CLOSE THE
+         * UNDERLYING STREAM. You must close the underlying stream manually.
+         */
+        public void close() throws IOException {
+            finish();
+        }
+
+        /**
+         * Performs any final clean-up/writing to ensure ALL data has been output to the wrapped output stream. This method
+         * handles edge cases in the base 64 specification, such as padding, etc.
+         * 
+         * @throws IOException if an error occurs during final output.
+         */
+        public void finish() throws IOException {
             /*
              * This block is required to catch the case where the last block written to the stream to be encoded is not 3 bytes
              * (i.e., it requires padding). This block will catch that case and flush the remaining bytes to ensure ALL data is
@@ -526,8 +539,6 @@ public class Base64 {
                 // Flush the remaining bytes!
                 out.write(encodeData(tempBuffer, position));
             }
-
-            super.flush();
         }
     }
 
