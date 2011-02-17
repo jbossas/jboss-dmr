@@ -159,15 +159,17 @@ public class Base64 {
         int numBytesRead = 0;
 
         /*
-         * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that there are
-         * not any left over bytes from the previous read affecting the padding of the last block.
-         */
-        clearBuffer(buffer, ENCODE_BLOCK_SIZE_BYTES);
-
-        /*
          * Read one block (3 bytes) of data at a time and encode it as base 64 data.
          */
         numBytesRead = is.read(buffer);
+
+        if (numBytesRead < ENCODE_BLOCK_SIZE_BYTES) {
+            /*
+             * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that there
+             * are not any left over bytes from the previous read affecting the padding of the last block.
+             */
+            clearBuffer(buffer, ENCODE_BLOCK_SIZE_BYTES - numBytesRead);
+        }
 
         /*
          * If the block read did not equal the full block size AND it is not the last block, throw an exception, as the
@@ -245,12 +247,6 @@ public class Base64 {
      * @throws IOException if an error occurs while attempting to read, or decode the data.
      */
     private static byte[] decodeBlock(final java.io.InputStream is, final byte[] buffer) throws IOException {
-        /*
-         * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that there are
-         * not any left over bytes from the previous read affecting the padding of the last block.
-         */
-        clearBuffer(buffer, DECODE_BLOCK_SIZE_BYTES);
-
         /*
          * Read one block (4 bytes) of Base 64 encoded data at a time and decode to the original byte values, removing any
          * padding present if necessary.
