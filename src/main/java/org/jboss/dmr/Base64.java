@@ -66,6 +66,23 @@ public class Base64 {
      */
     private static final int EOS = -1;
 
+    private static int readMostly(java.io.InputStream input, final byte[] buf) throws IOException {
+        int offset = 0;
+        int remaining = buf.length;
+        int read = 0;
+
+        while (remaining > 0) {
+            read = input.read(buf, offset, remaining);
+            if (read == EOS)
+                return offset == 0 ? EOS : offset;
+
+            offset += read;
+            remaining -= read;
+        }
+
+        return offset;
+    }
+
     /**
      * Encodes the supplied byte array into a Base64 encoded string. Note that this implementation does NOT insert newline
      * characters every 72 bytes.
@@ -119,8 +136,7 @@ public class Base64 {
             while (numberRead != EOS) {
                 numberRead = decodeBlock(is, inputBuffer, outputBuffer);
                 if (numberRead != EOS) {
-                    int numberToWrite = findOriginalBlockSize(inputBuffer);
-                    os.write(outputBuffer, 0, numberToWrite);
+                    os.write(outputBuffer, 0, numberRead);
                 }
             }
             os.flush();
@@ -182,29 +198,13 @@ public class Base64 {
         /*
          * Read one block (3 bytes) of data at a time and encode it as base 64 data.
          */
-        int numBytesRead = is.read(inputBuffer);
+        int numBytesRead = readMostly(is, inputBuffer);
 
         /*
          * Check for EOS.
          */
         if (numBytesRead != EOS) {
-            if (numBytesRead < ENCODE_BLOCK_SIZE_BYTES) {
-                /*
-                 * Clear the unread bytes from the previous read before attempting read the remaining bytes. This ensures that
-                 * there are not any left over bytes from the previous read affecting the padding of the last block.
-                 */
-                clearBuffer(inputBuffer, ENCODE_BLOCK_SIZE_BYTES - numBytesRead);
-            }
-
-            /*
-             * If the block read did not equal the full block size AND it is not the last block, throw an exception, as the
-             * algorithm cannot continue. Otherwise, encode the block.
-             */
-            if (is.available() > 0 && numBytesRead != ENCODE_BLOCK_SIZE_BYTES) {
-                throw new IOException("Failed to read full block of data for encoding.");
-            } else {
-                encodeData(inputBuffer, outputBuffer, numBytesRead);
-            }
+            encodeData(inputBuffer, outputBuffer, numBytesRead);
         }
 
         return numBytesRead;
@@ -238,14 +238,14 @@ public class Base64 {
                         byte secondByte = (byte) ((inputBuffer[currentIndex] & 0x3) << 4);
                         currentIndex++;
                         outputBuffer[convertedIndex] = ((byte) BASE_64_CHARACTERS
-                                .codePointAt((secondByte | ((inputBuffer[currentIndex] & 0xf0) >> 4))));
+                                .codePointAt((secondByte | (currentIndex == numberOfBytes ? 0 : ((inputBuffer[currentIndex] & 0xf0) >> 4)))));
                         break;
                     case 2:
                         // Right 4 bits of second byte OR'ed with left 2 bits of third byte
-                        byte thirdByte = (byte) (((byte) (inputBuffer[currentIndex]) & 0xf) << 2);
+                        byte thirdByte = (byte) ((inputBuffer[currentIndex] & 0xf) << 2);
                         currentIndex++;
                         outputBuffer[convertedIndex] = ((byte) BASE_64_CHARACTERS
-                                .codePointAt((thirdByte | ((inputBuffer[currentIndex] & 0xc0) >> 6))));
+                                .codePointAt((thirdByte | (currentIndex == numberOfBytes ? 0 : ((inputBuffer[currentIndex] & 0xc0) >> 6)))));
                         break;
                     case 3:
                         // Right 6 bits of the third byte
@@ -280,42 +280,35 @@ public class Base64 {
          * Read one block (4 bytes) of Base 64 encoded data at a time and decode to the original byte values, removing any
          * padding present if necessary.
          */
-        int numberRead = is.read(inputBuffer);
+        int numberRead = readMostly(is, inputBuffer);
 
         /*
          * Check for EOS.
          */
         if (numberRead != EOS) {
-            /*
-             * If the block read did not equal the full block size AND it is not the last block, throw an exception, as the
-             * algorithm cannot continue. Otherwise, decode the block.
-             */
-            if (is.available() > 0 && numberRead != DECODE_BLOCK_SIZE_BYTES) {
-                throw new IOException("Failed to read full block of data for decoding.");
-            } else {
-                for (int i = 0; i < DECODE_BLOCK_SIZE_BYTES; i++) {
-                    /*
-                     * Note that the padding character ('='), will cause a value of -1 to be put into the byte array. This will
-                     * be detected later on by the decoding process and recognized as a padding byte and will be removed from
-                     * the decoded value.
-                     */
-                    inputBuffer[i] = (byte) BASE_64_CHARACTERS.indexOf((char) inputBuffer[i]);
-                }
-                decodeData(inputBuffer, outputBuffer);
+            for (int i = 0; i < DECODE_BLOCK_SIZE_BYTES; i++) {
+                /*
+                 * Note that the padding character ('='), will cause a value of -1 to be put into the byte array. This will
+                 * be detected later on by the decoding process and recognized as a padding byte and will be removed from
+                 * the decoded value.
+                 */
+                inputBuffer[i] = (byte) BASE_64_CHARACTERS.indexOf((char) inputBuffer[i]);
             }
+            return decodeData(inputBuffer, outputBuffer);
         }
 
-        return numberRead;
+        return EOS;
     }
 
     /**
      * Decodes a block of base 64 encoded data.
-     * 
+     *
      * @param inputBuffer The buffer containing the data to be decoded.
      * @param outputBuffer The buffer where the decoded data will be placed.
+     * @return number of bytes decoded
      * @throws IOException if an error happens during decoding of the data.
      */
-    private static void decodeData(final byte[] inputBuffer, final byte[] outputBuffer) throws IOException {
+    private static int decodeData(final byte[] inputBuffer, final byte[] outputBuffer) throws IOException {
         int currentIndex = 0;
         int shiftAmount = 2;
         int mask = 0x3;
@@ -340,7 +333,11 @@ public class Base64 {
                 mask = ((mask << 2) | 0x3);
                 currentIndex++;
             }
+
+            return actualLength;
         }
+
+        return 0;
     }
 
     /**
@@ -363,21 +360,6 @@ public class Base64 {
         }
 
         return length;
-    }
-
-    /**
-     * Clears the requested amount of bytes from the supplied buffer by setting the value at the index to zero. This method
-     * assumes that the values to be cleared are at the end of the array, so it starts at the index at the length of the buffer
-     * minus the number to clear.
-     * 
-     * @param buffer The buffer to be cleared.
-     * @param numberToClear The number of bytes to clear.
-     */
-    private static void clearBuffer(final byte[] buffer, final int numberToClear) {
-        // Clear the unread bytes from a previous read.
-        for (int i = buffer.length - numberToClear; i < buffer.length; i++) {
-            buffer[i] = 0;
-        }
     }
 
     /**
@@ -404,6 +386,8 @@ public class Base64 {
          * The current position within the temporary buffer. This is used to keep track of which byte to "read" next.
          */
         private int position = EOS;
+
+        private int available = 0;
 
         /**
          * Creates a new base 64 input stream wrapped around the supplied java.io.InputStream instance.
@@ -433,18 +417,20 @@ public class Base64 {
             /*
              * If there is no data waiting to be processed in the temporary buffer, it's time to go get more data.
              */
+
             if (position < 0) {
                 if (operation == Operations.ENCODE) {
-                    position = encodeBlock(in, inputBuffer, outputBuffer);
+                    encodeBlock(in, inputBuffer, outputBuffer);
+                    available = outputBuffer.length;
                 } else {
-                    position = decodeBlock(in, inputBuffer, outputBuffer);
+                    available = decodeBlock(in, inputBuffer, outputBuffer);
                 }
 
                 /*
                  * If actual data was processed, reset the position pointer to 0. Otherwise, leave it as -1 to let the EOS
                  * propagate.
                  */
-                if (position != EOS) {
+                if (available != EOS) {
                     position = 0;
                 }
             }
@@ -453,12 +439,12 @@ public class Base64 {
              * If the position pointer is somehow beyond the length of the buffer or has been set to -1, return EOS. Otherwise,
              * read the next byte from the temporary buffer.
              */
-            if (position >= outputBuffer.length || position < 0) {
+            if (position >= available || position < 0) {
                 return EOS;
             } else {
                 final byte b = outputBuffer[position];
                 position++;
-                if (position >= outputBuffer.length) {
+                if (position >= available) {
                     position = EOS;
                 }
 
@@ -549,8 +535,7 @@ public class Base64 {
                     encodeData(inputBuffer, outputBuffer, inputBuffer.length);
                     numberToWrite = DECODE_BLOCK_SIZE_BYTES;
                 } else {
-                    decodeData(inputBuffer, outputBuffer);
-                    numberToWrite = findOriginalBlockSize(inputBuffer);
+                    numberToWrite = decodeData(inputBuffer, outputBuffer);
                 }
                 out.write(outputBuffer, 0, numberToWrite);
                 position = 0;

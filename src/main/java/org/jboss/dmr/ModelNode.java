@@ -1235,6 +1235,7 @@ public class ModelNode implements Externalizable, Cloneable {
         Base64.InputStream bstream = new Base64.InputStream(stream);
         ModelNode node = new ModelNode();
         node.readExternal(bstream);
+        bstream.close();
         return node;
     }
 
