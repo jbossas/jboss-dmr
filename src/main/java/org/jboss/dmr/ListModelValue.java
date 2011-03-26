@@ -132,7 +132,7 @@ final class ListModelValue extends ModelValue {
         final Iterator<ModelNode> i = list.iterator();
         while (i.hasNext()) {
             final ModelNode node = i.next();
-            if (node.getType() == ModelType.PROPERTY) {
+            if (node.getType() == ModelType.PROPERTY || node.getType() == ModelType.OBJECT) {
                 propertyList.add(node.asProperty());
             } else if (i.hasNext()) {
                 final ModelNode value = i.next();
