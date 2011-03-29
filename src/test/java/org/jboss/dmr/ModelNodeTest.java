@@ -45,6 +45,8 @@ public class ModelNodeTest {
         node.get("max-long-value").set(Long.MAX_VALUE);
         node.get("property-value").set("property", ModelType.PROPERTY);
         node.get("expression-value").setExpression("$expression");
+        node.get("true-value").set(true);
+        node.get("false-value").set(false);
     }
 
     @Test
@@ -71,7 +73,9 @@ public class ModelNodeTest {
         assertThat(dmrString, containsString("\"long-value\" => 14L,"));
         assertThat(dmrString, containsString("\"max-long-value\" => 9223372036854775807L,"));
         assertThat(dmrString, containsString("\"property-value\" => (\"property\" => UNDEFINED),"));
-        assertThat(dmrString, containsString("\"expression-value\" => expression \"$expression\""));
+        assertThat(dmrString, containsString("\"expression-value\" => expression \"$expression\","));
+        assertThat(dmrString, containsString("\"true-value\" => true,"));
+        assertThat(dmrString, containsString("\"false-value\" => false"));
     }
 
     @Test
@@ -101,7 +105,9 @@ public class ModelNodeTest {
         assertThat(dmrString, containsString("\"long-value\" => 14L,"));
         assertThat(dmrString, containsString("\"max-long-value\" => 9223372036854775807L,"));
         assertThat(dmrString, containsString("\"property-value\" => (\"property\" => UNDEFINED),"));
-        assertThat(dmrString, containsString("\"expression-value\" => expression \"$expression\""));
+        assertThat(dmrString, containsString("\"expression-value\" => expression \"$expression\","));
+        assertThat(dmrString, containsString("\"true-value\" => true,"));
+        assertThat(dmrString, containsString("\"false-value\" => false"));
     }
 
     @Test
@@ -138,7 +144,10 @@ public class ModelNodeTest {
         assertThat(
                 json,
                 containsString("\n    \"property-value\" : {\n        \"PROPERTY_VALUE\" : {\n            \"property\" : {\n                \"TYPE_MODEL_VALUE\" : \"UNDEFINED\"\n            }\n        }\n    },"));
-        assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }\n}"));
+        assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }"));
+        assertThat(json, containsString("\"true-value\" : true"));
+        assertThat(json, containsString("\"false-value\" : false"));
+        assertThat(json, containsString("\n}"));
 
         final String compressedJson = node.toJSONString(true);
         assertNotNull(compressedJson);
@@ -180,7 +189,10 @@ public class ModelNodeTest {
         assertThat(
                 json,
                 containsString("\n    \"property-value\" : {\n        \"PROPERTY_VALUE\" : {\n            \"property\" : {\n                \"TYPE_MODEL_VALUE\" : \"UNDEFINED\"\n            }\n        }\n    },"));
-        assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }\n}"));
+        assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }"));
+        assertThat(json, containsString("\"true-value\" : true"));
+        assertThat(json, containsString("\"false-value\" : false"));
+        assertThat(json, containsString("\n}"));
 
         final String compressedJson = node.toJSONString(true);
         assertNotNull(compressedJson);
@@ -219,7 +231,10 @@ public class ModelNodeTest {
         assertThat(
                 json,
                 containsString("\n    \"property-value\" : {\n        \"PROPERTY_VALUE\" : {\n            \"property\" : {\n                \"TYPE_MODEL_VALUE\" : \"UNDEFINED\"\n            }\n        }\n    },"));
-        assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }\n}"));
+        assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }"));
+        assertThat(json, containsString("\"true-value\" : true"));
+        assertThat(json, containsString("\"false-value\" : false"));
+        assertThat(json, containsString("\n}"));
 
         final String compressedJson = node.toJSONString(true);
         assertNotNull(compressedJson);
@@ -230,6 +245,7 @@ public class ModelNodeTest {
     @Test
     public void testFromJSONString() {
         final ModelNode parsedNode = ModelNode.fromJSONString(node.toJSONString(true));
+        // TODO why not a simple equality check?
         assertThat(parsedNode.toString(), containsString("\"description\" => \"A managable resource\","));
         assertThat(parsedNode.toString(), containsString("\"type\" => OBJECT,"));
         assertThat(parsedNode.toString(), containsString("\"tail-comment-allowed\" => false,"));
@@ -251,7 +267,15 @@ public class ModelNodeTest {
         assertThat(parsedNode.toString(), containsString("\"long-value\" => big integer 14,"));
         assertThat(parsedNode.toString(), containsString("\"max-long-value\" => big integer 9223372036854775807,"));
         assertThat(parsedNode.toString(), containsString("\"property-value\" => (\"property\" => UNDEFINED),"));
-        assertThat(parsedNode.toString(), containsString("\"expression-value\" => expression \"$expression\""));
+        assertThat(parsedNode.toString(), containsString("\"expression-value\" => expression \"$expression\","));
+        assertThat(parsedNode.toString(), containsString("\"true-value\" => true,"));
+        assertThat(parsedNode.toString(), containsString("\"false-value\" => false"));
+    }
+
+    @Test
+    public void testFromString() {
+        final ModelNode parsedNode = ModelNode.fromString(node.toString());
+        assertEquals(node, parsedNode);
     }
 
     @Test
@@ -259,7 +283,7 @@ public class ModelNodeTest {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             node.writeBase64(os);
-            assertEquals(652, os.toByteArray().length);
+            assertEquals(692, os.toByteArray().length);
         } catch (final IOException e) {
             fail("IOException not expected: " + e.getMessage());
         }

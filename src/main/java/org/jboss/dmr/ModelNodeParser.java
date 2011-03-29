@@ -187,12 +187,14 @@ class ModelNodeParser extends Parser {
         return new ModelNode().set(new BigInteger(arg));
     }
 
-    @Rules(rules = {
-        @Rule(lhs = "node", rhs = "TRUE"),
-        @Rule(lhs = "node", rhs = "FALSE")
-    })
-    protected ModelNode parseBoolean() {
-        return new ModelNode().set(Boolean.parseBoolean(yyText()));
+    @Rule(lhs = "node", rhs = "TRUE")
+    protected ModelNode parseTrue() {
+        return new ModelNode().set(Boolean.TRUE);
+    }
+
+    @Rule(lhs = "node", rhs = "FALSE")
+    protected ModelNode parseFalse() {
+        return new ModelNode().set(Boolean.FALSE);
     }
 
     @Rules(rules = {
@@ -277,7 +279,8 @@ class ModelNodeParser extends Parser {
         @Rule(lhs = "node", rhs = "LONG_VAL", args = "1")
     })
     protected ModelNode parseLong(final String arg) {
-        return new ModelNode().set(Long.parseLong(arg));
+        // Can't pass the trailing 'L' to parseLong
+        return new ModelNode().set(Long.parseLong(arg.substring(0, arg.length() - 1)));
     }
 
     @Rules(rules = {

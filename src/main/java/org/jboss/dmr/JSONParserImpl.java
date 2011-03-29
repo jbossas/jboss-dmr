@@ -155,9 +155,14 @@ public class JSONParserImpl extends JSONParser {
         return new ModelNode().set(new BigInteger(arg));
     }
 
-    @Rules(rules = { @Rule(lhs = "node", rhs = "TRUE"), @Rule(lhs = "node", rhs = "FALSE") })
-    protected ModelNode parseBoolean() {
-        return new ModelNode().set(Boolean.parseBoolean(yyText()));
+    @Rule(lhs = "node", rhs = "TRUE")
+    protected ModelNode parseTrue() {
+        return new ModelNode().set(Boolean.TRUE);
+    }
+
+    @Rule(lhs = "node", rhs = "FALSE")
+    protected ModelNode parseFalse() {
+        return new ModelNode().set(Boolean.FALSE);
     }
 
     @Rules(rules = { @Rule(lhs = "node", rhs = "INT_HEX_VAL", args = "1") })
