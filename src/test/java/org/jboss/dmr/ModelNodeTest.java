@@ -283,7 +283,7 @@ public class ModelNodeTest {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             node.writeBase64(os);
-            assertEquals(692, os.toByteArray().length);
+            assertEquals(701, os.toByteArray().length);
         } catch (final IOException e) {
             fail("IOException not expected: " + e.getMessage());
         }

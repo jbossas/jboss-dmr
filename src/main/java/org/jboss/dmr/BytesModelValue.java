@@ -140,13 +140,7 @@ final class BytesModelValue extends ModelValue {
         }
         writer.append(jsonEscape(TYPE_KEY));
         writer.append(" : ");
-        try {
-            writer.append(jsonEscape(Base64.encode(bytes)));
-        } catch (final IOException e) {
-            final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
-            n.setStackTrace(e.getStackTrace());
-            throw n;
-        }
+        writer.append(jsonEscape(Base64.encodeBytes(bytes)));
         if (multiLine) {
             indent(writer.append('\n'), indent);
         } else {

@@ -10,12 +10,12 @@ public class Base64Test {
     @Test
     public void testEncode() {
         try {
-            assertEquals("QSB0", Base64.encode("A t".getBytes()));
-            assertEquals("QQ==", Base64.encode("A".getBytes()));
-            assertEquals("QUI=", Base64.encode("AB".getBytes()));
-            assertEquals("QUJD", Base64.encode("ABC".getBytes()));
+            assertEquals("QSB0", Base64.encodeBytes("A t".getBytes()));
+            assertEquals("QQ==", Base64.encodeBytes("A".getBytes()));
+            assertEquals("QUI=", Base64.encodeBytes("AB".getBytes()));
+            assertEquals("QUJD", Base64.encodeBytes("ABC".getBytes()));
             assertEquals("VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==",
-                    Base64.encode("The quick brown fox jumps over the lazy dog".getBytes()));
+                    Base64.encodeBytes("The quick brown fox jumps over the lazy dog".getBytes()));
         } catch (final Exception e) {
             fail("IOException not expected.");
         }

@@ -1431,9 +1431,9 @@ public class ModelNode implements Externalizable, Cloneable {
      * @throws IOException if the specified stream has an issue
      */
     public void writeBase64(OutputStream stream) throws IOException {
-        OutputStream bstream = new Base64.OutputStream(stream);
+        Base64.OutputStream bstream = new Base64.OutputStream(stream);
         writeExternal(bstream);
-        bstream.close(); // Required to ensure last block is written to stream.
+        bstream.flushBase64(); // Required to ensure last block is written to stream.
     }
 
     private void checkProtect() {
