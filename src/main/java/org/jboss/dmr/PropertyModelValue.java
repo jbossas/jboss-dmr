@@ -164,24 +164,6 @@ final class PropertyModelValue extends ModelValue {
         } else {
             writer.append(' ');
         }
-        writer.append(jsonEscape(TYPE_KEY));
-        writer.append(" : ");
-        formatPropertyAsJSON(writer, indent + 1, multiLineRequested);
-        if (multiLineRequested) {
-            indent(writer.append('\n'), indent);
-        } else {
-            writer.append(' ');
-        }
-        writer.append('}');
-    }
-
-    private void formatPropertyAsJSON(final PrintWriter writer, final int indent, final boolean multiLineRequested) {
-        writer.append('{');
-        if (multiLineRequested) {
-            indent(writer.append('\n'), indent + 1);
-        } else {
-            writer.append(' ');
-        }
         writer.append(jsonEscape(property.getName()));
         writer.append(" : ");
         property.getValue().formatAsJSON(writer, indent + 1, multiLineRequested);
