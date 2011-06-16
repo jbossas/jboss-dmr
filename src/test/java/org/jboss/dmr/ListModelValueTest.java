@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 public class ListModelValueTest {
@@ -56,4 +57,17 @@ public class ListModelValueTest {
         assertEquals("[\n    5,\n    6,\n    7\n]", stringWriter2.toString());
     }
 
+    @Test
+    public void testCloneNotProtected() {
+        final ModelNode model = new ModelNode(new ListModelValue());
+        model.protect();
+        try {
+            model.add();
+            fail("Should not allow child additions once protected");
+        } catch(Exception expected) {
+        }
+
+        final ModelNode cloned = model.clone();
+        cloned.add(); // Should not fail
+    }
 }

@@ -185,7 +185,12 @@ final class ListModelValue extends ModelValue {
 
     @Override
     ModelValue copy() {
-        return new ListModelValue(this);
+        final List<ModelNode> list = this.list;
+        final List<ModelNode> clonedValues = new ArrayList<ModelNode>(list.size());
+        for(ModelNode node : list) {
+            clonedValues.add(node.clone());
+        }
+        return new ListModelValue(clonedValues);
     }
 
     @Override
