@@ -197,11 +197,15 @@ public class ExpressionValueTest {
         // Override the var
         String sysPropName = envvar[0];
         String overrideValue = sysPropName+"-override";
-        System.setProperty(sysPropName, overrideValue);
-        final String envvarValue = envvar[1];
-        Assert.assertNotNull("Expect non-null env var: "+envvar[0], envvarValue);
-        final ExpressionValue value = new ExpressionValue("${"+envvar[0]+"}");
-        assertEquals(overrideValue, value.resolve().asString());
+        try {
+            System.setProperty(sysPropName, overrideValue);
+            final String envvarValue = envvar[1];
+            Assert.assertNotNull("Expect non-null env var: "+envvar[0], envvarValue);
+            final ExpressionValue value = new ExpressionValue("${"+envvar[0]+"}");
+            assertEquals(overrideValue, value.resolve().asString());
+        } finally {
+            System.clearProperty(sysPropName);
+        }
     }
 
     /**
