@@ -2,6 +2,7 @@ target
 *.iml
 *.ipr
 *.iws
+*.idea
 Test.java
 # ignore eclipse files
 .project
