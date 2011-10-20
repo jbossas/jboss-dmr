@@ -6,7 +6,9 @@ import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collection;
 
+import junit.framework.Assert;
 import org.junit.Test;
 
 public class ExpressionValueTest {
@@ -111,5 +113,118 @@ public class ExpressionValueTest {
     public void testResolve() {
         final ExpressionValue value = new ExpressionValue("some expression");
         assertEquals("some expression", value.resolve().asString());
+    }
+
+    /**
+     * Test that a valid expression to a system property reference which has
+     * no definition throws an ISE
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testUnresolvedReference() {
+        final ExpressionValue value = new ExpressionValue("${no-such-system-property");
+        String resolved = value.resolve().asString();
+        fail("Did not fail with ISE: "+resolved);
+    }
+
+    /**
+     * Validate a single system property expression sees the system property value.
+     */
+    @Test
+    public void testSystemPropertyRef() {
+        System.setProperty("test.property1", "test.property1.value");
+        try {
+            final ExpressionValue value = new ExpressionValue("${test.property1}");
+            assertEquals("test.property1.value", value.resolve().asString());
+        } finally {
+            System.clearProperty("test.property1");
+        }
+    }
+
+    /**
+     * Test an expression that contains more than one system property name to
+     * see that the second property value is used when the first property
+     * is not defined.
+     */
+    @Test
+    public void testSystemPropertyRefs() {
+        System.setProperty("test.property2", "test.property2.value");
+        try {
+            final ExpressionValue value = new ExpressionValue("${test.property1,test.property2}");
+            assertEquals("test.property2.value", value.resolve().asString());
+        } finally {
+            System.clearProperty("test.property2");
+        }
+    }
+
+    /**
+     * Validate that a system property expression for a property with no value
+     * and a default provides sees the default value.
+     */
+    @Test
+    public void testSystemPropertyRefDefault() {
+        final ExpressionValue value = new ExpressionValue("${test.property2:test.property2.default.value}");
+        assertEquals("test.property2.default.value", value.resolve().asString());
+    }
+
+    /**
+     * Validate that a environment variable reference is resolved.
+     */
+    @Test
+    public void testSystemEnvVarRef() {
+        // Since we cannot set ENV vars from java, grab first one
+        String[] envvar = findEnvVar();
+        if (envvar[0].length() == 0) {
+            System.err.println("No environment variables found, skipping test");
+            return;
+        }
+        final String envvarValue = envvar[1];
+        Assert.assertNotNull("Expect non-null env var: "+envvar[0], envvarValue);
+        final ExpressionValue value = new ExpressionValue("${"+envvar[0]+"}");
+        assertEquals(envvarValue, value.resolve().asString());
+    }
+    /**
+     * Validate that a environment variable reference is overriden by a
+     * system property of the same name prefixed with "env.".
+     */
+    @Test
+    public void testSystemEnvVarRefOverride() {
+        // Since we cannot set ENV vars from java, grab first one
+        String[] envvar = findEnvVar();
+        if (envvar[0].length() == 0) {
+            System.err.println("No environment variables found, skipping test");
+            return;
+        }
+        // Override the var
+        String sysPropName = envvar[0];
+        String overrideValue = sysPropName+"-override";
+        System.setProperty(sysPropName, overrideValue);
+        final String envvarValue = envvar[1];
+        Assert.assertNotNull("Expect non-null env var: "+envvar[0], envvarValue);
+        final ExpressionValue value = new ExpressionValue("${"+envvar[0]+"}");
+        assertEquals(overrideValue, value.resolve().asString());
+    }
+
+    /**
+     * Find the first defined System.getenv() environment variable with a non-zero length value.
+     * @return [0] = env var name prefixed with "env."
+     *  [1] = env var value. If [0].length == 0, then there
+     *  were no environment variables defined.
+     */
+    private static String[] findEnvVar() {
+        String[] pair = {"", null};
+        Collection<String> envvars = System.getenv().keySet();
+        if (envvars.isEmpty()) {
+            return pair;
+        }
+        for(final String envvar : envvars) {
+            final String envvarValue = System.getenv(envvar);
+            if (envvarValue != null && envvarValue.length() > 0) {
+                // Change name to env.name
+                pair[0] = "env." + envvar;
+                pair[1] = envvarValue;
+                break;
+            }
+        }
+        return pair;
     }
 }

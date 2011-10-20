@@ -109,17 +109,19 @@ final class ExpressionValue extends ModelValue {
 
     /**
      * Replace properties of the form:
-     * <code>${<i>&lt;name&gt;[</i>,<i>&lt;name2&gt;[</i>,<i>&lt;name3&gt;...]][</i>:<i>&lt;default&gt;]</i>}</code>
+     * <code>${<i>&lt;[env.]name&gt;[</i>,<i>&lt;[env.]name2&gt;[</i>,<i>&lt;[env.]name3&gt;...]][</i>:<i>&lt;default&gt;]</i>}</code>
      * 
-     * @param value
-     * @return
+     * @param value - either a system property or environment variable reference
+     * @return the value of the system property or environment variable referenced if
+     *  it exists
      */
     private static String replaceProperties(final String value) {
         final StringBuilder builder = new StringBuilder();
         final int len = value.length();
-        int state = 0;
+        int state = INITIAL;
         int start = -1;
         int nameStart = -1;
+        String resolvedValue = null;
         for (int i = 0; i < len; i = value.offsetByCodePoints(i, 1)) {
             final int ch = value.codePointAt(i);
             switch (state) {
@@ -173,9 +175,14 @@ final class ExpressionValue extends ModelValue {
                                 state = ch == '}' ? INITIAL : RESOLVED;
                                 continue;
                             }
-                            final String val = System.getProperty(name);
+                            // First check for system property, then env variable
+                            String val = System.getProperty(name);
+                            if (val == null && name.startsWith("env."))
+                                val = System.getenv(name.substring(4));
+
                             if (val != null) {
                                 builder.append(val);
+                                resolvedValue = val;
                                 state = ch == '}' ? INITIAL : RESOLVED;
                                 continue;
                             } else if (ch == ',') {
@@ -211,7 +218,7 @@ final class ExpressionValue extends ModelValue {
                     continue;
                 }
                 default:
-                    throw new IllegalStateException();
+                    throw new IllegalStateException("Unexpected char seen: "+ch);
             }
         }
         switch (state) {
@@ -219,11 +226,16 @@ final class ExpressionValue extends ModelValue {
                 builder.append('$');
                 break;
             }
-            case DEFAULT:
-            case GOT_OPEN_BRACE: {
+            case DEFAULT: {
                 builder.append(value.substring(start - 2));
                 break;
             }
+            case GOT_OPEN_BRACE: {
+                // We had a reference that was not resolved, throw ISE
+                if (resolvedValue == null)
+                    throw new IllegalStateException("Failed to resolve expression: "+builder.toString());
+                break;
+           }
         }
         return builder.toString();
     }
