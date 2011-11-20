@@ -110,7 +110,7 @@ final class ExpressionValue extends ModelValue {
     /**
      * Replace properties of the form:
      * <code>${<i>&lt;[env.]name&gt;[</i>,<i>&lt;[env.]name2&gt;[</i>,<i>&lt;[env.]name3&gt;...]][</i>:<i>&lt;default&gt;]</i>}</code>
-     * 
+     *
      * @param value - either a system property or environment variable reference
      * @return the value of the system property or environment variable referenced if
      *  it exists
@@ -193,9 +193,7 @@ final class ExpressionValue extends ModelValue {
                                 state = DEFAULT;
                                 continue;
                             } else {
-                                builder.append(value.substring(start - 2, i + 1));
-                                state = INITIAL;
-                                continue;
+                                throw new IllegalStateException("Failed to resolve expression: "+ value.substring(start - 2, i + 1));
                             }
                         }
                         default: {
@@ -233,7 +231,7 @@ final class ExpressionValue extends ModelValue {
             case GOT_OPEN_BRACE: {
                 // We had a reference that was not resolved, throw ISE
                 if (resolvedValue == null)
-                    throw new IllegalStateException("Failed to resolve expression: "+builder.toString());
+                    throw new IllegalStateException("Incomplete expression: "+builder.toString());
                 break;
            }
         }

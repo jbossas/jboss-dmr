@@ -121,7 +121,18 @@ public class ExpressionValueTest {
      */
     @Test(expected = IllegalStateException.class)
     public void testUnresolvedReference() {
-        final ExpressionValue value = new ExpressionValue("${no-such-system-property");
+        final ExpressionValue value = new ExpressionValue("${no-such-system-property}");
+        String resolved = value.resolve().asString();
+        fail("Did not fail with ISE: "+resolved);
+    }
+
+    /**
+     * Test that a incomplete expression to a system property reference throws an ISE
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testIncompleteReference() {
+        System.setProperty("test.property1", "test.property1.value");
+        final ExpressionValue value = new ExpressionValue("${test.property1");
         String resolved = value.resolve().asString();
         fail("Did not fail with ISE: "+resolved);
     }
