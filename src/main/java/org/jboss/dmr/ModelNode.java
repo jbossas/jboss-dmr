@@ -1349,10 +1349,20 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
-     * Return a copy of this model node, with all system property expressions locally resolved.  The caller must have
-     * permission to access all of the system properties named in the node tree.
+     * Return a copy of this model node, with all values of type {@link ModelType#EXPRESSION} locally resolved.
+     * The caller must have permission to access all of the system properties named in the node tree. If an expression
+     * begins with {@code ${env.} then a system property named {@code env.@lt;remainder of expression@gt;} will be
+     * checked, and if not present a {@link System#getenv(String) system environment variable named @lt;remainder of expression@gt;}
+     * will be checked. In that case the caller must have permission to access the environment variable.
      *
      * @return the resolved copy
+     *
+     * @throws IllegalStateException if there is a value of type {@link ModelType#EXPRESSION} in the node tree and
+     *                               there is no system property or environment variable that matches the expression
+     * @throws SecurityException
+     *         if a security manager exists and its
+     *         {@link SecurityManager#checkPermission checkPermission}
+     *         method doesn't allow access to the relevant system property or environment variable
      */
     public ModelNode resolve() {
         final ModelNode newNode = new ModelNode();
