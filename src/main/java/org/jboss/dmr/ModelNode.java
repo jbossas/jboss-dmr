@@ -66,7 +66,116 @@ public class ModelNode implements Externalizable, Cloneable {
     private boolean protect = false;
     private ModelValue value = ModelValue.UNDEFINED;
 
+    /**
+     * Creates a new {@code ModelNode} with an undefined value.
+     */
     public ModelNode() {
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value. Cannot be {@code null}
+     *
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
+    public ModelNode(final BigDecimal value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
+        this.value = new BigDecimalModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value. Cannot be {@code null}
+     *
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
+    public ModelNode(final BigInteger value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
+        this.value = new BigIntegerModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value.
+     */
+    public ModelNode(final boolean value) {
+        this(value ? BooleanModelValue.TRUE : BooleanModelValue.FALSE);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value. Cannot be {@code null}
+     *
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
+    public ModelNode(final byte[] value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
+        this.value = new BytesModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value.
+     */
+    public ModelNode(final double value) {
+        this.value = new DoubleModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value.
+     */
+    public ModelNode(final int value) {
+        this.value = new IntModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value.
+     */
+    public ModelNode(final long value) {
+        this.value = new LongModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value. Cannot be {@code null}
+     *
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
+    public ModelNode(final String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
+        this.value = new StringModelValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value. Cannot be {@code null}
+     *
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
+    public ModelNode(final ModelType value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
+        this.value = TypeModelValue.of(value);
     }
 
     ModelNode(final ModelValue value) {
@@ -682,7 +791,7 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public ModelNode get(final String name) {
         ModelValue value = this.value;
-        if ((value = this.value) == ModelValue.UNDEFINED) {
+        if (value == ModelValue.UNDEFINED) {
             checkProtect();
             return (this.value = new ObjectModelValue()).getChild(name);
         }
@@ -1001,7 +1110,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public ModelNode add() {
         checkProtect();
         ModelValue value = this.value;
-        if ((value = this.value) == ModelValue.UNDEFINED) {
+        if (value == ModelValue.UNDEFINED) {
             return (this.value = new ListModelValue()).addChild();
         }
         return value.addChild();
@@ -1058,7 +1167,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * value.
      *
      * @param index the index
-     * @return {@code true} if there is a node at the given index and its {@link #getType() type} is not {@link ModelType.UNDEFINED}
+     * @return {@code true} if there is a node at the given index and its {@link #getType() type} is not {@link ModelType#UNDEFINED}
      */
     public boolean hasDefined(int index) {
         return value.has(index) && get(index).isDefined();
@@ -1069,7 +1178,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * value with a key equal to the property name.
      *
      * @param key the name
-     * @return {@code true} if there is a node at the given index and its {@link #getType() type} is not {@link ModelType.UNDEFINED}
+     * @return {@code true} if there is a node at the given index and its {@link #getType() type} is not {@link ModelType#UNDEFINED}
      */
     public boolean hasDefined(String key) {
         return value.has(key) && get(key).isDefined();
@@ -1125,7 +1234,7 @@ public class ModelNode implements Externalizable, Cloneable {
     /**
      * Output the DMR string representation of this model node, formatted nicely, if requested to the supplied PrintWriter
      * instance.
-     * 
+     *
      * @param writer A PrintWriter instance used to output the DMR string.
      * @param compact Flag that indicates whether or not the string should be all on one line (i.e. {@code true}) or should be
      *        printed on multiple lines ({@code false}).
@@ -1147,7 +1256,7 @@ public class ModelNode implements Externalizable, Cloneable {
     /**
      * Output the JSON string representation of this model node, formatted nicely, if requested to the supplied PrintWriter
      * instance.
-     * 
+     *
      * @param writer A PrintWriter instance used to output the JSON string.
      * @param compact Flag that indicates whether or not the string should be all on one line (i.e. {@code true}) or should be
      *        printed on multiple lines ({@code false}).
@@ -1207,10 +1316,10 @@ public class ModelNode implements Externalizable, Cloneable {
         }
         return parser.getResult();
     }
-    
+
     /**
      * Get a model node from a JSON text representation of the model node. The stream must be encoded in US-ASCII encoding.
-     * 
+     *
      * @param stream the source stream
      * @return the model node
      */
