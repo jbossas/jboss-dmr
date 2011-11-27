@@ -73,17 +73,9 @@ public class TypeModelValueTest {
 
     @Test
     public void testOf() {
-        assertEquals(ModelType.LONG, TypeModelValue.of(ModelType.LONG).asType());
-        assertEquals(ModelType.INT, TypeModelValue.of(ModelType.INT).asType());
-        assertEquals(ModelType.BOOLEAN, TypeModelValue.of(ModelType.BOOLEAN).asType());
-        assertEquals(ModelType.STRING, TypeModelValue.of(ModelType.STRING).asType());
-        assertEquals(ModelType.DOUBLE, TypeModelValue.of(ModelType.DOUBLE).asType());
-        assertEquals(ModelType.BIG_DECIMAL, TypeModelValue.of(ModelType.BIG_DECIMAL).asType());
-        assertEquals(ModelType.BYTES, TypeModelValue.of(ModelType.BYTES).asType());
-        assertEquals(ModelType.LIST, TypeModelValue.of(ModelType.LIST).asType());
-        assertEquals(ModelType.TYPE, TypeModelValue.of(ModelType.TYPE).asType());
-        assertEquals(ModelType.OBJECT, TypeModelValue.of(ModelType.OBJECT).asType());
-        assertEquals(ModelType.UNDEFINED, TypeModelValue.of(ModelType.UNDEFINED).asType());
+        for (ModelType type : ModelType.values()) {
+            assertEquals(type, TypeModelValue.of(type).asType());
+        }
     }
 
     @Test

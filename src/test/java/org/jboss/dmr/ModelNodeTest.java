@@ -72,7 +72,7 @@ public class ModelNodeTest {
         assertThat(dmrString, containsString("\"max-int-value\" => 2147483647,"));
         assertThat(dmrString, containsString("\"long-value\" => 14L,"));
         assertThat(dmrString, containsString("\"max-long-value\" => 9223372036854775807L,"));
-        assertThat(dmrString, containsString("\"property-value\" => (\"property\" => UNDEFINED),"));
+        assertThat(dmrString, containsString("\"property-value\" => (\"property\" => PROPERTY),"));
         assertThat(dmrString, containsString("\"expression-value\" => expression \"$expression\","));
         assertThat(dmrString, containsString("\"true-value\" => true,"));
         assertThat(dmrString, containsString("\"false-value\" => false"));
@@ -104,7 +104,7 @@ public class ModelNodeTest {
         assertThat(dmrString, containsString("\"max-int-value\" => 2147483647,"));
         assertThat(dmrString, containsString("\"long-value\" => 14L,"));
         assertThat(dmrString, containsString("\"max-long-value\" => 9223372036854775807L,"));
-        assertThat(dmrString, containsString("\"property-value\" => (\"property\" => UNDEFINED),"));
+        assertThat(dmrString, containsString("\"property-value\" => (\"property\" => PROPERTY),"));
         assertThat(dmrString, containsString("\"expression-value\" => expression \"$expression\","));
         assertThat(dmrString, containsString("\"true-value\" => true,"));
         assertThat(dmrString, containsString("\"false-value\" => false"));
@@ -143,7 +143,7 @@ public class ModelNodeTest {
         assertThat(json, containsString("\"max-long-value\" : 9223372036854775807"));
         assertThat(
                 json,
-                containsString("\n    \"property-value\" : {\n        \"property\" : {\n            \"TYPE_MODEL_VALUE\" : \"UNDEFINED\"\n        }\n    },"));
+                containsString("\n    \"property-value\" : {\n        \"property\" : {\n            \"TYPE_MODEL_VALUE\" : \"PROPERTY\"\n        }\n    },"));
         assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }"));
         assertThat(json, containsString("\"true-value\" : true"));
         assertThat(json, containsString("\"false-value\" : false"));
@@ -188,7 +188,7 @@ public class ModelNodeTest {
         assertThat(json, containsString("\"max-long-value\" : 9223372036854775807"));
         assertThat(
                 json,
-                containsString("\n    \"property-value\" : {\n        \"property\" : {\n            \"TYPE_MODEL_VALUE\" : \"UNDEFINED\"\n        }\n    },"));
+                containsString("\n    \"property-value\" : {\n        \"property\" : {\n            \"TYPE_MODEL_VALUE\" : \"PROPERTY\"\n        }\n    },"));
         assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }"));
         assertThat(json, containsString("\"true-value\" : true"));
         assertThat(json, containsString("\"false-value\" : false"));
@@ -230,7 +230,7 @@ public class ModelNodeTest {
         assertThat(json, containsString("\"max-long-value\" : 9223372036854775807"));
         assertThat(
                 json,
-                containsString("\n    \"property-value\" : {\n        \"property\" : {\n            \"TYPE_MODEL_VALUE\" : \"UNDEFINED\"\n        }\n    },"));
+                containsString("\n    \"property-value\" : {\n        \"property\" : {\n            \"TYPE_MODEL_VALUE\" : \"PROPERTY\"\n        }\n    },"));
         assertThat(json, containsString("\"expression-value\" : {\n        \"EXPRESSION_VALUE\" : \"$expression\"\n    }"));
         assertThat(json, containsString("\"true-value\" : true"));
         assertThat(json, containsString("\"false-value\" : false"));
@@ -266,7 +266,7 @@ public class ModelNodeTest {
         assertThat(parsedNode.toString(), containsString("\"max-int-value\" => big integer 2147483647,"));
         assertThat(parsedNode.toString(), containsString("\"long-value\" => big integer 14,"));
         assertThat(parsedNode.toString(), containsString("\"max-long-value\" => big integer 9223372036854775807,"));
-        assertThat(parsedNode.toString(), containsString("\"property-value\" => {\"property\" => UNDEFINED},"));
+        assertThat(parsedNode.toString(), containsString("\"property-value\" => {\"property\" => PROPERTY},"));
         assertThat(parsedNode.toString(), containsString("\"expression-value\" => expression \"$expression\","));
         assertThat(parsedNode.toString(), containsString("\"true-value\" => true,"));
         assertThat(parsedNode.toString(), containsString("\"false-value\" => false"));
