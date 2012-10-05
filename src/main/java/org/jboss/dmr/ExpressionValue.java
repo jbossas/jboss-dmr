@@ -49,6 +49,7 @@ final class ExpressionValue extends ModelValue {
 
     @Override
     void writeExternal(final DataOutput out) throws IOException {
+        out.write(ModelType.EXPRESSION.typeChar);
         out.writeUTF(expressionString);
     }
 

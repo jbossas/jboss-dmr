@@ -42,6 +42,7 @@ final class LongModelValue extends ModelValue {
 
     @Override
     void writeExternal(final DataOutput out) throws IOException {
+        out.write(ModelType.LONG.typeChar);
         out.writeLong(value);
     }
 

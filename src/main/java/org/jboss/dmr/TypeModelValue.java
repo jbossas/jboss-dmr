@@ -45,6 +45,7 @@ final class TypeModelValue extends ModelValue {
 
     @Override
     void writeExternal(final DataOutput out) throws IOException {
+        out.write(ModelType.TYPE.typeChar);
         out.writeByte(value.getTypeChar());
     }
 

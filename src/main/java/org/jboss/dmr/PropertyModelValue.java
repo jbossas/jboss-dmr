@@ -69,6 +69,7 @@ final class PropertyModelValue extends ModelValue {
 
     @Override
     void writeExternal(final DataOutput out) throws IOException {
+        out.write(ModelType.PROPERTY.typeChar);
         out.writeUTF(property.getName());
         property.getValue().writeExternal(out);
     }

@@ -67,6 +67,7 @@ final class ObjectModelValue extends ModelValue {
 
     @Override
     void writeExternal(final DataOutput out) throws IOException {
+        out.write(ModelType.OBJECT.typeChar);
         final Map<String, ModelNode> map = this.map;
         final int size = map.size();
         out.writeInt(size);

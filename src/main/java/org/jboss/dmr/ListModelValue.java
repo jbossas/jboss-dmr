@@ -70,6 +70,7 @@ final class ListModelValue extends ModelValue {
 
     @Override
     void writeExternal(final DataOutput out) throws IOException {
+        out.write(ModelType.LIST.typeChar);
         final List<ModelNode> list = this.list;
         final int size = list.size();
         out.writeInt(size);

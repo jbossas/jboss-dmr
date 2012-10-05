@@ -37,7 +37,7 @@ public enum ModelType {
     LONG('J'),
     OBJECT('o'),
     PROPERTY('p'),
-    STRING('s'),
+    STRING('s'), // also S for long string
     TYPE('t'),
     UNDEFINED('u');
 
@@ -57,6 +57,7 @@ public enum ModelType {
              case 'I': return INT;
              case 'Z': return BOOLEAN;
              case 's': return STRING;
+             case 'S': return STRING;
              case 'D': return DOUBLE;
              case 'd': return BIG_DECIMAL;
              case 'i': return BIG_INTEGER;

@@ -255,6 +255,11 @@ abstract class ModelValue implements Cloneable {
         }
 
         @Override
+        void writeExternal(final DataOutput out) throws IOException {
+            out.write(ModelType.UNDEFINED.typeChar);
+        }
+
+        @Override
         public int hashCode() {
             return 7113;
         }
@@ -346,9 +351,7 @@ abstract class ModelValue implements Cloneable {
         return copy();
     }
 
-    void writeExternal(final DataOutput out) throws IOException {
-        // nothing by default
-    }
+    abstract void writeExternal(final DataOutput out) throws IOException;
 
     boolean has(final int index) {
         return false;

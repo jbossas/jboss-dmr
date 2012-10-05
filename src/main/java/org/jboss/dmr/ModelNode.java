@@ -1470,9 +1470,6 @@ public class ModelNode implements Externalizable, Cloneable {
      * @throws IOException if an I/O error occurs
      */
     public void writeExternal(final DataOutput out) throws IOException {
-        final ModelValue value = this.value;
-        final ModelType type = value.getType();
-        out.write(type.getTypeChar());
         value.writeExternal(out);
     }
 
@@ -1516,7 +1513,8 @@ public class ModelNode implements Externalizable, Cloneable {
     public void readExternal(final DataInput in) throws IOException {
         checkProtect();
         try {
-            final ModelType type = ModelType.forChar((char) (in.readByte() & 0xff));
+            final char c = (char) (in.readByte() & 0xff);
+            final ModelType type = ModelType.forChar(c);
             switch (type) {
                 case UNDEFINED: value = ModelValue.UNDEFINED; return;
                 case BIG_DECIMAL: value = new BigDecimalModelValue(in); return;
@@ -1530,7 +1528,7 @@ public class ModelNode implements Externalizable, Cloneable {
                 case LONG: value = new LongModelValue(in.readLong()); return;
                 case OBJECT: value = new ObjectModelValue(in); return;
                 case PROPERTY: value = new PropertyModelValue(in); return;
-                case STRING: value = new StringModelValue(in.readUTF()); return;
+                case STRING: value = new StringModelValue(c, in); return;
                 case TYPE: value = TypeModelValue.of(ModelType.forChar((char) (in.readByte() & 0xff))); return;
                 default: throw new InvalidObjectException("Invalid type read: " + type);
             }
