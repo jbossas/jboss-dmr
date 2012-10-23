@@ -106,17 +106,15 @@ final class StringModelValue extends ModelValue {
                 // Modified, modified UTF-8 (keep 0 as 0)
                 for (int i = 0; i < length; i ++) {
                     final char c = value.charAt(i);
-                    while (i < length) {
-                        if (c > 0 && c <= 0x7f) {
-                            out.writeByte(c);
-                        } else if (c <= 0x07ff) {
-                            out.writeByte(0xc0 | 0x1f & c >> 6);
-                            out.writeByte(0x80 | 0x3f & c);
-                        } else {
-                            out.writeByte(0xe0 | 0x0f & c >> 12);
-                            out.writeByte(0x80 | 0x3f & c >> 6);
-                            out.writeByte(0x80 | 0x3f & c);
-                        }
+                    if (c > 0 && c <= 0x7f) {
+                        out.writeByte(c);
+                    } else if (c <= 0x07ff) {
+                        out.writeByte(0xc0 | 0x1f & c >> 6);
+                        out.writeByte(0x80 | 0x3f & c);
+                    } else {
+                        out.writeByte(0xe0 | 0x0f & c >> 12);
+                        out.writeByte(0x80 | 0x3f & c >> 6);
+                        out.writeByte(0x80 | 0x3f & c);
                     }
                 }
                 return;
