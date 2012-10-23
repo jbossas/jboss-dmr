@@ -2,13 +2,20 @@ package org.jboss.dmr;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import java.util.Random;
 import org.junit.Test;
 
 public class StringModelValueTest {
@@ -22,8 +29,33 @@ public class StringModelValueTest {
     }
 
     @Test
-    public void testWriteExternal() {
-        // TODO implement test
+    public void testWriteExternal() throws IOException {
+        final Random r = new Random(1234L);
+        final StringBuilder b = new StringBuilder(80000);
+        for (int i = 0; i < 4000; i ++) {
+            b.append((char) r.nextInt());
+        }
+        final String smallString = b.toString();
+        final StringModelValue small = new StringModelValue(smallString);
+        for (int i = 0; i < 76000; i ++) {
+            b.append((char) r.nextInt());
+        }
+        final String largeString = b.toString();
+        final StringModelValue large = new StringModelValue(largeString);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream(200000);
+        final DataOutputStream dos = new DataOutputStream(baos);
+        small.writeExternal(dos);
+        large.writeExternal(dos);
+        dos.flush();
+        baos.flush();
+        final ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        final DataInputStream dis = new DataInputStream(bais);
+        assertEquals(dis.readUnsignedByte(), 's');
+        final StringModelValue smallIn = new StringModelValue('s', dis);
+        assertEquals(smallString, smallIn.asString());
+        assertEquals(dis.readUnsignedByte(), 'S');
+        final StringModelValue largeIn = new StringModelValue('S', dis);
+        assertEquals(largeString, largeIn.asString());
     }
 
     @Test
