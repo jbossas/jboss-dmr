@@ -59,7 +59,7 @@ public class JSONParserImpl extends JSONParser {
         // value types
         TRUE, FALSE,
 
-        INT_VAL, INT_HEX_VAL, LONG_VAL, LONG_HEX_VAL, DOUBLE_SPECIAL_VAL, DEC_VAL, STR_VAL
+        ZERO_VAL, OCTAL_INT_VAL, HEX_INT_VAL, SIGNED_HEX_INT_VAL, DEC_INT_VAL, NAN_VAL, INF_VAL, DEC_VAL, STR_VAL
     }
 
     @Lexs(patterns = { @Lex(pattern = "\\{", token = "OPEN_BRACE"), @Lex(pattern = "\\}", token = "CLOSE_BRACE"),
@@ -72,10 +72,14 @@ public class JSONParserImpl extends JSONParser {
         return null;
     }
 
-    @Lexs(patterns = { @Lex(pattern = "[+-]?[0-9]+L", token = "LONG_VAL"),
-            @Lex(pattern = "[+-]?0x[0-9a-fA-F]+L", token = "LONG_HEX_VAL"), @Lex(pattern = "[+-]?[0-9]+", token = "INT_VAL"),
-            @Lex(pattern = "[+-]?0x[0-9a-fA-F]+", token = "INT_HEX_VAL"),
-            @Lex(pattern = "[+-]?(NaN|Infinity)", token = "DOUBLE_SPECIAL_VAL"),
+    @Lexs(patterns = {
+            @Lex(pattern = "[+-]?0+", token = "ZERO_VAL"),
+            @Lex(pattern = "[+-]?0[0-9]+", token = "OCTAL_INT_VAL"),
+            @Lex(pattern = "0x[0-9a-fA-F]+", token = "HEX_INT_VAL"),
+            @Lex(pattern = "[+-]0x[0-9a-fA-F]+", token = "SIGNED_HEX_INT_VAL"),
+            @Lex(pattern = "[+-]?[1-9][0-9]*", token = "DEC_INT_VAL"),
+            @Lex(pattern = "[+-]?NaN", token = "NAN_VAL"),
+            @Lex(pattern = "[+-]?Infinity", token = "INF_VAL"),
             @Lex(pattern = "[+-]?([0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?)", token = "DEC_VAL") })
     protected String parsePlainValue() {
         return yyText();
@@ -145,34 +149,65 @@ public class JSONParserImpl extends JSONParser {
         return 0;
     }
 
+    @Rules(rules = { @Rule(lhs = "node", rhs = "ZERO_VAL") })
+    protected ModelNode parseZero() {
+        return new ModelNode().set(0);
+    }
+
     @Rules(rules = { @Rule(lhs = "node", rhs = "DEC_VAL", args = "1") })
     protected ModelNode parseBigDecimal(final String arg) {
         return new ModelNode().set(new BigDecimal(arg));
     }
 
-    @Rules(rules = { @Rule(lhs = "node", rhs = "INT_VAL", args = "1") })
-    protected ModelNode parseBigInteger(final String arg) {
-        return new ModelNode().set(new BigInteger(arg));
+    @Rules(rules = { @Rule(lhs = "node", rhs = "NAN_VAL") })
+    protected ModelNode parseNaN() {
+        return new ModelNode().set(Double.NaN);
+    }
+
+    @Rules(rules = { @Rule(lhs = "node", rhs = "INF_VAL", args = "1") })
+    protected ModelNode parseInf(String arg) {
+        return new ModelNode().set(arg.charAt(0) == '-' ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY);
+    }
+
+    @Rules(rules = { @Rule(lhs = "node", rhs = "DEC_INT_VAL", args = "1") })
+    protected ModelNode parseDecInt(final String arg) {
+        return parseInteger0(arg, 10);
+    }
+
+    @Rules(rules = { @Rule(lhs = "node", rhs = "OCTAL_INT_VAL", args = "1") })
+    protected ModelNode parseOctal(final String arg) {
+        return parseInteger0(arg, 8);
+    }
+
+    @Rules(rules = { @Rule(lhs = "node", rhs = "HEX_INT_VAL", args = "1") })
+    protected ModelNode parseHex(final String arg) {
+        return parseInteger0(arg.substring(2), 16);
+    }
+
+    @Rules(rules = { @Rule(lhs = "node", rhs = "SIGNED_HEX_INT_VAL", args = "1") })
+    protected ModelNode parseHexSigned(final String arg) {
+        return parseInteger0("" + arg.charAt(0) + arg.substring(3), 16);
+    }
+
+    private static ModelNode parseInteger0(final String arg, final int radix) {
+        final BigInteger val = new BigInteger(arg, radix);
+        if (val.bitLength() <= 31) {
+            return new ModelNode().set(val.intValue());
+        } else if (val.bitLength() <= 63) {
+            return new ModelNode().set(val.longValue());
+        } else {
+            return new ModelNode().set(val);
+        }
     }
 
     @Rule(lhs = "node", rhs = "TRUE")
     protected ModelNode parseTrue() {
-        return new ModelNode().set(Boolean.TRUE);
+        return new ModelNode().set(true);
     }
 
     @Rule(lhs = "node", rhs = "FALSE")
     protected ModelNode parseFalse() {
-        return new ModelNode().set(Boolean.FALSE);
-    }
-
-    @Rules(rules = { @Rule(lhs = "node", rhs = "INT_HEX_VAL", args = "1") })
-    protected ModelNode parseIntHex(final String arg) {
-        return new ModelNode().set(Integer.parseInt(arg.substring(2), 16));
-    }
-
-    @Rules(rules = { @Rule(lhs = "node", rhs = "LONG_HEX_VAL", args = "1") })
-    protected ModelNode parseLongHex(final String arg) {
-        return new ModelNode().set(Long.parseLong(arg.substring(2), 16));
+        return new ModelNode().set(false);
     }
 
     @Rules(rules = { @Rule(lhs = "node", rhs = "OPEN_BRACKET CLOSE_BRACKET") })
