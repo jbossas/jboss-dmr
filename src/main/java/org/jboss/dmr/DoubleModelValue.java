@@ -102,7 +102,8 @@ final class DoubleModelValue extends ModelValue {
 
     @Override
     BigDecimal asBigDecimal() {
-        return new BigDecimal(value);
+        // Use the "pretty" over the "exact"
+        return BigDecimal.valueOf(value);
     }
 
     @Override
