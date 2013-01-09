@@ -88,7 +88,7 @@ public class DoubleModelValueTest {
     @Test
     public void testAsBigDecimal() {
         final DoubleModelValue value = new DoubleModelValue(5.0);
-        assertEquals(new BigDecimal(5), value.asBigDecimal());
+        assertEquals(BigDecimal.valueOf(5.0), value.asBigDecimal());
     }
 
     @Test
