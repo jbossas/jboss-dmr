@@ -34,14 +34,14 @@
 
     <groupId>org.jboss</groupId>
     <artifactId>jboss-dmr</artifactId>
-    <version>1.1.4.Final-SNAPSHOT</version>
+    <version>1.1.4.Final</version>
     <name>JBoss Dynamic Model Representation</name>
 
     <dependencies>
         <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
-            <version>1.2.0.CR8</version>
+            <version>1.2.0.GA</version>
             <scope>test</scope>
         </dependency>
         <dependency>
