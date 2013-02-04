@@ -171,6 +171,20 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @throws IllegalArgumentException if {@code value} is {@code null}
      */
+    public ModelNode(final ValueExpression value) {
+        if (value == null) {
+            throw new IllegalArgumentException("value is null");
+        }
+        this.value = new ExpressionValue(value);
+    }
+
+    /**
+     * Creates a new {@code ModelNode} with the given {@code value}.
+     *
+     * @param value the value. Cannot be {@code null}
+     *
+     * @throws IllegalArgumentException if {@code value} is {@code null}
+     */
     public ModelNode(final ModelType value) {
         if (value == null) {
             throw new IllegalArgumentException("value is null");
@@ -337,6 +351,16 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Get the value of this node as an expression.
+     *
+     * @return the expression
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public ValueExpression asExpression() throws IllegalArgumentException {
+        return value.asExpression();
+    }
+
+    /**
      * Get the value of this node as a property.  Object values will return a property if there is exactly one
      * property in the object.  List values will return a property if there are exactly two items in the list,
      * and if the first is convertible to a string.
@@ -437,8 +461,25 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value
      * @return this node
+     * @deprecated Use {@link #set(ValueExpression)} instead.
      */
+    @Deprecated
     public ModelNode setExpression(final String newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException("newValue is null");
+        }
+        checkProtect();
+        value = new ExpressionValue(newValue);
+        return this;
+    }
+
+    /**
+     * Change this node's value to the given value.
+     *
+     * @param newValue the new value
+     * @return this node
+     */
+    public ModelNode set(final ValueExpression newValue) {
         if (newValue == null) {
             throw new IllegalArgumentException("newValue is null");
         }
@@ -654,11 +695,28 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property expression value
      * @return this node
+     * @deprecated Use {@link #set(String,ValueExpression)} instead.
      */
+    @Deprecated
     public ModelNode setExpression(final String propertyName, final String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
         node.setExpression(propertyValue);
+        value = new PropertyModelValue(propertyName, node);
+        return this;
+    }
+
+    /**
+     * Change this node's value to a property with the given name and value.
+     *
+     * @param propertyName the property name
+     * @param propertyValue the property value
+     * @return this node
+     */
+    public ModelNode set(final String propertyName, final ValueExpression propertyValue) {
+        checkProtect();
+        final ModelNode node = new ModelNode();
+        node.set(propertyValue);
         value = new PropertyModelValue(propertyName, node);
         return this;
     }
@@ -913,9 +971,23 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     * @deprecated Use {@link #add(ValueExpression)} instead.
      */
+    @Deprecated
     public ModelNode addExpression(final String newValue) {
         add().setExpression(newValue);
+        return this;
+    }
+
+    /**
+     * Add the given value to the end of this node's value list.  If the node is undefined, it will be initialized to be
+     * of type {@link ModelType#LIST}.
+     *
+     * @param newValue the new value to add
+     * @return this node
+     */
+    public ModelNode add(final ValueExpression newValue) {
+        add().set(newValue);
         return this;
     }
 
@@ -1032,6 +1104,19 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return this node
      */
     public ModelNode add(final String propertyName, final boolean propertyValue) {
+        add().set(propertyName, propertyValue);
+        return this;
+    }
+
+    /**
+     * Add a property with the given name and value to the end of this node's value list.  If the node is undefined, it
+     * will be initialized to be of type {@link ModelType#LIST}.
+     *
+     * @param propertyName the property name
+     * @param propertyValue the property value
+     * @return this node
+     */
+    public ModelNode add(final String propertyName, final ValueExpression propertyValue) {
         add().set(propertyName, propertyValue);
         return this;
     }

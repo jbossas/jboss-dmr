@@ -31,7 +31,7 @@ public class ExpressionValueTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testExpressionValueWithNullExpression() {
-        new ExpressionValue(null);
+        new ExpressionValue((String)null);
         fail("Expected IllegalArgumentException.");
     }
 

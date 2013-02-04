@@ -189,6 +189,11 @@ final class StringModelValue extends ModelValue {
     }
 
     @Override
+    ValueExpression asExpression() {
+        return new ValueExpression(ValueExpression.quote(value));
+    }
+
+    @Override
     ModelType asType() {
         return ModelType.valueOf(value);
     }

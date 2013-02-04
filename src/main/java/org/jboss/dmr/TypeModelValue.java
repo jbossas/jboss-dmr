@@ -113,6 +113,11 @@ final class TypeModelValue extends ModelValue {
     }
 
     @Override
+    ValueExpression asExpression() {
+        return new ValueExpression(asString());
+    }
+
+    @Override
     ModelType asType() {
         return value;
     }
