@@ -100,6 +100,10 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
+    ValueExpression asExpression() {
+        throw new IllegalArgumentException();
+    }
+
     ModelNode asObject() {
         throw new IllegalArgumentException();
     }

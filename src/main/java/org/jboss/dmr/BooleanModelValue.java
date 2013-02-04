@@ -111,6 +111,11 @@ final class BooleanModelValue extends ModelValue {
         return Boolean.toString(value);
     }
 
+    @Override
+    ValueExpression asExpression() {
+        return new ValueExpression(asString());
+    }
+
     static BooleanModelValue valueOf(final boolean value) {
         return value ? TRUE : FALSE;
     }

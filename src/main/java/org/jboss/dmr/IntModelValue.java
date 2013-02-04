@@ -110,6 +110,11 @@ final class IntModelValue extends ModelValue {
         return Integer.toString(value);
     }
 
+    @Override
+    ValueExpression asExpression() {
+        return new ValueExpression(asString());
+    }
+
     /**
      * Determine whether this object is equal to another.
      *

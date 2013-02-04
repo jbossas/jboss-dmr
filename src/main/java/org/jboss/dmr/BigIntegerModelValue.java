@@ -112,6 +112,11 @@ final class BigIntegerModelValue extends ModelValue {
     }
 
     @Override
+    ValueExpression asExpression() {
+        return new ValueExpression(asString());
+    }
+
+    @Override
     void format(final PrintWriter writer, final int indent, final boolean ignored) {
         writer.append("big integer ");
         writer.append(asString());
