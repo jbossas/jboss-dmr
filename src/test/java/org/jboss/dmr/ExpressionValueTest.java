@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.Collection;
 
 import junit.framework.Assert;
@@ -217,6 +218,18 @@ public class ExpressionValueTest {
         } finally {
             System.clearProperty(sysPropName);
         }
+    }
+
+    /**
+     * Make sure nesting works right
+     */
+    @Test
+    public void testNesting() {
+        assertEquals("{blah}", new ExpressionValue("${resolves.to.nothing:{blah}}").resolve().asString());
+        assertEquals("{blah}", new ExpressionValue("${resolves.to.nothing,also.resolves.to.nothing:{blah}}").resolve().asString());
+        assertEquals(System.getProperty("os.name"), new ExpressionValue("${os.name:{blah}}").resolve().asString());
+        assertEquals("{{fo{o}oo}}", new ExpressionValue("${resolves.to.nothing:{{fo{o}oo}}}").resolve().asString());
+        assertEquals("blah{{fo{o}oo}}blah", new ExpressionValue("${resolves.to.nothing:blah{{fo{o}oo}}}blah").resolve().asString());
     }
 
     /**
