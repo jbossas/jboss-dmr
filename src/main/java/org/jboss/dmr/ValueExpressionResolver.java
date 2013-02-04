@@ -54,6 +54,7 @@ public class ValueExpressionResolver {
         final int len = value.length();
         int state = INITIAL;
         int start = -1;
+        int nest = 0;
         int nameStart = -1;
         String resolvedValue = null;
         for (int i = 0; i < len; i = value.offsetByCodePoints(i, 1)) {
@@ -96,9 +97,17 @@ public class ValueExpressionResolver {
                 }
                 case GOT_OPEN_BRACE: {
                     switch (ch) {
+                        case '{': {
+                            nest++;
+                            continue;
+                        }
                         case ':':
                         case '}':
                         case ',': {
+                            if (nest > 0) {
+                                if (ch == '}') nest--;
+                                continue;
+                            }
                             final String val = resolvePart(value.substring(nameStart, i).trim());
                             if (val != null) {
                                 builder.append(val);
@@ -123,15 +132,27 @@ public class ValueExpressionResolver {
                     // not reachable
                 }
                 case RESOLVED: {
-                    if (ch == '}') {
-                        state = INITIAL;
+                    if (ch == '{') {
+                        nest ++;
+                    } else if (ch == '}') {
+                        if (nest > 0) {
+                            nest--;
+                        } else {
+                            state = INITIAL;
+                        }
                     }
                     continue;
                 }
                 case DEFAULT: {
-                    if (ch == '}') {
-                        state = INITIAL;
-                        builder.append(value.substring(start, i));
+                    if (ch == '{') {
+                        nest ++;
+                    } else if (ch == '}') {
+                        if (nest > 0) {
+                            nest --;
+                        } else {
+                            state = INITIAL;
+                            builder.append(value.substring(start, i));
+                        }
                     }
                     continue;
                 }
