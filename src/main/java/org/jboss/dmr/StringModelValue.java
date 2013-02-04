@@ -146,12 +146,18 @@ final class StringModelValue extends ModelValue {
 
     @Override
     boolean asBoolean() {
-        return Boolean.parseBoolean(value);
+        if (value.equalsIgnoreCase("true")) {
+            return true;
+        } else if (value.equalsIgnoreCase("false")) {
+            return false;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
     boolean asBoolean(final boolean defVal) {
-        return Boolean.parseBoolean(value);
+        return asBoolean();
     }
 
     @Override

@@ -169,7 +169,14 @@ public final class ValueExpression implements Externalizable {
      * @return the resolved value
      */
     public boolean resolveBoolean() {
-        return Boolean.parseBoolean(resolveString());
+        final String value = resolveString();
+        if (value.equalsIgnoreCase("true")) {
+            return true;
+        } else if (value.equalsIgnoreCase("false")) {
+            return false;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -179,7 +186,14 @@ public final class ValueExpression implements Externalizable {
      * @return the resolved value
      */
     public boolean resolveBoolean(final ValueExpressionResolver resolver) {
-        return Boolean.parseBoolean(resolveString(resolver));
+        final String value = resolveString(resolver);
+        if (value.equalsIgnoreCase("true")) {
+            return true;
+        } else if (value.equalsIgnoreCase("false")) {
+            return false;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
