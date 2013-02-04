@@ -109,7 +109,10 @@ public class StringModelValueTest {
     @Test
     public void testAsBoolean() {
         final StringModelValue value1 = new StringModelValue("5");
-        assertEquals(false, value1.asBoolean());
+        try {
+            value1.asBoolean();
+            fail("Expected exception");
+        } catch (IllegalArgumentException expected) {}
 
         final StringModelValue value2 = new StringModelValue("true");
         assertEquals(true, value2.asBoolean());
@@ -121,7 +124,10 @@ public class StringModelValueTest {
     @Test
     public void testAsBooleanWithDefault() {
         final StringModelValue value1 = new StringModelValue("5");
-        assertEquals(false, value1.asBoolean(true));
+        try {
+            value1.asBoolean();
+            fail("Expected exception");
+        } catch (IllegalArgumentException expected) {}
 
         final StringModelValue value2 = new StringModelValue("true");
         assertEquals(true, value2.asBoolean(false));
