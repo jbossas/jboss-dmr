@@ -110,7 +110,7 @@ public class JSONParserImpl extends JSONParser {
                             b.append('\f');
                             break;
                         case 'u':
-                            b.append((char) Integer.parseInt(yyText.substring(i + 1, i + 5)));
+                            b.append((char) Integer.parseInt(yyText.substring(i + 1, i + 5), 16));
                             i += 4;
                             break;
                         default:
