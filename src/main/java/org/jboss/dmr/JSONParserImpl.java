@@ -86,14 +86,14 @@ public class JSONParserImpl extends JSONParser {
     }
 
     @Lex(pattern = "\\\"([^\"\\\\]+|\\\\.)*\\\"", token = "STR_VAL")
-    protected String parseStringValue() {
+    protected String parseStringValue() throws IOException {
         final String yyText = yyText();
         final int length = yyText.length();
         final StringBuilder b = new StringBuilder(length);
         for (int i = 1; i < length - 1; i = yyText.offsetByCodePoints(i, 1)) {
             int ch = yyText.codePointAt(i);
             switch (ch) {
-                case '\\': {
+                case '\\':
                     i = yyText.offsetByCodePoints(i, 1);
                     ch = yyText.codePointAt(i);
                     switch (ch) {
@@ -109,20 +109,19 @@ public class JSONParserImpl extends JSONParser {
                         case 'f':
                             b.append('\f');
                             break;
+                        case 't':
+                            b.append('\t');
+                            break;
                         case 'u':
                             b.append((char) Integer.parseInt(yyText.substring(i + 1, i + 5), 16));
                             i += 4;
                             break;
                         default:
                             b.appendCodePoint(ch);
-                            break;
                     }
                     break;
-                }
-                default: {
+                default:
                     b.appendCodePoint(ch);
-                    break;
-                }
             }
         }
         return b.toString();

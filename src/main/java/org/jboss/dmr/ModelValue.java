@@ -195,8 +195,9 @@ abstract class ModelValue implements Cloneable {
                     builder.append("\\t");
                     break;
                 default:
-                    if ((cp >= '\u0000' && cp <= '\u001F') || (cp >= '\u007F' && cp <= '\u009F')
-                            || (cp >= '\u2000' && cp <= '\u20FF')) {
+                    // Only escape control characters 0x00 through 0x1F (space is 0x20)
+                    // Reference: http://www.ietf.org/rfc/rfc4627.txt
+                    if (cp < 0x20) {
                         final String hexString = Integer.toHexString(cp);
                         builder.append("\\u");
                         for (int k = 0; k < 4 - hexString.length(); k++) {
@@ -206,7 +207,6 @@ abstract class ModelValue implements Cloneable {
                     } else {
                         builder.appendCodePoint(cp);
                     }
-                    break;
             }
         }
         builder.append('"');
