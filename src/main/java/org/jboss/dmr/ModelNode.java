@@ -1057,6 +1057,18 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Add a property to the end of this node's value list.  If the node is undefined, it
+     * will be initialized to be of type {@link ModelType#LIST}.
+     *
+     * @param property the property
+     * @return this node
+     */
+    public ModelNode add(final Property property) {
+        add().set(property);
+        return this;
+    }
+
+    /**
      * Add a property with the given name and value to the end of this node's value list.  If the node is undefined, it
      * will be initialized to be of type {@link ModelType#LIST}.
      *
