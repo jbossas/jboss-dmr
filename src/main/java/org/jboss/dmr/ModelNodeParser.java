@@ -139,7 +139,7 @@ class ModelNodeParser extends Parser {
                         case 'r': b.append('\r'); break;
                         case 'b': b.append('\b'); break;
                         case 'f': b.append('\f'); break;
-                        case 'u': b.append((char) Integer.parseInt(yyText.substring(i + 1, i + 5))); i+=4; break;
+                        case 'u': b.append((char) Integer.parseInt(yyText.substring(i + 1, i + 5), 16)); i+=4; break;
                         default: b.appendCodePoint(ch); break;
                     }
                     break;
