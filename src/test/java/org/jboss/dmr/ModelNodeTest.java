@@ -273,6 +273,14 @@ public class ModelNodeTest {
     }
 
     @Test
+    public void testFromJSONStringUnicode() {
+        final ModelNode unicodeNode = new ModelNode();
+        unicodeNode.get("unicode-value").set("A string with unicode characters: \u0000\u0001\u001F\u0020\u007F\u0080\u009F\u2000\u2001\u20FF");
+        final ModelNode parsedNode = ModelNode.fromJSONString(unicodeNode.toJSONString(true));
+        assertEquals("A string with unicode characters: \u0000\u0001\u001F\u0020\u007F\u0080\u009F\u2000\u2001\u20FF", parsedNode.get("unicode-value").asString());
+    }
+
+    @Test
     public void testFromString() {
         final ModelNode parsedNode = ModelNode.fromString(node.toString());
         assertEquals(node, parsedNode);

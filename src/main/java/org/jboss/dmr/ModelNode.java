@@ -1374,7 +1374,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public static ModelNode fromJSONString(final String input) {
         final JSONParserImpl parser = new JSONParserImpl();
         try {
-            parser.setInput(new ByteArrayInputStream(input.getBytes("US-ASCII")));
+            parser.setInput(new ByteArrayInputStream(input.getBytes("UTF-8")));
             if(parser.yyParse() > 0) {
                 throw new IllegalArgumentException("JSON parser error");
             }
@@ -1403,7 +1403,7 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
-     * Get a model node from a JSON text representation of the model node. The stream must be encoded in US-ASCII encoding.
+     * Get a model node from a JSON text representation of the model node. The stream should be encoded in UTF-8.
      *
      * @param stream the source stream
      * @return the model node
