@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.hamcrest.CoreMatchers.containsString;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +44,7 @@ public class ModelNodeTest {
         node.get("long-value").set(Long.valueOf("14"));
         node.get("max-long-value").set(Long.MAX_VALUE);
         node.get("property-value").set("property", ModelType.PROPERTY);
-        node.get("expression-value").setExpression("$expression");
+        node.get("expression-value").set(new ValueExpression("$expression"));
         node.get("true-value").set(true);
         node.get("false-value").set(false);
     }
