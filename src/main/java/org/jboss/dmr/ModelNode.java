@@ -1260,6 +1260,26 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Recursively determine whether this node has children with the given names. If any child along the path does not
+     * exist, return {@code false}.
+     *
+     * @param names the child names
+     * @return {@code true} if a call to {@link #get(String...)} with the given {@code names} would succeed without
+     *         needing to create any new nodes; {@code false} otherwise
+     */
+    public boolean has(final String... names) {
+        ModelNode current = this;
+        for (final String part : names) {
+            if (current.has(part)) {
+                current = current.get(part);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Determine whether this node has a defined child with the given index.  Property node types always contain exactly one
      * value.
      *
@@ -1279,6 +1299,26 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public boolean hasDefined(String key) {
         return value.has(key) && get(key).isDefined();
+    }
+
+    /**
+     * Recursively determine whether this node has defined children with the given names. If any child along the path does not
+     * exist or is not defined, return {@code false}.
+     *
+     * @param names the child names
+     * @return {@code true} if a call to {@link #get(String...)} with the given {@code names} would succeed without
+     *         needing to create any new nodes and without traversing any undefined nodes; {@code false} otherwise
+     */
+    public boolean hasDefined(final String... names) {
+        ModelNode current = this;
+        for (final String part : names) {
+            if (current.hasDefined(part)) {
+                current = current.get(part);
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
