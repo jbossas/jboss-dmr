@@ -116,11 +116,19 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
+    ModelNode removeChild(final int index) {
+        throw new IllegalArgumentException();
+    }
+
     ModelNode getChild(final int index) {
         throw new IllegalArgumentException();
     }
 
     ModelNode addChild() {
+        throw new IllegalArgumentException();
+    }
+
+    ModelNode insertChild(int index) {
         throw new IllegalArgumentException();
     }
 

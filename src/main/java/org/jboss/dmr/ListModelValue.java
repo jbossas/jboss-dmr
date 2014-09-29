@@ -180,6 +180,18 @@ final class ListModelValue extends ModelValue {
     }
 
     @Override
+    ModelNode insertChild(int index) {
+        final ModelNode node = new ModelNode();
+        list.add(index, node);
+        return node;
+    }
+
+    @Override
+    ModelNode removeChild(int index) {
+        return list.remove(index);
+    }
+
+    @Override
     List<ModelNode> asList() {
         return Collections.unmodifiableList(list);
     }

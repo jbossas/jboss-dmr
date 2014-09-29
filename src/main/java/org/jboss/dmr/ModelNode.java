@@ -885,6 +885,20 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Remove a child of this list, returning the child.  If no such child exists,
+     * an exception is thrown.
+     * <p>
+     * When called on property values, the name must match the property name.
+     *
+     * @param index the child index
+     * @return the child
+     * @throws NoSuchElementException if the element does not exist
+     */
+    public ModelNode remove(final int index) throws NoSuchElementException {
+        return value.removeChild(index);
+    }
+
+    /**
      * Get the child of this node with the given index.  If no such child exists, create it (adding list entries as needed).
      * If the node is undefined, it will be initialized to be of type {@link ModelType#LIST}.
      * <p>
@@ -1036,6 +1050,18 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public ModelNode add(final ModelNode newValue) {
         add().set(newValue);
+        return this;
+    }
+
+    /**
+     * insert copy of the given value to provided index of this node's value list.  If the node is undefined, it will be initialized to be
+     * of type {@link ModelType#LIST}.
+     *
+     * @param newValue the new value to add
+     * @return this node
+     */
+    public ModelNode insert(final ModelNode newValue, int index) {
+        insert(index).set(newValue);
         return this;
     }
 
@@ -1211,6 +1237,22 @@ public class ModelNode implements Externalizable, Cloneable {
             return (this.value = new ListModelValue()).addChild();
         }
         return value.addChild();
+    }
+
+    /**
+     * Insert a node at provided index of this node's value list and return it.  If the node is undefined, it
+     * will be initialized to be of type {@link ModelType#LIST}.
+     *
+     * @param index where in list to put it
+     * @return the new node
+     */
+    public ModelNode insert(final int index) {
+        checkProtect();
+        ModelValue value = this.value;
+        if (value == ModelValue.UNDEFINED) {
+            return (this.value = new ListModelValue()).insertChild(index);
+        }
+        return value.insertChild(index);
     }
 
     /**
