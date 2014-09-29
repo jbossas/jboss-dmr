@@ -885,6 +885,20 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Remove a child of this list, returning the child.  If no such child exists,
+     * an exception is thrown.
+     * <p>
+     * When called on property values, the name must match the property name.
+     *
+     * @param index the child index
+     * @return the child
+     * @throws NoSuchElementException if the element does not exist
+     */
+    public ModelNode remove(final int index) throws NoSuchElementException {
+        return value.removeChild(index);
+    }
+
+    /**
      * Get the child of this node with the given index.  If no such child exists, create it (adding list entries as needed).
      * If the node is undefined, it will be initialized to be of type {@link ModelType#LIST}.
      * <p>
@@ -1236,9 +1250,9 @@ public class ModelNode implements Externalizable, Cloneable {
         checkProtect();
         ModelValue value = this.value;
         if (value == ModelValue.UNDEFINED) {
-            return (this.value = new ListModelValue()).insert(index);
+            return (this.value = new ListModelValue()).insertChild(index);
         }
-        return value.insert(index);
+        return value.insertChild(index);
     }
 
     /**
