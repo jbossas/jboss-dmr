@@ -1039,6 +1039,18 @@ public class ModelNode implements Externalizable, Cloneable {
         return this;
     }
 
+    /**
+     * insert copy of the given value to provided index of this node's value list.  If the node is undefined, it will be initialized to be
+     * of type {@link ModelType#LIST}.
+     *
+     * @param newValue the new value to add
+     * @return this node
+     */
+    public ModelNode insert(final ModelNode newValue, int index) {
+        insert(index).set(newValue);
+        return this;
+    }
+
     ModelNode addNoCopy(final ModelNode child) {
         add().value = child.value;
         return this;
@@ -1211,6 +1223,22 @@ public class ModelNode implements Externalizable, Cloneable {
             return (this.value = new ListModelValue()).addChild();
         }
         return value.addChild();
+    }
+
+    /**
+     * Insert a node at provided index of this node's value list and return it.  If the node is undefined, it
+     * will be initialized to be of type {@link ModelType#LIST}.
+     *
+     * @param index where in list to put it
+     * @return the new node
+     */
+    public ModelNode insert(final int index) {
+        checkProtect();
+        ModelValue value = this.value;
+        if (value == ModelValue.UNDEFINED) {
+            return (this.value = new ListModelValue()).insert(index);
+        }
+        return value.insert(index);
     }
 
     /**

@@ -124,6 +124,10 @@ abstract class ModelValue implements Cloneable {
         throw new IllegalArgumentException();
     }
 
+    ModelNode insert(int index) {
+        throw new IllegalArgumentException();
+    }
+
     Set<String> getKeys() {
         throw new IllegalArgumentException();
     }
