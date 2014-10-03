@@ -11,7 +11,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -305,6 +307,27 @@ public class ModelNodeTest {
         try {
             node.writeBase64(os);
             ModelNode newNode = ModelNode.fromBase64(new ByteArrayInputStream(os.toByteArray()));
+            assertNotNull(newNode);
+            assertEquals(node, newNode);
+        } catch (final IOException e) {
+            fail("IOException not expected: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testFromBase64String() {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            node.writeBase64(os);
+
+            Reader reader = new InputStreamReader(new ByteArrayInputStream(os.toByteArray()));
+            StringWriter sw = new StringWriter();
+            char[] cbuf = new char[1024];
+            int read;
+            while ((read = reader.read(cbuf)) != -1) {
+                sw.write(cbuf, 0, read);
+            }
+            ModelNode newNode = ModelNode.fromBase64String(sw.toString());
             assertNotNull(newNode);
             assertEquals(node, newNode);
         } catch (final IOException e) {
