@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
@@ -229,6 +230,20 @@ public class ExpressionValueTest {
         assertEquals(System.getProperty("os.name"), new ValueExpression("${os.name:{blah}}").resolveString());
         assertEquals("{{fo{o}oo}}", new ValueExpression("${resolves.to.nothing:{{fo{o}oo}}}").resolveString());
         assertEquals("blah{{fo{o}oo}}blah", new ValueExpression("${resolves.to.nothing:blah{{fo{o}oo}}}blah").resolveString());
+    }
+
+    @Test
+    public void testFileSeparator() {
+        assertEquals(File.separator, new ValueExpression("${/}").resolveString());
+        assertEquals(File.separator + "a", new ValueExpression("${/}a").resolveString());
+        assertEquals("a" + File.separator, new ValueExpression("a${/}").resolveString());
+    }
+
+    @Test
+    public void testPathSeparator() {
+        assertEquals(File.pathSeparator, new ValueExpression("${:}").resolveString());
+        assertEquals(File.pathSeparator + "a", new ValueExpression("${:}a").resolveString());
+        assertEquals("a" + File.pathSeparator, new ValueExpression("a${:}").resolveString());
     }
 
     /**
