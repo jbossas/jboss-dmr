@@ -114,7 +114,7 @@ public class ValueExpressionResolver {
                                 continue;
                             }
                             final String val = resolvePart(value.substring(nameStart, i).trim());
-                            if (val != null) {
+                            if (val != null && !val.equals(value)) {
                                 builder.append(val);
                                 resolvedValue = val;
                                 state = ch == '}' ? INITIAL : RESOLVED;

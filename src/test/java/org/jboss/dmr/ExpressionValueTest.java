@@ -246,6 +246,16 @@ public class ExpressionValueTest {
         assertEquals("a" + File.pathSeparator, new ValueExpression("a${:}").resolveString());
     }
 
+    @Test
+    public void testRecursiveExpression() {
+        System.setProperty("org.jbpm.designer.perspective", "${org.jbpm.designer.perspective:full}");
+        try {
+        String resolved =  new ValueExpression("${org.jbpm.designer.perspective:full}").resolveString();
+        assertEquals("full", resolved);
+        } finally {
+            System.clearProperty("org.jbpm.designer.perspective");
+        }
+    }
     /**
      * Find the first defined System.getenv() environment variable with a non-zero length value.
      * @return [0] = env var name prefixed with "env."
