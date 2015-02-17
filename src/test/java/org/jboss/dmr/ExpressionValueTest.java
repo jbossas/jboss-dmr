@@ -133,9 +133,37 @@ public class ExpressionValueTest {
     @Test(expected = IllegalStateException.class)
     public void testIncompleteReference() {
         System.setProperty("test.property1", "test.property1.value");
-        final ExpressionValue value = new ExpressionValue("${test.property1");
-        String resolved = value.resolve().asString();
-        fail("Did not fail with ISE: "+resolved);
+        try {
+            final ExpressionValue value = new ExpressionValue("${test.property1");
+            String resolved = value.resolve().asString();
+            fail("Did not fail with ISE: " + resolved);
+        } finally {
+            System.clearProperty("test.property1");
+        }
+    }
+
+    /**
+     * Test that an incomplete expression is ignored if escaped
+     */
+    @Test
+    public void testEscapedIncompleteReference() {
+        final ExpressionValue value = new ExpressionValue("$${test.property1");
+        assertEquals("${test.property1", value.resolve().asString());
+    }
+
+    /**
+     * Test that a incomplete expression to a system property reference throws an ISE
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testIncompleteReferenceFollowingSuccessfulResolve() {
+        System.setProperty("test.property1", "test.property1.value");
+        try {
+            final ExpressionValue value = new ExpressionValue("${test.property1} ${test.property1");
+            String resolved = value.resolve().asString();
+            fail("Did not fail with ISE: "+resolved);
+        } finally {
+            System.clearProperty("test.property1");
+        }
     }
 
     /**
