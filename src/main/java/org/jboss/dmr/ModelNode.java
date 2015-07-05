@@ -1528,6 +1528,22 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Reads base64 data from the passed string,
+     * and deserializes the decoded result.
+     *
+     * @see #writeBase64(OutputStream)
+     * @return the decoded model node
+     * @throws IOException if the passed stream has an issue
+     */
+    public static ModelNode fromBase64String(String encoded) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(Base64.decode(encoded));
+        ModelNode node = new ModelNode();
+        node.readExternal(bais);
+        bais.close();
+        return node;
+    }
+
+    /**
      * Return a copy of this model node, with all values of type {@link ModelType#EXPRESSION} locally resolved.
      * The caller must have permission to access all of the system properties named in the node tree. If an expression
      * begins with {@code ${env.} then a system property named {@code env.@lt;remainder of expression@gt;} will be
