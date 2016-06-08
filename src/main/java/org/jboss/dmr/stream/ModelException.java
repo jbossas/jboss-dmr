@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2016, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -20,11 +20,48 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.dmr;
+package org.jboss.dmr.stream;
 
-import org.yuanheng.cookcc.CookCCByte;
+/**
+ * DMR encoding exception.
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
+ */
+public final class ModelException extends Exception {
 
+    /**
+     * Serialization version UID.
+     */
+    private static final long serialVersionUID = 1L;
 
-public class JSONParser extends CookCCByte {
+    /**
+     * Constructor.
+     */
+    public ModelException() {
+    }
+
+    /**
+     * Constructor.
+     * @param msg message
+     */
+    public ModelException( final String msg ) {
+        super( msg );
+    }
+
+    /**
+     * Constructor.
+     * @param msg message
+     * @param t reason
+     */
+    public ModelException( final String msg, final Throwable t ) {
+        super( msg, t );
+    }
+
+    /**
+     * Constructor.
+     * @param t reason
+     */
+    public ModelException( final Throwable t ) {
+        super( t );
+    }
 
 }

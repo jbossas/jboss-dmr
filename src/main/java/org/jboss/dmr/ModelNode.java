@@ -22,6 +22,8 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
@@ -58,6 +60,7 @@ import java.util.Set;
  * <p>Instances of this class are <b>not</b> thread-safe and need to be synchronized externally.
  *
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
 public class ModelNode implements Externalizable, Cloneable {
 
@@ -1451,14 +1454,13 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the model node
      */
     public static ModelNode fromString(final String input) {
-        final ModelNodeParser parser = new ModelNodeParser();
         try {
-            parser.setInput(new ByteArrayInputStream(input.getBytes("US-ASCII")));
-            if (parser.yyParse() > 0) {
-                throw new IllegalArgumentException("DMR parser error");
-            }
-            return parser.getResult();
+            return ModelNodeFactory.INSTANCE.readFrom(input, false);
         } catch (final IOException e) {
+            final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
+            n.setStackTrace(e.getStackTrace());
+            throw n;
+        } catch (final ModelException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
@@ -1466,14 +1468,13 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     public static ModelNode fromJSONString(final String input) {
-        final JSONParserImpl parser = new JSONParserImpl();
         try {
-            parser.setInput(new ByteArrayInputStream(input.getBytes("UTF-8")));
-            if(parser.yyParse() > 0) {
-                throw new IllegalArgumentException("JSON parser error");
-            }
-            return parser.getResult();
+            return ModelNodeFactory.INSTANCE.readFrom(input, true);
         } catch (final IOException e) {
+            final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
+            n.setStackTrace(e.getStackTrace());
+            throw n;
+        } catch (final ModelException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
@@ -1488,12 +1489,11 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the model node
      */
     public static ModelNode fromStream(final InputStream stream) throws IOException {
-        final ModelNodeParser parser = new ModelNodeParser();
-        parser.setInput(stream);
-        if (parser.yyParse() > 0) {
-            throw new IOException("Parser error");
+        try {
+            return ModelNodeFactory.INSTANCE.readFrom(stream, false);
+        } catch (ModelException e) {
+            throw new IOException(e);
         }
-        return parser.getResult();
     }
 
     /**
@@ -1503,12 +1503,11 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the model node
      */
     public static ModelNode fromJSONStream(final InputStream stream) throws IOException {
-        final JSONParserImpl parser = new JSONParserImpl();
-        parser.setInput(stream);
-        if (parser.yyParse() > 0) {
-            throw new IOException("Parser error");
+        try {
+            return ModelNodeFactory.INSTANCE.readFrom(stream, true);
+        } catch (ModelException e) {
+            throw new IOException(e);
         }
-        return parser.getResult();
     }
 
     /**

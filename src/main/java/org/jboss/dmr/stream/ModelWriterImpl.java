@@ -1,0 +1,455 @@
+/*
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2016, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+package org.jboss.dmr.stream;
+
+import static java.lang.Math.min;
+import static java.lang.String.valueOf;
+import static org.jboss.dmr.stream.ModelConstants.ARROW;
+import static org.jboss.dmr.stream.ModelConstants.BIG;
+import static org.jboss.dmr.stream.ModelConstants.BYTES_END;
+import static org.jboss.dmr.stream.ModelConstants.BYTES_START;
+import static org.jboss.dmr.stream.ModelConstants.DECIMAL;
+import static org.jboss.dmr.stream.ModelConstants.LIST_END;
+import static org.jboss.dmr.stream.ModelConstants.LIST_START;
+import static org.jboss.dmr.stream.ModelConstants.BACKSLASH;
+import static org.jboss.dmr.stream.ModelConstants.BYTES;
+import static org.jboss.dmr.stream.ModelConstants.COMMA;
+import static org.jboss.dmr.stream.ModelConstants.EXPRESSION;
+import static org.jboss.dmr.stream.ModelConstants.FALSE;
+import static org.jboss.dmr.stream.ModelConstants.INTEGER;
+import static org.jboss.dmr.stream.ModelConstants.OBJECT_END;
+import static org.jboss.dmr.stream.ModelConstants.OBJECT_START;
+import static org.jboss.dmr.stream.ModelConstants.PROPERTY_END;
+import static org.jboss.dmr.stream.ModelConstants.PROPERTY_START;
+import static org.jboss.dmr.stream.ModelConstants.QUOTE;
+import static org.jboss.dmr.stream.ModelConstants.SPACE;
+import static org.jboss.dmr.stream.ModelConstants.TRUE;
+import static org.jboss.dmr.stream.ModelConstants.UNDEFINED;
+import static org.jboss.dmr.stream.Utils.stringSizeOf;
+import static org.jboss.dmr.stream.Utils.ONES;
+import static org.jboss.dmr.stream.Utils.TENS;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+/**
+ * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
+ */
+final class ModelWriterImpl implements ModelWriter {
+
+    private static final String BIG_DECIMAL_PREFIX = BIG + SPACE + DECIMAL + SPACE;
+    private static final String BIG_INTEGER_PREFIX = BIG + SPACE + INTEGER + SPACE;
+    private static final String BYTES_PREFIX = BYTES + SPACE + BYTES_START;
+    private static final String BYTES_SUFFIX = "" + BYTES_END;
+    private static final String EXPRESSION_PREFIX = EXPRESSION + SPACE;
+    private final ModelGrammarAnalyzer analyzer;
+    private final Writer out;
+    private final char[] buffer = new char[ 1024 ];
+    private int limit;
+    private boolean closed;
+
+    ModelWriterImpl( final Writer out ) {
+        this.out = out;
+        analyzer = new ModelGrammarAnalyzer();
+    }
+
+    @Override
+    public void close() throws IOException, ModelException {
+        if ( closed ) return; // idempotent
+        closed = true;
+        if ( limit > 0 ) {
+            out.write( buffer, 0, limit );
+            limit = 0;
+        }
+        if ( !analyzer.finished ) {
+            throw analyzer.newModelException( "Uncomplete DMR stream have been written" );
+        }
+    }
+
+    @Override
+    public void flush() throws IOException {
+        ensureOpen();
+        if ( limit > 0 ) {
+            out.write( buffer, 0, limit );
+            limit = 0;
+        }
+        out.flush();
+    }
+
+    @Override
+    public ModelWriterImpl writeObjectStart() throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putObjectStart();
+        write( OBJECT_START );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeObjectEnd() throws IOException, ModelException {
+        ensureOpen();
+        analyzer.putObjectEnd();
+        write( OBJECT_END );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writePropertyStart() throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putPropertyStart();
+        write( PROPERTY_START );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writePropertyEnd() throws IOException, ModelException {
+        ensureOpen();
+        analyzer.putPropertyEnd();
+        write( PROPERTY_END );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeListStart() throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putListStart();
+        write( LIST_START );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeListEnd() throws IOException, ModelException {
+        ensureOpen();
+        analyzer.putListEnd();
+        write( LIST_END );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeExpression( final String data ) throws IOException, ModelException {
+        assertNotNullParameter( data );
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putExpression();
+        write( EXPRESSION_PREFIX );
+        encode( data );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeString( final String data ) throws IOException, ModelException {
+        assertNotNullParameter( data );
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putString();
+        encode( data );
+        return this;
+    }
+
+    public ModelWriterImpl writeBytes( final byte[] data ) throws IOException, ModelException {
+        assertNotNullParameter( data );
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putBytes();
+        write( BYTES_PREFIX );
+        encode( data );
+        write( BYTES_SUFFIX );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeUndefined() throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putUndefined();
+        write( UNDEFINED );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeBoolean( final boolean data ) throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putBoolean();
+        if ( data ) {
+            write( TRUE );
+        } else {
+            write( FALSE );
+        }
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeInt( final int data ) throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putNumber();
+        encode( data );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeLong( final long data ) throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putNumber();
+        encode( data );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeDouble( final double data ) throws IOException, ModelException {
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putNumber();
+        write( valueOf( data ) );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeBigInteger( final BigInteger data ) throws IOException, ModelException {
+        assertNotNullParameter( data );
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putNumber();
+        write( BIG_INTEGER_PREFIX );
+        write( valueOf( data ) );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeBigDecimal( final BigDecimal data ) throws IOException, ModelException {
+        assertNotNullParameter( data );
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putNumber();
+        write( BIG_DECIMAL_PREFIX );
+        write( valueOf( data ) );
+        return this;
+    }
+
+    @Override
+    public ModelWriterImpl writeType( final ModelType data ) throws IOException, ModelException {
+        assertNotNullParameter( data );
+        ensureOpen();
+        writeOptionalArrowOrComma();
+        analyzer.putType();
+        write( data.toString() );
+        return this;
+    }
+
+    private void writeOptionalArrowOrComma() throws IOException, ModelException {
+        if ( analyzer.isArrowExpected() ) {
+            analyzer.putArrow();
+            write( ARROW );
+        } else if ( analyzer.isCommaExpected() ) {
+            analyzer.putComma();
+            write( COMMA );
+        }
+    }
+
+    private void write( final char c ) throws IOException {
+        if ( limit == buffer.length ) {
+            out.write( buffer, 0, limit );
+            limit = 0;
+        }
+
+        buffer[ limit++ ] = c;
+    }
+
+    private void write( final String data, int dataBegin, final int dataEnd ) throws IOException {
+        int count;
+        while ( dataBegin < dataEnd ) {
+            count = min( dataEnd - dataBegin, buffer.length - limit );
+            data.getChars( dataBegin, dataBegin + count, buffer, limit );
+            dataBegin += count;
+            limit += count;
+            if ( limit == buffer.length )  {
+                out.write( buffer, 0, buffer.length );
+                limit = 0;
+            }
+        }
+    }
+
+    private void write( final String data ) throws IOException {
+        write( data, 0, data.length() );
+    }
+
+    private void encode( final byte[] data ) throws IOException {
+        for ( int i = 0, length = data.length; i < length; i++ ) {
+            final byte b = data[ i ];
+            if ( b >= 0 && b < 0x10 ) {
+                write( "0x0" );
+                write( Integer.toHexString( b & 0xff ) );
+            } else {
+                write( "0x" );
+                write( Integer.toHexString( b & 0xff ) );
+            }
+            if ( i != length - 1 ) {
+                write( COMMA );
+            }
+        }
+    }
+
+    private void encode( final String s ) throws IOException {
+        char c;
+        write( QUOTE );
+        int dataBegin = 0;
+        for ( int dataEnd = 0; dataEnd < s.length(); dataEnd++ ) {
+            c = s.charAt( dataEnd );
+            // identify unescaped string sequence
+            while ( c != BACKSLASH && c != QUOTE ) {
+                if ( ++dataEnd < s.length() ) {
+                    c = s.charAt( dataEnd );
+                } else break;
+            }
+            // write unescaped characters
+            if ( dataBegin < dataEnd ) {
+                write( s, dataBegin, dataEnd );
+                if ( dataEnd == s.length() ) break;
+            }
+            // escape characters
+            dataBegin = dataEnd + 1;
+            write( BACKSLASH );
+            write( c );
+        }
+        write( QUOTE );
+    }
+
+    private void encode( long l ) throws IOException {
+        // cannot write all possible long values if less than 21 chars is remaining
+        if ( buffer.length - limit < 20 ) {
+            out.write( buffer, 0, limit );
+            limit = 0;
+        }
+
+        // compute bounds
+        long longQuotient;
+        int remainder;
+        int writeIndex = limit + stringSizeOf( l ) + 1;
+        limit = writeIndex;
+
+        // always convert to negative number
+        final boolean negative = l < 0;
+        if ( !negative ) {
+            l = -l;
+        }
+
+        // longs are always ending with 'L'
+        buffer[ --writeIndex ] = 'L';
+
+        // processing upper 32 bits (long operations are slower on CPU)
+        while ( l < Integer.MIN_VALUE ) {
+            longQuotient = l / 100;
+            remainder = ( int ) ( ( longQuotient * 100 ) - l );
+            l = longQuotient;
+            buffer[ --writeIndex ] = ONES[ remainder ];
+            buffer[ --writeIndex ] = TENS[ remainder ];
+        }
+
+        // processing lower 32 bits (int operations are faster on CPU)
+        int intQuotient;
+        int i = ( int ) l;
+        while ( i <= -100 ) {
+            intQuotient = i / 100;
+            remainder  = ( intQuotient * 100 ) - i;
+            i = intQuotient;
+            buffer[ --writeIndex ] = ONES[ remainder ];
+            buffer[ --writeIndex ] = TENS[ remainder ];
+        }
+
+        // processing remaining digits
+        intQuotient = i / 10;
+        remainder  = ( intQuotient * 10 ) - i;
+        buffer[ --writeIndex ] = ( char ) ( '0' + remainder );
+
+        if ( intQuotient < 0 ) {
+            buffer[ --writeIndex ] = ( char ) ( '0' - intQuotient );
+        }
+
+        // processing sign
+        if ( negative ) {
+            buffer[ --writeIndex ] = '-';
+        }
+    }
+
+    private void encode( int i ) throws IOException {
+        // cannot write all possible int values if less than 11 chars is remaining
+        if ( buffer.length - limit < 11 ) {
+            out.write( buffer, 0, limit );
+            limit = 0;
+        }
+
+        // compute bounds
+        int quotient;
+        int remainder;
+        int writeIndex = limit + stringSizeOf( i );
+        limit = writeIndex;
+
+        // always convert to negative number
+        final boolean negative = i < 0;
+        if ( !negative ) {
+            i = -i;
+        }
+
+        // processing lower 32 bits (int operations are faster on CPU)
+        while ( i <= -100 ) {
+            quotient = i / 100;
+            remainder = ( quotient * 100 ) - i;
+            i = quotient;
+            buffer[ --writeIndex ] = ONES[ remainder ];
+            buffer[ --writeIndex ] = TENS[ remainder ];
+        }
+
+        // processing remaining digits
+        quotient = i / 10;
+        remainder = ( quotient * 10 ) - i;
+        buffer[ --writeIndex ] = ( char ) ( '0' + remainder );
+
+        if ( quotient < 0 ) {
+            buffer[ --writeIndex ] = ( char ) ( '0' - quotient );
+        }
+
+        // processing sign
+        if ( negative ) {
+            buffer[ --writeIndex ] = '-';
+        }
+    }
+
+    private void ensureOpen() {
+        if ( closed ) {
+            throw new IllegalStateException( "DMR writer have been closed" );
+        }
+    }
+
+    private static void assertNotNullParameter( final Object o ) {
+        if ( o == null ) {
+            throw new NullPointerException( "Parameter cannot be null" );
+        }
+    }
+
+}
