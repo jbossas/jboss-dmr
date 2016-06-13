@@ -28,13 +28,13 @@ public class BigIntegerModelValueTest {
     @Test
     public void testAsLong() {
         final BigIntegerModelValue value = new BigIntegerModelValue(new BigInteger("5"));
-        assertEquals(5l, value.asLong());
+        assertEquals(5L, value.asLong());
     }
 
     @Test
     public void testAsLongWithDefault() {
         final BigIntegerModelValue value = new BigIntegerModelValue(new BigInteger("5"));
-        assertEquals(5l, value.asLong(10l));
+        assertEquals(5L, value.asLong(10L));
     }
 
     @Test

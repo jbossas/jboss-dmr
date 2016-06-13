@@ -1425,7 +1425,7 @@ public class ModelNode implements Externalizable, Cloneable {
     /**
      * Get a JSON string representation of this model node, formatted nicely, if requested.
      * @param compact Flag that indicates whether or not the string should be all on
-     * 	one line (i.e. {@code true}) or should be printed on multiple lines ({@code false}).
+     * one line (i.e. {@code true}) or should be printed on multiple lines ({@code false}).
      * @return The JSON string.
      */
     public String toJSONString(final boolean compact) {

@@ -285,7 +285,7 @@ abstract class ModelValue implements Cloneable {
 
     /**
      * Adds the number of indentations (4 spaces each) specified to the writer's output.
-     * 
+     *
      * @param writer The PrintWriter instance containing the current output.
      * @param count The number of indentations to be written.
      */
@@ -297,7 +297,7 @@ abstract class ModelValue implements Cloneable {
 
     /**
      * Formats the current value object as part of a DMR string.
-     * 
+     *
      * @param writer A PrintWriter instance containing the generated DMR string representation.
      * @param indent The number of tabs to indent the current generated string.
      * @param multiLine Flag indicating whether or not the string should begin on a new line.
@@ -308,11 +308,11 @@ abstract class ModelValue implements Cloneable {
 
     /**
      * Formats the current value object as part of a JSON string.
-     * 
+     *
      * @param writer A PrintWriter instance containing the JSON string.
      * @param indent The number of tabs to indent the current generated string.
      * @param multiLine Flag that indicates whether or not the string should
-     * 	begin on a new line.
+     * begin on a new line.
      */
     void formatAsJSON(final PrintWriter writer, final int indent, final boolean multiLine) {
         writer.append(asString());
@@ -328,7 +328,7 @@ abstract class ModelValue implements Cloneable {
 
     /**
      * Outputs the DMR representation of this value to the supplied PrintWriter instance.
-     * 
+     *
      * @param writer A PrintWriter instance use to output the DMR string.
      * @param compact Flag indicating whether or not to include new lines in the generated string representation.
      */
@@ -338,7 +338,7 @@ abstract class ModelValue implements Cloneable {
 
     /**
      * Converts this value to a JSON string representation.
-     * 
+     *
      * @param compact Flag indicating whether or not to include new lines in the generated string representation.
      * @return The JSON formatted string representation of this value.
      */
@@ -351,7 +351,7 @@ abstract class ModelValue implements Cloneable {
 
     /**
      * Outputs this value as a JSON string representation to the supplied PrintWriter instance.
-     * 
+     *
      * @param writer A PrintWriter instance use to output the JSON string.
      * @param compact Flag indicating whether or not to include new lines in the generated string representation.
      */

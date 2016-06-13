@@ -40,6 +40,7 @@
     <properties>
         <maven.compiler.target>1.6</maven.compiler.target>
         <maven.compiler.source>1.6</maven.compiler.source>
+        <version.org.wildfly.checkstyle-config>1.0.4.Final</version.org.wildfly.checkstyle-config>
     </properties>
 
     <dependencies>
@@ -65,6 +66,35 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${version.checkstyle.plugin}</version>
+                <configuration>
+                    <configLocation>wildfly-checkstyle/checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <excludes>**/*$logger.java,**/*$bundle.java</excludes>
+                    <useFile/>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.wildfly.checkstyle</groupId>
+                        <artifactId>wildfly-checkstyle-config</artifactId>
+                        <version>${version.org.wildfly.checkstyle-config}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>check-style</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>checkstyle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>${version.antrun.plugin}</version>

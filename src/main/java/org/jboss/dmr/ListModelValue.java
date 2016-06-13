@@ -277,7 +277,7 @@ final class ListModelValue extends ModelValue {
 
     /**
      * Determine whether this object is equal to another.
-     * 
+     *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
@@ -288,7 +288,7 @@ final class ListModelValue extends ModelValue {
 
     /**
      * Determine whether this object is equal to another.
-     * 
+     *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
