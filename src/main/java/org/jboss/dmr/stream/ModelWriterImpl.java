@@ -209,7 +209,7 @@ final class ModelWriterImpl implements ModelWriter {
     public ModelWriterImpl writeInt( final int data ) throws IOException, ModelException {
         ensureOpen();
         writeOptionalArrowOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.INT );
         encode( data );
         return this;
     }
@@ -218,7 +218,7 @@ final class ModelWriterImpl implements ModelWriter {
     public ModelWriterImpl writeLong( final long data ) throws IOException, ModelException {
         ensureOpen();
         writeOptionalArrowOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.LONG );
         encode( data );
         return this;
     }
@@ -227,7 +227,7 @@ final class ModelWriterImpl implements ModelWriter {
     public ModelWriterImpl writeDouble( final double data ) throws IOException, ModelException {
         ensureOpen();
         writeOptionalArrowOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.DOUBLE );
         write( valueOf( data ) );
         return this;
     }
@@ -237,7 +237,7 @@ final class ModelWriterImpl implements ModelWriter {
         assertNotNullParameter( data );
         ensureOpen();
         writeOptionalArrowOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.BIG_INTEGER );
         write( BIG_INTEGER_PREFIX );
         write( valueOf( data ) );
         return this;
@@ -248,7 +248,7 @@ final class ModelWriterImpl implements ModelWriter {
         assertNotNullParameter( data );
         ensureOpen();
         writeOptionalArrowOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.BIG_DECIMAL );
         write( BIG_DECIMAL_PREFIX );
         write( valueOf( data ) );
         return this;

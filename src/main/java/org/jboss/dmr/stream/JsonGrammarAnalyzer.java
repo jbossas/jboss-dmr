@@ -134,13 +134,13 @@ final class JsonGrammarAnalyzer {
         expectedPropertyEnd = stack[ index - 1 ] == PROPERTY_START;
     }
 
-    void putNumber() throws ModelException {
+    void putNumber( final ModelEvent numberEvent ) throws ModelException {
         // preconditions
         if ( finished || canWriteComma || index != 0 && ( stack[ index - 1 ] & ( LIST_START | COLON ) ) == 0 ) {
             throw newModelException( getExpectingTokensMessage() );
         }
         // implementation
-        currentEvent = ModelEvent.NUMBER;
+        currentEvent = numberEvent;
         if ( index == 0 ) {
             finished = true;
             return;

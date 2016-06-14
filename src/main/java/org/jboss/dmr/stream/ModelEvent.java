@@ -48,9 +48,25 @@ public enum ModelEvent {
      */
     LIST_START,
     /**
-     * Parsing cursor points to DMR <CODE>number</CODE>.
+     * Parsing cursor points to DMR <CODE>int</CODE>.
      */
-    NUMBER,
+    INT,
+    /**
+     * Parsing cursor points to DMR <CODE>long</CODE>.
+     */
+    LONG,
+    /**
+     * Parsing cursor points to DMR <CODE>double</CODE>.
+     */
+    DOUBLE,
+    /**
+     * Parsing cursor points to DMR <CODE>big integer</CODE>.
+     */
+    BIG_INTEGER,
+    /**
+     * Parsing cursor points to DMR <CODE>big decimal</CODE>.
+     */
+    BIG_DECIMAL,
     /**
      * Parsing cursor points to DMR <CODE>object start</CODE> token.
      */

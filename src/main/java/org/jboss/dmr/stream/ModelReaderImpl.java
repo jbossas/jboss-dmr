@@ -93,7 +93,11 @@ final class ModelReaderImpl implements ModelReader {
     private int stringLength;
     private byte[] bytesValue;
     private ModelType typeValue;
-    private Number numberValue;
+    private int intValue;
+    private long longValue;
+    private double doubleValue;
+    private BigInteger bigIntegerValue;
+    private BigDecimal bigDecimalValue;
     private boolean booleanValue;
     private String stringValue;
     private boolean closed;
@@ -120,11 +124,44 @@ final class ModelReaderImpl implements ModelReader {
         return stringValue;
     }
 
-    public Number getNumber() {
-        if ( !isCurrentEvent( ModelEvent.NUMBER ) ) {
-            throw new IllegalStateException( "Current event isn't number" );
+    @Override
+    public int getInt() {
+        if ( !isCurrentEvent( ModelEvent.INT ) ) {
+            throw new IllegalStateException( "Current event isn't int" );
         }
-        return numberValue;
+        return intValue;
+    }
+
+    @Override
+    public long getLong() {
+        if ( !isCurrentEvent( ModelEvent.LONG ) ) {
+            throw new IllegalStateException( "Current event isn't long" );
+        }
+        return longValue;
+    }
+
+    @Override
+    public double getDouble() {
+        if ( !isCurrentEvent( ModelEvent.DOUBLE ) ) {
+            throw new IllegalStateException( "Current event isn't double" );
+        }
+        return doubleValue;
+    }
+
+    @Override
+    public BigInteger getBigInteger() {
+        if ( !isCurrentEvent( ModelEvent.BIG_INTEGER ) ) {
+            throw new IllegalStateException( "Current event isn't big integer" );
+        }
+        return bigIntegerValue;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal() {
+        if ( !isCurrentEvent( ModelEvent.BIG_DECIMAL ) ) {
+            throw new IllegalStateException( "Current event isn't big decimal" );
+        }
+        return bigDecimalValue;
     }
 
     @Override
@@ -195,8 +232,28 @@ final class ModelReaderImpl implements ModelReader {
     }
 
     @Override
-    public boolean isNumber() {
-        return isCurrentEvent( ModelEvent.NUMBER );
+    public boolean isInt() {
+        return isCurrentEvent( ModelEvent.INT );
+    }
+
+    @Override
+    public boolean isLong() {
+        return isCurrentEvent( ModelEvent.LONG );
+    }
+
+    @Override
+    public boolean isDouble() {
+        return isCurrentEvent( ModelEvent.DOUBLE );
+    }
+
+    @Override
+    public boolean isBigInteger() {
+        return isCurrentEvent( ModelEvent.BIG_INTEGER );
+    }
+
+    @Override
+    public boolean isBigDecimal() {
+        return isCurrentEvent( ModelEvent.BIG_DECIMAL );
     }
 
     @Override
@@ -270,16 +327,17 @@ final class ModelReaderImpl implements ModelReader {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
                 case MINUS: case PLUS: {
-                    analyzer.putNumber();
                     if ( currentChar == PLUS || currentChar == MINUS ) {
                         ensureBufferAccess( 1, "Infinity or NaN or number" );
                         if ( buffer[ position ] == 'I' ) {
                             readString( INFINITY );
-                            numberValue = currentChar == PLUS ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+                            analyzer.putNumber( ModelEvent.DOUBLE );
+                            doubleValue = currentChar == PLUS ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
                             return analyzer.currentEvent;
                         } else if ( buffer[ position ] == 'N' ) {
                             readString( NAN );
-                            numberValue = Double.NaN;
+                            analyzer.putNumber( ModelEvent.DOUBLE );
+                            doubleValue = Double.NaN;
                             return analyzer.currentEvent;
                         } else if ( !isNumberChar( buffer[ position ] ) ) {
                             throw newModelException( "Unexpected first character '" + buffer[ position ]
@@ -291,7 +349,8 @@ final class ModelReaderImpl implements ModelReader {
                     currentChar = position < limit ? buffer[ position++ ] : read();
                     if ( currentChar == 'L' ) {
                         try {
-                            numberValue = Long.valueOf( new String( buffer, numberOffset, numberLength ) );
+                            analyzer.putNumber( ModelEvent.LONG );
+                            longValue = Long.parseLong( new String( buffer, numberOffset, numberLength ) );
                         } catch ( final NumberFormatException nfe ) {
                             throw newModelException( "Incorrect long value", nfe );
                         }
@@ -299,13 +358,15 @@ final class ModelReaderImpl implements ModelReader {
                         if ( currentChar != -1 ) position--;
                         if ( isDecimalString() ) {
                             try {
-                                numberValue = Double.valueOf( new String( buffer, numberOffset, numberLength ) );
+                                analyzer.putNumber( ModelEvent.DOUBLE );
+                                doubleValue = Double.parseDouble( new String( buffer, numberOffset, numberLength ) );
                             } catch ( final NumberFormatException nfe ) {
                                 throw newModelException( "Incorrect double value", nfe );
                             }
                         } else {
                             try {
-                                numberValue = Integer.valueOf( new String( buffer, numberOffset, numberLength ) );
+                                analyzer.putNumber( ModelEvent.INT );
+                                intValue = Integer.parseInt( new String( buffer, numberOffset, numberLength ) );
                             } catch ( final NumberFormatException nfe ) {
                                 throw newModelException( "Incorrect integer value", nfe );
                             }
@@ -317,7 +378,6 @@ final class ModelReaderImpl implements ModelReader {
                     position--;
                     ensureBufferAccess( 2, "big or bytes" );
                     if ( buffer[ position + 1 ] == 'i' ) {
-                        analyzer.putNumber();
                         readString( BIG );
                         processWhitespaces();
                         if ( buffer[ position ] == 'd' ) {
@@ -325,7 +385,8 @@ final class ModelReaderImpl implements ModelReader {
                             processWhitespaces();
                             readNumber( false );
                             try {
-                                numberValue = new BigDecimal( new String( buffer, numberOffset, numberLength ) );
+                                analyzer.putNumber( ModelEvent.BIG_DECIMAL );
+                                bigDecimalValue = new BigDecimal( new String( buffer, numberOffset, numberLength ) );
                             } catch ( final NumberFormatException nfe ) {
                                 throw newModelException( "Incorrect big decimal value", nfe );
                             }
@@ -334,7 +395,8 @@ final class ModelReaderImpl implements ModelReader {
                             processWhitespaces();
                             readNumber( false );
                             try {
-                                numberValue = new BigInteger( new String( buffer, numberOffset, numberLength ) );
+                                analyzer.putNumber( ModelEvent.BIG_INTEGER );
+                                bigIntegerValue = new BigInteger( new String( buffer, numberOffset, numberLength ) );
                             } catch ( final NumberFormatException nfe ) {
                                 throw newModelException( "Incorrect big integer value", nfe );
                             }
@@ -476,9 +538,9 @@ final class ModelReaderImpl implements ModelReader {
                         readString( TYPE_INT );
                         typeValue = ModelType.INT;
                     } else if ( buffer[ position + 1 ] == 'n' ) {
-                        analyzer.putNumber();
                         readString( INFINITY );
-                        numberValue = Double.POSITIVE_INFINITY;
+                        analyzer.putNumber( ModelEvent.DOUBLE );
+                        doubleValue = Double.POSITIVE_INFINITY;
                     } else {
                         throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
                                 + "' while reading DMR INT or Infinity token" );
@@ -487,9 +549,9 @@ final class ModelReaderImpl implements ModelReader {
                 }
                 case 'N': {
                     position--;
-                    analyzer.putNumber();
                     readString( NAN );
-                    numberValue = Double.NaN;
+                    analyzer.putNumber( ModelEvent.DOUBLE );
+                    doubleValue = Double.NaN;
                     return analyzer.currentEvent;
                 }
                 case 'f':

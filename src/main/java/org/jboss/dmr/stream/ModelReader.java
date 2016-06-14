@@ -23,6 +23,8 @@
 package org.jboss.dmr.stream;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.jboss.dmr.ModelType;
 
@@ -174,19 +176,74 @@ public interface ModelReader extends AutoCloseable {
     boolean getBoolean();
 
     /**
-     * Returns <code>true</code> if current DMR parsing event is DMR <code>number</code>, <code>false</code> otherwise.
+     * Returns <code>true</code> if current DMR parsing event is DMR <code>int</code>, <code>false</code> otherwise.
      * Users have to call {@link #next()} before calling this method.
-     * @return true if the parsing cursor points to DMR number, false otherwise
+     * @return true if the parsing cursor points to DMR int, false otherwise
      */
-    boolean isNumber();
+    boolean isInt();
 
     /**
-     * Converts available context data to <code>Number</code> instance.
-     * Users have to call {@link #next()} and should call {@link #isNumber()} before calling this method.
-     * @return number value the parsing cursor is pointing to
-     * @exception NumberFormatException if DMR number is not convertible to <code>number</code>
+     * Converts available context data to <code>int</code>.
+     * Users have to call {@link #next()} and should call {@link #isInt()} before calling this method.
+     * @return int value the parsing cursor is pointing to
      */
-    Number getNumber();
+    int getInt();
+
+    /**
+     * Returns <code>true</code> if current DMR parsing event is DMR <code>long</code>, <code>false</code> otherwise.
+     * Users have to call {@link #next()} before calling this method.
+     * @return true if the parsing cursor points to DMR int, false otherwise
+     */
+    boolean isLong();
+
+    /**
+     * Converts available context data to <code>long</code>.
+     * Users have to call {@link #next()} and should call {@link #isLong()} before calling this method.
+     * @return long value the parsing cursor is pointing to
+     */
+    long getLong();
+
+    /**
+     * Returns <code>true</code> if current DMR parsing event is DMR <code>double</code>, <code>false</code> otherwise.
+     * Users have to call {@link #next()} before calling this method.
+     * @return true if the parsing cursor points to DMR double, false otherwise
+     */
+    boolean isDouble();
+
+    /**
+     * Converts available context data to <code>double</code>.
+     * Users have to call {@link #next()} and should call {@link #isDouble()} before calling this method.
+     * @return double value the parsing cursor is pointing to
+     */
+    double getDouble();
+
+    /**
+     * Returns <code>true</code> if current DMR parsing event is DMR <code>big integer</code>, <code>false</code> otherwise.
+     * Users have to call {@link #next()} before calling this method.
+     * @return true if the parsing cursor points to DMR big integer, false otherwise
+     */
+    boolean isBigInteger();
+
+    /**
+     * Converts available context data to <code>big integer</code> instance.
+     * Users have to call {@link #next()} and should call {@link #isBigInteger()} before calling this method.
+     * @return big integer value the parsing cursor is pointing to
+     */
+    BigInteger getBigInteger();
+
+    /**
+     * Returns <code>true</code> if current DMR parsing event is DMR <code>big decimal</code>, <code>false</code> otherwise.
+     * Users have to call {@link #next()} before calling this method.
+     * @return true if the parsing cursor points to DMR big decimal, false otherwise
+     */
+    boolean isBigDecimal();
+
+    /**
+     * Converts available context data to <code>big decimal</code> instance.
+     * Users have to call {@link #next()} and should call {@link #isBigDecimal()} before calling this method.
+     * @return big decimal value the parsing cursor is pointing to
+     */
+    BigDecimal getBigDecimal();
 
     /**
      * Free resources associated with this reader. Never closes underlying output stream or reader.

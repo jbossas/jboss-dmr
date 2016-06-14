@@ -78,7 +78,11 @@ final class JsonReaderImpl implements ModelReader {
     private int stringLength;
     private byte[] bytesValue;
     private ModelType typeValue;
-    private Number numberValue;
+    private int intValue;
+    private long longValue;
+    private double doubleValue;
+    private BigInteger bigIntegerValue;
+    private BigDecimal bigDecimalValue;
     private boolean booleanValue;
     private String stringValue;
     private boolean closed;
@@ -106,11 +110,44 @@ final class JsonReaderImpl implements ModelReader {
         return stringValue;
     }
 
-    public Number getNumber() {
-        if ( !isCurrentEvent( ModelEvent.NUMBER ) ) {
-            throw new IllegalStateException( "Current event isn't number" );
+    @Override
+    public int getInt() {
+        if ( !isCurrentEvent( ModelEvent.INT ) ) {
+            throw new IllegalStateException( "Current event isn't int" );
         }
-        return numberValue;
+        return intValue;
+    }
+
+    @Override
+    public long getLong() {
+        if ( !isCurrentEvent( ModelEvent.LONG ) ) {
+            throw new IllegalStateException( "Current event isn't long" );
+        }
+        return longValue;
+    }
+
+    @Override
+    public double getDouble() {
+        if ( !isCurrentEvent( ModelEvent.DOUBLE ) ) {
+            throw new IllegalStateException( "Current event isn't double" );
+        }
+        return doubleValue;
+    }
+
+    @Override
+    public BigInteger getBigInteger() {
+        if ( !isCurrentEvent( ModelEvent.BIG_INTEGER ) ) {
+            throw new IllegalStateException( "Current event isn't big integer" );
+        }
+        return bigIntegerValue;
+    }
+
+    @Override
+    public BigDecimal getBigDecimal() {
+        if ( !isCurrentEvent( ModelEvent.BIG_DECIMAL ) ) {
+            throw new IllegalStateException( "Current event isn't big decimal" );
+        }
+        return bigDecimalValue;
     }
 
     @Override
@@ -181,8 +218,28 @@ final class JsonReaderImpl implements ModelReader {
     }
 
     @Override
-    public boolean isNumber() {
-        return isCurrentEvent( ModelEvent.NUMBER );
+    public boolean isInt() {
+        return isCurrentEvent( ModelEvent.INT );
+    }
+
+    @Override
+    public boolean isLong() {
+        return isCurrentEvent( ModelEvent.LONG );
+    }
+
+    @Override
+    public boolean isDouble() {
+        return isCurrentEvent( ModelEvent.DOUBLE );
+    }
+
+    @Override
+    public boolean isBigInteger() {
+        return isCurrentEvent( ModelEvent.BIG_INTEGER );
+    }
+
+    @Override
+    public boolean isBigDecimal() {
+        return isCurrentEvent( ModelEvent.BIG_DECIMAL );
     }
 
     @Override
@@ -255,16 +312,17 @@ final class JsonReaderImpl implements ModelReader {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
                 case MINUS: case PLUS: {
-                    analyzer.putNumber();
                     if ( currentChar == PLUS || currentChar == MINUS ) {
                         ensureBufferAccess( 1, "Infinity or NaN or number" );
                         if ( buffer[ position ] == 'I' ) {
                             readString( INFINITY );
-                            numberValue = currentChar == PLUS ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+                            analyzer.putNumber( ModelEvent.DOUBLE );
+                            doubleValue = currentChar == PLUS ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
                             return analyzer.currentEvent;
                         } else if ( buffer[ position ] == 'N' ) {
                             readString( NAN );
-                            numberValue = Double.NaN;
+                            analyzer.putNumber( ModelEvent.DOUBLE );
+                            doubleValue = Double.NaN;
                             return analyzer.currentEvent;
                         } else if ( !isNumberChar( buffer[ position ] ) ) {
                             throw newModelException( "Unexpected first character '" + buffer[ position ]
@@ -275,7 +333,8 @@ final class JsonReaderImpl implements ModelReader {
                     readNumber();
                     if ( isDecimalString() ) {
                         try {
-                            numberValue = new BigDecimal( new String( buffer, numberOffset, numberLength ) );
+                            analyzer.putNumber( ModelEvent.BIG_DECIMAL );
+                            bigDecimalValue = new BigDecimal( new String( buffer, numberOffset, numberLength ) );
                         } catch ( final NumberFormatException nfe ) {
                             throw newModelException( "Incorrect decimal value", nfe );
                         }
@@ -283,11 +342,14 @@ final class JsonReaderImpl implements ModelReader {
                         try {
                             bigIntegerValue = new BigInteger( new String( buffer, numberOffset, numberLength ) );
                             if ( bigIntegerValue.bitLength() <= 31 ) {
-                                numberValue = bigIntegerValue.intValue();
+                                analyzer.putNumber( ModelEvent.INT );
+                                intValue = bigIntegerValue.intValue();
                             } else if ( bigIntegerValue.bitLength() <= 63 ) {
-                                numberValue = bigIntegerValue.longValue();
+                                analyzer.putNumber( ModelEvent.LONG );
+                                longValue = bigIntegerValue.longValue();
                             } else {
-                                numberValue = bigIntegerValue;
+                                analyzer.putNumber( ModelEvent.BIG_INTEGER );
+                                this.bigIntegerValue = bigIntegerValue;
                             }
                         } catch ( final NumberFormatException nfe ) {
                             throw newModelException( "Incorrect integer value", nfe );
@@ -297,16 +359,16 @@ final class JsonReaderImpl implements ModelReader {
                 }
                 case 'I': {
                     position--;
-                    analyzer.putNumber();
                     readString( INFINITY );
-                    numberValue = Double.POSITIVE_INFINITY;
+                    analyzer.putNumber( ModelEvent.DOUBLE );
+                    doubleValue = Double.POSITIVE_INFINITY;
                     return analyzer.currentEvent;
                 }
                 case 'N': {
                     position--;
-                    analyzer.putNumber();
                     readString( NAN );
-                    numberValue = Double.NaN;
+                    analyzer.putNumber( ModelEvent.DOUBLE );
+                    doubleValue = Double.NaN;
                     return analyzer.currentEvent;
                 }
                 case 'f':

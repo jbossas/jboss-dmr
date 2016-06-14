@@ -22,12 +22,16 @@
 
 package org.jboss.dmr.stream;
 
+import static org.jboss.dmr.stream.ModelEvent.BIG_DECIMAL;
+import static org.jboss.dmr.stream.ModelEvent.BIG_INTEGER;
 import static org.jboss.dmr.stream.ModelEvent.BOOLEAN;
 import static org.jboss.dmr.stream.ModelEvent.BYTES;
+import static org.jboss.dmr.stream.ModelEvent.DOUBLE;
 import static org.jboss.dmr.stream.ModelEvent.EXPRESSION;
+import static org.jboss.dmr.stream.ModelEvent.INT;
 import static org.jboss.dmr.stream.ModelEvent.LIST_END;
 import static org.jboss.dmr.stream.ModelEvent.LIST_START;
-import static org.jboss.dmr.stream.ModelEvent.NUMBER;
+import static org.jboss.dmr.stream.ModelEvent.LONG;
 import static org.jboss.dmr.stream.ModelEvent.OBJECT_END;
 import static org.jboss.dmr.stream.ModelEvent.OBJECT_START;
 import static org.jboss.dmr.stream.ModelEvent.PROPERTY_END;
@@ -171,14 +175,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -195,14 +207,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -219,14 +239,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -243,14 +271,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -267,14 +303,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -291,14 +335,22 @@ abstract class AbstractModelStreamsTestCase {
         assertTrue( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -315,14 +367,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertTrue( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -331,7 +391,11 @@ abstract class AbstractModelStreamsTestCase {
 
     static void assertFinalState( final ModelReader reader ) throws IOException, ModelException {
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -422,13 +486,61 @@ abstract class AbstractModelStreamsTestCase {
             assertEquals( "DMR reader have been closed", e.getMessage() );
         }
         try {
-            reader.isNumber();
+            reader.isInt();
             fail();
         } catch ( final IllegalStateException e ) {
             assertEquals( "DMR reader have been closed", e.getMessage() );
         }
         try {
-            reader.getNumber();
+            reader.getInt();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.isLong();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.getLong();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.isDouble();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.getDouble();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.isBigInteger();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.getBigInteger();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.isBigDecimal();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "DMR reader have been closed", e.getMessage() );
+        }
+        try {
+            reader.getBigDecimal();
             fail();
         } catch ( final IllegalStateException e ) {
             assertEquals( "DMR reader have been closed", e.getMessage() );
@@ -499,14 +611,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertTrue( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertEquals( expected, reader.getString() );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
@@ -523,14 +643,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertTrue( reader.isExpression() );
         assertFalse( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertEquals( expected, reader.getExpression() );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotStringException( reader );
@@ -547,7 +675,11 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertTrue( reader.isBytes() );
         assertFalse( reader.isExpression() );
@@ -558,7 +690,11 @@ abstract class AbstractModelStreamsTestCase {
         for ( int i = 0; i < current.length; i++ ) {
             assertTrue( current[ i ] == expected[ i ] );
         }
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotStringException( reader );
         assertNotExpressionException( reader );
@@ -575,14 +711,22 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertTrue( reader.isType() );
         assertFalse( reader.isUndefined() );
         assertEquals( expected, reader.getType() );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotStringException( reader );
         assertNotExpressionException( reader );
@@ -600,8 +744,22 @@ abstract class AbstractModelStreamsTestCase {
     }
 
     static void assertNumberState( final ModelReader reader, final Number expected ) throws IOException, ModelException {
-        assertNumberState( reader );
-        assertEquals( expected, reader.getNumber() );
+        if ( expected instanceof Integer ) {
+            assertIntState( reader );
+            assertEquals( expected, reader.getInt() );
+        } else if ( expected instanceof Long ) {
+            assertLongState( reader );
+            assertEquals( expected, reader.getLong() );
+        } else if ( expected instanceof Double ) {
+            assertDoubleState( reader );
+            assertEquals( expected, reader.getDouble() );
+        } else if ( expected instanceof BigInteger ) {
+            assertBigIntegerState( reader );
+            assertEquals( expected, reader.getBigInteger() );
+        } else if ( expected instanceof BigDecimal ) {
+            assertBigDecimalState( reader );
+            assertEquals( expected, reader.getBigDecimal() );
+        }
     }
 
     static void assertBooleanState( final ModelReader reader, final boolean expected ) throws IOException, ModelException {
@@ -614,7 +772,11 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertTrue( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
@@ -622,7 +784,11 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isUndefined() );
         assertEquals( expected, reader.getBoolean() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
         assertNotTypeException( reader );
@@ -638,23 +804,31 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertFalse( reader.isNumber() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
         assertFalse( reader.isType() );
         assertTrue( reader.isUndefined() );
         assertNotStringException( reader );
-        assertNotNumberException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
         assertNotBooleanException( reader );
         assertNotBytesException( reader );
         assertNotExpressionException( reader );
         assertNotTypeException( reader );
     }
 
-    private static void assertNumberState( final ModelReader reader ) throws IOException, ModelException {
+    private static void assertIntState( final ModelReader reader ) throws IOException, ModelException {
         assertTrue( reader.hasNext() );
-        assertEquals( NUMBER, reader.next() );
+        assertEquals( INT, reader.next() );
         assertFalse( reader.isObjectStart() );
         assertFalse( reader.isObjectEnd() );
         assertFalse( reader.isListStart() );
@@ -662,7 +836,119 @@ abstract class AbstractModelStreamsTestCase {
         assertFalse( reader.isPropertyStart() );
         assertFalse( reader.isPropertyEnd() );
         assertFalse( reader.isString() );
-        assertTrue( reader.isNumber() );
+        assertTrue( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
+        assertFalse( reader.isBoolean() );
+        assertFalse( reader.isBytes() );
+        assertFalse( reader.isExpression() );
+        assertFalse( reader.isType() );
+        assertFalse( reader.isUndefined() );
+        assertNotStringException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertNotTypeException( reader );
+    }
+
+    private static void assertLongState( final ModelReader reader ) throws IOException, ModelException {
+        assertTrue( reader.hasNext() );
+        assertEquals( LONG, reader.next() );
+        assertFalse( reader.isObjectStart() );
+        assertFalse( reader.isObjectEnd() );
+        assertFalse( reader.isListStart() );
+        assertFalse( reader.isListEnd() );
+        assertFalse( reader.isPropertyStart() );
+        assertFalse( reader.isPropertyEnd() );
+        assertFalse( reader.isString() );
+        assertFalse( reader.isInt() );
+        assertTrue( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
+        assertFalse( reader.isBoolean() );
+        assertFalse( reader.isBytes() );
+        assertFalse( reader.isExpression() );
+        assertFalse( reader.isType() );
+        assertFalse( reader.isUndefined() );
+        assertNotStringException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertNotTypeException( reader );
+    }
+
+    private static void assertDoubleState( final ModelReader reader ) throws IOException, ModelException {
+        assertTrue( reader.hasNext() );
+        assertEquals( DOUBLE, reader.next() );
+        assertFalse( reader.isObjectStart() );
+        assertFalse( reader.isObjectEnd() );
+        assertFalse( reader.isListStart() );
+        assertFalse( reader.isListEnd() );
+        assertFalse( reader.isPropertyStart() );
+        assertFalse( reader.isPropertyEnd() );
+        assertFalse( reader.isString() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertTrue( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
+        assertFalse( reader.isBoolean() );
+        assertFalse( reader.isBytes() );
+        assertFalse( reader.isExpression() );
+        assertFalse( reader.isType() );
+        assertFalse( reader.isUndefined() );
+        assertNotStringException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertNotTypeException( reader );
+    }
+
+    private static void assertBigIntegerState( final ModelReader reader ) throws IOException, ModelException {
+        assertTrue( reader.hasNext() );
+        assertEquals( BIG_INTEGER, reader.next() );
+        assertFalse( reader.isObjectStart() );
+        assertFalse( reader.isObjectEnd() );
+        assertFalse( reader.isListStart() );
+        assertFalse( reader.isListEnd() );
+        assertFalse( reader.isPropertyStart() );
+        assertFalse( reader.isPropertyEnd() );
+        assertFalse( reader.isString() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertTrue( reader.isBigInteger() );
+        assertFalse( reader.isBigDecimal() );
+        assertFalse( reader.isBoolean() );
+        assertFalse( reader.isBytes() );
+        assertFalse( reader.isExpression() );
+        assertFalse( reader.isType() );
+        assertFalse( reader.isUndefined() );
+        assertNotStringException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertNotTypeException( reader );
+    }
+
+    private static void assertBigDecimalState( final ModelReader reader ) throws IOException, ModelException {
+        assertTrue( reader.hasNext() );
+        assertEquals( BIG_DECIMAL, reader.next() );
+        assertFalse( reader.isObjectStart() );
+        assertFalse( reader.isObjectEnd() );
+        assertFalse( reader.isListStart() );
+        assertFalse( reader.isListEnd() );
+        assertFalse( reader.isPropertyStart() );
+        assertFalse( reader.isPropertyEnd() );
+        assertFalse( reader.isString() );
+        assertFalse( reader.isInt() );
+        assertFalse( reader.isLong() );
+        assertFalse( reader.isDouble() );
+        assertFalse( reader.isBigInteger() );
+        assertTrue( reader.isBigDecimal() );
         assertFalse( reader.isBoolean() );
         assertFalse( reader.isBytes() );
         assertFalse( reader.isExpression() );
@@ -720,12 +1006,48 @@ abstract class AbstractModelStreamsTestCase {
         }
     }
 
-    private static void assertNotNumberException( final ModelReader reader ) throws IOException {
+    private static void assertNotIntException( final ModelReader reader ) throws IOException {
         try {
-            reader.getNumber();
+            reader.getInt();
             fail();
         } catch ( final IllegalStateException e ) {
-            assertEquals( "Current event isn't number", e.getMessage() );
+            assertEquals( "Current event isn't int", e.getMessage() );
+        }
+    }
+
+    private static void assertNotLongException( final ModelReader reader ) throws IOException {
+        try {
+            reader.getLong();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "Current event isn't long", e.getMessage() );
+        }
+    }
+
+    private static void assertNotDoubleException( final ModelReader reader ) throws IOException {
+        try {
+            reader.getDouble();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "Current event isn't double", e.getMessage() );
+        }
+    }
+
+    private static void assertNotBigIntegerException( final ModelReader reader ) throws IOException {
+        try {
+            reader.getBigInteger();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "Current event isn't big integer", e.getMessage() );
+        }
+    }
+
+    private static void assertNotBigDecimalException( final ModelReader reader ) throws IOException {
+        try {
+            reader.getBigDecimal();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "Current event isn't big decimal", e.getMessage() );
         }
     }
 

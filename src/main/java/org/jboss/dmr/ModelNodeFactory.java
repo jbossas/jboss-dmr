@@ -22,12 +22,16 @@
 
 package org.jboss.dmr;
 
+import static org.jboss.dmr.stream.ModelEvent.BIG_DECIMAL;
+import static org.jboss.dmr.stream.ModelEvent.BIG_INTEGER;
 import static org.jboss.dmr.stream.ModelEvent.BOOLEAN;
 import static org.jboss.dmr.stream.ModelEvent.BYTES;
+import static org.jboss.dmr.stream.ModelEvent.DOUBLE;
 import static org.jboss.dmr.stream.ModelEvent.EXPRESSION;
+import static org.jboss.dmr.stream.ModelEvent.INT;
 import static org.jboss.dmr.stream.ModelEvent.LIST_END;
 import static org.jboss.dmr.stream.ModelEvent.LIST_START;
-import static org.jboss.dmr.stream.ModelEvent.NUMBER;
+import static org.jboss.dmr.stream.ModelEvent.LONG;
 import static org.jboss.dmr.stream.ModelEvent.OBJECT_END;
 import static org.jboss.dmr.stream.ModelEvent.OBJECT_START;
 import static org.jboss.dmr.stream.ModelEvent.PROPERTY_END;
@@ -40,8 +44,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
 
 import org.jboss.dmr.stream.ModelEvent;
@@ -84,8 +86,16 @@ final class ModelNodeFactory {
         final ModelEvent event = modelReader.next();
         if (event == STRING) {
             return readStringFrom(modelReader);
-        } else if (event == NUMBER) {
-            return readNumberFrom(modelReader);
+        } else if (event == INT) {
+            return readIntFrom(modelReader);
+        } else if (event == LONG) {
+            return readLongFrom(modelReader);
+        } else if (event == DOUBLE) {
+            return readDoubleFrom(modelReader);
+        } else if (event == BIG_INTEGER) {
+            return readBigIntegerFrom(modelReader);
+        } else if (event == BIG_DECIMAL) {
+            return readBigDecimalFrom(modelReader);
         } else if (event == BYTES) {
             return readBytesFrom(modelReader);
         } else if (event == EXPRESSION) {
@@ -111,21 +121,24 @@ final class ModelNodeFactory {
         return new ModelNode().set(modelReader.getString());
     }
 
-    private ModelNode readNumberFrom(final ModelReader modelReader) throws IOException, ModelException {
-        final Number number = modelReader.getNumber();
-        if (number instanceof Integer) {
-            return new ModelNode().set((Integer)number);
-        } else if (number instanceof Long) {
-            return new ModelNode().set((Long)number);
-        } else if (number instanceof Double) {
-            return new ModelNode().set((Double)number);
-        } else if (number instanceof BigInteger) {
-            return new ModelNode().set((BigInteger)number);
-        } else if (number instanceof BigDecimal) {
-            return new ModelNode().set((BigDecimal)number);
-        } else {
-            throw new IllegalStateException(); // never happens
-        }
+    private ModelNode readIntFrom(final ModelReader modelReader) throws IOException, ModelException {
+        return new ModelNode().set(modelReader.getInt());
+    }
+
+    private ModelNode readLongFrom(final ModelReader modelReader) throws IOException, ModelException {
+        return new ModelNode().set(modelReader.getLong());
+    }
+
+    private ModelNode readDoubleFrom(final ModelReader modelReader) throws IOException, ModelException {
+        return new ModelNode().set(modelReader.getDouble());
+    }
+
+    private ModelNode readBigIntegerFrom(final ModelReader modelReader) throws IOException, ModelException {
+        return new ModelNode().set(modelReader.getBigInteger());
+    }
+
+    private ModelNode readBigDecimalFrom(final ModelReader modelReader) throws IOException, ModelException {
+        return new ModelNode().set(modelReader.getBigDecimal());
     }
 
     private ModelNode readBytesFrom(final ModelReader modelReader) throws IOException, ModelException {
@@ -156,8 +169,16 @@ final class ModelNodeFactory {
         while ( event != LIST_END ) {
             if (event == STRING) {
                 value = readStringFrom(modelReader);
-            } else if (event == NUMBER) {
-                value = readNumberFrom(modelReader);
+            } else if (event == INT) {
+                value = readIntFrom(modelReader);
+            } else if (event == LONG) {
+                value = readLongFrom(modelReader);
+            } else if (event == DOUBLE) {
+                value = readDoubleFrom(modelReader);
+            } else if (event == BIG_INTEGER) {
+                value = readBigIntegerFrom(modelReader);
+            } else if (event == BIG_DECIMAL) {
+                value = readBigDecimalFrom(modelReader);
             } else if (event == BYTES) {
                 value = readBytesFrom(modelReader);
             } else if (event == EXPRESSION) {
@@ -194,8 +215,16 @@ final class ModelNodeFactory {
             event = modelReader.next();
             if (event == STRING) {
                 value = readStringFrom(modelReader);
-            } else if (event == NUMBER) {
-                value = readNumberFrom(modelReader);
+            } else if (event == INT) {
+                value = readIntFrom(modelReader);
+            } else if (event == LONG) {
+                value = readLongFrom(modelReader);
+            } else if (event == DOUBLE) {
+                value = readDoubleFrom(modelReader);
+            } else if (event == BIG_INTEGER) {
+                value = readBigIntegerFrom(modelReader);
+            } else if (event == BIG_DECIMAL) {
+                value = readBigDecimalFrom(modelReader);
             } else if (event == BYTES) {
                 value = readBytesFrom(modelReader);
             } else if (event == EXPRESSION) {
@@ -231,8 +260,16 @@ final class ModelNodeFactory {
             event = modelReader.next();
             if (event == STRING) {
                 value = readStringFrom(modelReader);
-            } else if (event == NUMBER) {
-                value = readNumberFrom(modelReader);
+            } else if (event == INT) {
+                value = readIntFrom(modelReader);
+            } else if (event == LONG) {
+                value = readLongFrom(modelReader);
+            } else if (event == DOUBLE) {
+                value = readDoubleFrom(modelReader);
+            } else if (event == BIG_INTEGER) {
+                value = readBigIntegerFrom(modelReader);
+            } else if (event == BIG_DECIMAL) {
+                value = readBigDecimalFrom(modelReader);
             } else if (event == BYTES) {
                 value = readBytesFrom(modelReader);
             } else if (event == EXPRESSION) {

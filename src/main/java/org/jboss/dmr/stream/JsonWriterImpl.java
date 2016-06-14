@@ -230,7 +230,7 @@ final class JsonWriterImpl implements ModelWriter {
     public ModelWriter writeInt( final int data ) throws IOException, ModelException {
         ensureOpen();
         writeOptionalColonOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.INT );
         encode( data );
         return this;
     }
@@ -239,32 +239,32 @@ final class JsonWriterImpl implements ModelWriter {
     public ModelWriter writeLong( final long data ) throws IOException, ModelException {
         ensureOpen();
         writeOptionalColonOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( ModelEvent.LONG );
         encode( data );
         return this;
     }
 
     @Override
     public ModelWriter writeDouble( final double data ) throws IOException, ModelException {
-        return writeNumber( valueOf( data ) );
+        return writeNumber( valueOf( data ), ModelEvent.DOUBLE );
     }
 
     @Override
     public ModelWriter writeBigInteger( final BigInteger data ) throws IOException, ModelException {
         assertNotNullParameter( data );
-        return writeNumber( valueOf( data ) );
+        return writeNumber( valueOf( data ), ModelEvent.BIG_INTEGER );
     }
 
     @Override
     public ModelWriter writeBigDecimal( final BigDecimal data ) throws IOException, ModelException {
         assertNotNullParameter( data );
-        return writeNumber( valueOf( data ) );
+        return writeNumber( valueOf( data ), ModelEvent.BIG_DECIMAL );
     }
 
-    private ModelWriter writeNumber( final String data ) throws IOException, ModelException {
+    private ModelWriter writeNumber( final String data, final ModelEvent numberEvent ) throws IOException, ModelException {
         ensureOpen();
         writeOptionalColonOrComma();
-        analyzer.putNumber();
+        analyzer.putNumber( numberEvent );
         write( data, 0, data.length() );
         return this;
     }
