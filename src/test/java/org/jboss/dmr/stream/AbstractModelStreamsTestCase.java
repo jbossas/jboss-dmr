@@ -44,6 +44,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.jboss.dmr.ModelType;
+
 /**
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */

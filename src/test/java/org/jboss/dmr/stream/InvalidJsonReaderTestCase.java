@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import org.jboss.dmr.ModelType;
 import org.junit.Test;
 
 /**
@@ -2672,7 +2673,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenType_unexpectedChar() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "{\"TYPE_MODEL_VALUE\":\"ObJECT\"}" );
         assertInitialState( reader );
-        assertModelException( reader, "No enum constant org.jboss.dmr.stream.ModelType.ObJECT" );
+        assertModelException( reader, "No enum constant org.jboss.dmr.ModelType.ObJECT" );
         assertFinalState( reader );
         reader.close();
     }

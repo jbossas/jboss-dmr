@@ -22,7 +22,7 @@
 
 package org.jboss.dmr.stream;
 
-import static org.jboss.dmr.stream.ModelType.*;
+import static org.jboss.dmr.ModelType.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

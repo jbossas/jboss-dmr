@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.jboss.dmr.ModelType;
+
 /**
  * DMR writer. Instances of this interface are not thread safe.
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>

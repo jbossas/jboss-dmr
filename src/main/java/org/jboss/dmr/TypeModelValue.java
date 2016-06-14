@@ -172,7 +172,7 @@ final class TypeModelValue extends ModelValue {
 
     @Override
     void write(final ModelWriter writer) throws IOException, ModelException {
-        writer.writeType(org.jboss.dmr.stream.ModelType.valueOf(value.toString()));
+        writer.writeType(value);
     }
 
 }

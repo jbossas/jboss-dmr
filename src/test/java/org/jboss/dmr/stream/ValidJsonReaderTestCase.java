@@ -22,6 +22,7 @@
 
 package org.jboss.dmr.stream;
 
+import org.jboss.dmr.ModelType;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;

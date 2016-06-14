@@ -24,6 +24,8 @@ package org.jboss.dmr.stream;
 
 import java.io.IOException;
 
+import org.jboss.dmr.ModelType;
+
 /**
  * DMR reader. Instances of this interface are not thread safe.
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>

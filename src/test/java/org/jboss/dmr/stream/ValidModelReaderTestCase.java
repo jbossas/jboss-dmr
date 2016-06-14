@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.jboss.dmr.ModelType;
 import org.junit.Test;
 
 /**
