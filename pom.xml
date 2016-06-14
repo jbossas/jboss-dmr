@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>11</version>
+        <version>20</version>
     </parent>
 
     <groupId>org.jboss</groupId>
@@ -38,8 +38,6 @@
     <name>JBoss Dynamic Model Representation</name>
 
     <properties>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
         <version.org.wildfly.checkstyle-config>1.0.4.Final</version.org.wildfly.checkstyle-config>
     </properties>
 
