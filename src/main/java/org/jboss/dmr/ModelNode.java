@@ -23,6 +23,8 @@
 package org.jboss.dmr;
 
 import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelStreamFactory;
+import org.jboss.dmr.stream.ModelWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInput;
@@ -1422,7 +1424,20 @@ public class ModelNode implements Externalizable, Cloneable {
      *        printed on multiple lines ({@code false}).
      */
     public void writeString(final PrintWriter writer, final boolean compact) {
-        value.writeString(writer, compact);
+        if (compact) {
+            final ModelWriter modelWriter = ModelStreamFactory.getInstance(false).newModelWriter(writer);
+            try {
+                value.write(modelWriter);
+                modelWriter.flush();
+                modelWriter.close();
+            } catch (final IOException e) {
+                throw new RuntimeException(e); // should never happen because PrintWriter swallows IOExceptions
+            } catch (final ModelException e) {
+                throw new RuntimeException(e); // should never happen because this model serialization is always correct
+            }
+        } else {
+            value.writeString(writer, compact);
+        }
     }
 
     /**
@@ -1444,7 +1459,24 @@ public class ModelNode implements Externalizable, Cloneable {
      *        printed on multiple lines ({@code false}).
      */
     public void writeJSONString(final PrintWriter writer, final boolean compact) {
-        value.writeJSONString(writer, compact);
+        if (compact) {
+            final ModelWriter modelWriter = ModelStreamFactory.getInstance(true).newModelWriter(writer);
+            try {
+                value.write(modelWriter);
+                modelWriter.flush();
+                modelWriter.close();
+            } catch (final IOException e) {
+                throw new RuntimeException(e); // should never happen because PrintWriter swallows IOExceptions
+            } catch (final ModelException e) {
+                throw new RuntimeException(e); // should never happen because this model serialization is always correct
+            }
+        } else {
+            value.writeJSONString(writer, compact);
+        }
+    }
+
+    final void write(final ModelWriter writer) throws IOException, ModelException {
+        value.write(writer);
     }
 
     /**

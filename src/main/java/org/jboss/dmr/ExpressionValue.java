@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -106,4 +109,10 @@ final class ExpressionValue extends ModelValue {
     ModelValue resolve() {
         return new StringModelValue(valueExpression.resolveString());
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeExpression(valueExpression.getExpressionString());
+    }
+
 }

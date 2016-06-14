@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -298,4 +301,18 @@ final class ObjectModelValue extends ModelValue {
         }
         return super.requireChild(name);
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeObjectStart();
+        final Iterator<Map.Entry<String, ModelNode>> iterator = map.entrySet().iterator();
+        Map.Entry<String, ModelNode> entry;
+        while (iterator.hasNext()) {
+            entry = iterator.next();
+            writer.writeString(entry.getKey());
+            entry.getValue().write(writer);
+        }
+        writer.writeObjectEnd();
+    }
+
 }

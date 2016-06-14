@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -314,4 +317,17 @@ final class ListModelValue extends ModelValue {
             return super.requireChild(index);
         }
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        final Iterator<ModelNode> iterator = list.iterator();
+        writer.writeListStart();
+        ModelNode value;
+        while (iterator.hasNext()) {
+            value = iterator.next();
+            value.write(writer);
+        }
+        writer.writeListEnd();
+    }
+
 }

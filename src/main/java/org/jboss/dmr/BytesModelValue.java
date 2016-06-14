@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -212,4 +215,10 @@ final class BytesModelValue extends ModelValue {
     public int hashCode() {
         return Arrays.hashCode(bytes) + 71;
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeBytes(bytes);
+    }
+
 }

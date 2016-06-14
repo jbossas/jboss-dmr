@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -272,6 +275,11 @@ abstract class ModelValue implements Cloneable {
         }
 
         @Override
+        void write(final ModelWriter out) throws IOException, ModelException {
+            out.writeUndefined();
+        }
+
+        @Override
         public int hashCode() {
             return 7113;
         }
@@ -358,6 +366,8 @@ abstract class ModelValue implements Cloneable {
     public void writeJSONString(final PrintWriter writer, final boolean compact) {
         formatAsJSON(writer, 0, !compact);
     }
+
+    abstract void write(final ModelWriter writer) throws IOException, ModelException;
 
     ModelValue resolve() {
         return copy();
