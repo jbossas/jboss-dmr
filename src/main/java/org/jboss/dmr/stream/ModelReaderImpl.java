@@ -610,9 +610,20 @@ final class ModelReaderImpl implements ModelReader {
     private void processWhitespaces() throws IOException {
         int currentChar;
         do {
-            currentChar = read();
+            if ( position == limit ) {
+                limit = 0;
+                position = 0;
+                fillBuffer();
+                if ( position == limit ) return;
+            } else if ( position == limit - 1 ) {
+                buffer[ 0 ] = buffer[ position ];
+                limit = 1;
+                position = 0;
+                fillBuffer();
+            }
+            currentChar = buffer[ position++ ];
         } while ( isWhitespace( currentChar ) );
-        if ( currentChar != -1 ) position--;
+        position--;
     }
 
     private void ensureData() throws IOException {
