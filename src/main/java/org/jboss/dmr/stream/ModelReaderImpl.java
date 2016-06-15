@@ -627,7 +627,7 @@ final class ModelReaderImpl implements ModelReader {
 
     private void ensureBufferAccess( final int charsCount, final String expectedTokens ) throws IOException, ModelException {
         if ( position + charsCount <= limit ) return;
-        if ( position < limit ) {
+        if ( position <= limit ) {
             System.arraycopy( buffer, position, buffer, 0, limit - position );
             limit -= position;
             position = 0;
