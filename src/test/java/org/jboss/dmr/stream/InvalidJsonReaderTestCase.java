@@ -2601,7 +2601,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenString_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "\"" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR string" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2617,7 +2617,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenBytes_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "{\"BYTES_VALUE\"" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR bytes value" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2641,7 +2641,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenBytes_invalidBase64Value_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "{\"BYTES_VALUE\":\"" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR base64 string" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2665,7 +2665,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenExpressionString_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "{\"EXPRESSION_VALUE\":\"" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR string" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2681,7 +2681,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenType_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "{\"TYPE_MODEL_VALUE\":\"O" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR string" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2697,7 +2697,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenInfinity2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2713,7 +2713,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenInfinity3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "In" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2729,7 +2729,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNegativeInfinity1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2745,7 +2745,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNegativeInfinity2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2761,7 +2761,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNegativeInfinity3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-In" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2777,7 +2777,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenPositiveInfinity1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2793,7 +2793,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenPositiveInfinity2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2809,7 +2809,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenPositiveInfinity3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+In" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2825,7 +2825,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNaN2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "N" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2841,7 +2841,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNaN3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "Na" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2857,7 +2857,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNegativeNaN1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2873,7 +2873,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNegativeNaN2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-N" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2889,7 +2889,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenNegativeNaN3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-Na" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2905,7 +2905,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenPositiveNaN1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2921,7 +2921,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenPositiveNaN2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+N" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2937,7 +2937,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenPositiveNaN3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+Na" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2953,7 +2953,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenTrue_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "tru" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR true token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2969,7 +2969,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenFalse_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "fals" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR false token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -2985,7 +2985,7 @@ public final class InvalidJsonReaderTestCase extends AbstractModelStreamsTestCas
     private void read_brokenUndefined_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "nul" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR null token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }

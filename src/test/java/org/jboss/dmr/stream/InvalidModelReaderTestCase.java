@@ -4734,7 +4734,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigInteger2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "b" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR big or bytes token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4750,7 +4750,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigInteger3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "bi" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR big token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4766,7 +4766,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigInteger5_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "big " );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR decimal or integer token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4782,7 +4782,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigInteger6_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "big i" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR integer token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4814,7 +4814,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimal2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "b" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR big or bytes token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4830,7 +4830,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimal3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "bi" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR big token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4846,7 +4846,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimal5_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "big " );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR decimal or integer token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4862,7 +4862,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimal6_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "big d" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR decimal token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4886,7 +4886,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenString_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "\"" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR string" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4902,7 +4902,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBytes2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "b" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR big or bytes token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4918,7 +4918,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBytes3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "by" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR bytes token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -4998,7 +4998,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenExpression_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "e" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR expression token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5006,7 +5006,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenExpressionString_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "expression \"" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR string" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5022,7 +5022,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenObjectType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "O" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR OBJECT token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5038,7 +5038,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenObjectType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "OB" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR OBJECT token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5054,7 +5054,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenListType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "L" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR LIST or LONG token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5070,7 +5070,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenListType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "LI" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR LIST token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5086,7 +5086,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPropertyType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "P" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR PROPERTY token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5102,7 +5102,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPropertyType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "PR" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR PROPERTY token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5118,7 +5118,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenStringType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "S" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR STRING token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5134,7 +5134,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenStringType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "ST" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR STRING token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5150,7 +5150,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenIntType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR INT or Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5166,7 +5166,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenIntType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "IN" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR INT token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5182,7 +5182,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenLongType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "L" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR LIST or LONG token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5198,7 +5198,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenLongType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "LO" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR LONG token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5214,7 +5214,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenDoubleType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "D" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR DOUBLE token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5230,7 +5230,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenDoubleType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "DO" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR DOUBLE token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5246,7 +5246,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigIntegerType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "B" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5254,7 +5254,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigIntegerType3_unexpectedChar() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BIg" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5262,7 +5262,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigIntegerType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BI" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5278,7 +5278,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigIntegerType5_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BIG_" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5294,7 +5294,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigIntegerType6_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BIG_I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5310,7 +5310,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimalType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "B" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5318,7 +5318,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimalType3_unexpectedChar() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BIg" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5326,7 +5326,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimalType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BI" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5342,7 +5342,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimalType5_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BIG_" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5358,7 +5358,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBigDecimalType6_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BIG_D" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5374,7 +5374,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBytesType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "B" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5390,7 +5390,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBytesType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BY" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BYTES token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5406,7 +5406,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBooleanType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "B" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5422,7 +5422,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenBooleanType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "BO" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR BOOLEAN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5438,7 +5438,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenExpressionType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "E" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR EXPRESSION token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5454,7 +5454,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenExpressionType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "EX" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR EXPRESSION token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5470,7 +5470,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenTypeType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "T" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR TYPE token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5486,7 +5486,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenTypeType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "TY" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR TYPE token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5502,7 +5502,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenUndefinedType2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "U" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR UNDEFINED token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5518,7 +5518,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenUndefinedType3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "UN" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR UNDEFINED token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5534,7 +5534,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenInfinity2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR INT or Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5550,7 +5550,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenInfinity3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "In" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5566,7 +5566,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNegativeInfinity1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5582,7 +5582,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNegativeInfinity2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5598,7 +5598,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNegativeInfinity3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-In" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5614,7 +5614,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPositiveInfinity1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5630,7 +5630,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPositiveInfinity2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+I" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5646,7 +5646,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPositiveInfinity3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+In" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5662,7 +5662,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNaN2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "N" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5678,7 +5678,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNaN3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "Na" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5694,7 +5694,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNegativeNaN1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5710,7 +5710,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNegativeNaN2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-N" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5726,7 +5726,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenNegativeNaN3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "-Na" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5742,7 +5742,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPositiveNaN1_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR Infinity or NaN or number token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5758,7 +5758,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPositiveNaN2_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+N" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5774,7 +5774,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenPositiveNaN3_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "+Na" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR NaN token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5790,7 +5790,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenTrue_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "tru" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR true token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5806,7 +5806,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenFalse_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "fals" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR false token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5822,7 +5822,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenUndefined_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "undef" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR undefined token" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -5838,7 +5838,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     private void read_brokenArrow_unexpectedEOF() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "=" );
         assertInitialState( reader );
-        assertModelException( reader, "Unexpected EOF while reading DMR arrow" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -17313,7 +17313,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
         final ModelReader reader = getModelReader( "{\"\"=" );
         assertObjectStartState( reader );
         assertStringState( reader, "" );
-        assertModelException( reader, "Unexpected EOF while reading DMR arrow" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }
@@ -17331,7 +17331,7 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
         final ModelReader reader = getModelReader( "(\"\"=" );
         assertPropertyStartState( reader );
         assertStringState( reader, "" );
-        assertModelException( reader, "Unexpected EOF while reading DMR arrow" );
+        assertModelException( reader, "Unexpected EOF while reading DMR stream" );
         assertFinalState( reader );
         reader.close();
     }

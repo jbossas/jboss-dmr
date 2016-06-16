@@ -293,7 +293,8 @@ final class JsonReaderImpl implements ModelReader {
         BigInteger bigIntegerValue;
         int currentChar;
         while ( true ) {
-            currentChar = position < limit ? buffer[ position++ ] : read();
+            ensureBufferAccess( 1 );
+            currentChar = buffer[ position++ ];
             switch ( currentChar ) {
                 case QUOTE: {
                     analyzer.putString();
@@ -313,7 +314,9 @@ final class JsonReaderImpl implements ModelReader {
                 case '5': case '6': case '7': case '8': case '9':
                 case MINUS: case PLUS: {
                     if ( currentChar == PLUS || currentChar == MINUS ) {
-                        ensureBufferAccess( 1, "Infinity or NaN or number" );
+                        position--;
+                        ensureBufferAccess( 2 );
+                        position++;
                         if ( buffer[ position ] == 'I' ) {
                             readString( INFINITY );
                             analyzer.putNumber( ModelEvent.DOUBLE );
@@ -408,7 +411,7 @@ final class JsonReaderImpl implements ModelReader {
                             analyzer.putObjectStart();
                         }
                     } else {
-                        position--;
+                        if ( currentChar != -1 ) position--;
                         analyzer.putObjectStart();
                     }
                     return analyzer.currentEvent;
@@ -427,12 +430,9 @@ final class JsonReaderImpl implements ModelReader {
                 }
                 default: {
                     if ( isWhitespace( currentChar ) ) {
-                        continue;
-                    }
-                    if ( currentChar >= 0 ) {
-                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR stream" );
+                        processWhitespaces();
                     } else {
-                        throw newModelException( "Unexpected EOF while reading DMR stream" );
+                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR stream" );
                     }
                 }
             }
@@ -468,7 +468,7 @@ final class JsonReaderImpl implements ModelReader {
         }
     }
 
-    private void ensureBufferAccess( final int charsCount, final String expectedTokens ) throws IOException, ModelException {
+    private void ensureBufferAccess( final int charsCount ) throws IOException, ModelException {
         if ( position + charsCount <= limit ) return;
         if ( position <= limit ) {
             System.arraycopy( buffer, position, buffer, 0, limit - position );
@@ -477,7 +477,7 @@ final class JsonReaderImpl implements ModelReader {
         }
         fillBuffer();
         if ( position + charsCount > limit ) {
-            throw newModelException( "Unexpected EOF while reading DMR " + expectedTokens + " token" );
+            throw newModelException( "Unexpected EOF while reading DMR stream" );
         }
     }
 
@@ -534,7 +534,7 @@ final class JsonReaderImpl implements ModelReader {
                             while ( limit + 4 > buffer.length ) doubleBuffer();
                             fillBuffer();
                             if ( limit - position < 4 ) {
-                                throw newModelException( "Unexpected EOF while reading DMR string" );
+                                throw newModelException( "Unexpected EOF while reading DMR stream" );
                             }
                             try {
                                 buffer[ stringOffset + stringLength++ ] = ( char ) Integer.parseInt( new String( buffer, position, 4 ), 16 );
@@ -570,7 +570,7 @@ final class JsonReaderImpl implements ModelReader {
             } else if ( stringOffset == 0 && limit == buffer.length ) doubleBuffer();
             ensureData();
             if ( position == limit ) {
-                throw newModelException( "Unexpected EOF while reading DMR string" );
+                throw newModelException( "Unexpected EOF while reading DMR stream" );
             }
         }
     }
@@ -597,7 +597,7 @@ final class JsonReaderImpl implements ModelReader {
                 if ( i == expected.length ) return;
                 ensureData();
                 if ( position == limit ) {
-                    throw newModelException( "Unexpected EOF while reading DMR " + new String( expected ) + " token" );
+                    throw newModelException( "Unexpected EOF while reading DMR stream" );
                 }
             }
         }
@@ -655,22 +655,16 @@ final class JsonReaderImpl implements ModelReader {
     }
 
     private void readType() throws IOException, ModelException {
-        int currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        char currentChar = buffer[ position++ ];
         if ( currentChar != COLON ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR type value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR type value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR type value" );
         }
         processWhitespaces();
-        currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        currentChar = buffer[ position++ ];
         if ( currentChar != QUOTE ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR type value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR type value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR type value" );
         }
         readString();
         try {
@@ -679,44 +673,32 @@ final class JsonReaderImpl implements ModelReader {
             throw newModelException( e.getMessage(), e );
         }
         processWhitespaces();
-        currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        currentChar = buffer[ position++ ];
         if ( currentChar != OBJECT_END ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR type value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR type value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR type value" );
         }
     }
 
     private void readBytes() throws IOException, ModelException {
-        int currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        char currentChar = buffer[ position++ ];
         if ( currentChar != COLON ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR bytes value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR bytes value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR bytes value" );
         }
         processWhitespaces();
-        currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        currentChar = buffer[ position++ ];
         if ( currentChar != QUOTE ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR bytes value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR bytes value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR bytes value" );
         }
         base64Canonicalize();
         base64Decode();
         processWhitespaces();
-        currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        currentChar = buffer[ position++ ];
         if ( currentChar != OBJECT_END ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR bytes value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR bytes value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR bytes value" );
         }
     }
 
@@ -758,7 +740,7 @@ final class JsonReaderImpl implements ModelReader {
             } else if ( stringOffset == 0 && limit == buffer.length ) doubleBuffer();
             ensureData();
             if ( position == limit ) {
-                throw newModelException( "Unexpected EOF while reading DMR base64 string" );
+                throw newModelException( "Unexpected EOF while reading DMR stream" );
             }
         }
     }
@@ -794,33 +776,24 @@ final class JsonReaderImpl implements ModelReader {
     }
 
     private void readExpression() throws IOException, ModelException {
-        int currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        char currentChar = buffer[ position++ ];
         if ( currentChar != COLON ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR expression value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR expression value" );
         }
         processWhitespaces();
-        currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        currentChar = buffer[ position++ ];
         if ( currentChar != QUOTE ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR expression value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR expression value" );
         }
         readString();
         stringValue = new String( buffer, stringOffset, stringLength );
         processWhitespaces();
-        currentChar = position < limit ? buffer[ position++ ] : read();
+        ensureBufferAccess( 1 );
+        currentChar = buffer[ position++ ];
         if ( currentChar != OBJECT_END ) {
-            if ( currentChar == -1 ) {
-                throw newModelException( "Unexpected EOF while reading DMR expression value" );
-            } else {
-                throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
-            }
+            throw newModelException( "Unexpected character '" + currentChar + "' while reading DMR expression value" );
         }
     }
 

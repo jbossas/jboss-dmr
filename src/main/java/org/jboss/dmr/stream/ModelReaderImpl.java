@@ -300,7 +300,8 @@ final class ModelReaderImpl implements ModelReader {
         }
         int currentChar;
         while ( true ) {
-            currentChar = position < limit ? buffer[ position++ ] : read();
+            ensureBufferAccess( 1 );
+            currentChar = buffer[ position++ ];
             switch ( currentChar ) {
                 case QUOTE: {
                     analyzer.putString();
@@ -309,13 +310,10 @@ final class ModelReaderImpl implements ModelReader {
                     return analyzer.currentEvent;
                 }
                 case EQUAL: {
-                    currentChar = position < limit ? buffer[ position++ ] : read();
+                    ensureBufferAccess( 1 );
+                    currentChar = buffer[ position++ ];
                     if ( currentChar != GREATER_THAN ) {
-                        if ( currentChar == -1 ) {
-                            throw newModelException( "Unexpected EOF while reading DMR arrow" );
-                        } else {
-                            throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR arrow" );
-                        }
+                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR arrow" );
                     }
                     analyzer.putArrow();
                 }
@@ -328,7 +326,9 @@ final class ModelReaderImpl implements ModelReader {
                 case '5': case '6': case '7': case '8': case '9':
                 case MINUS: case PLUS: {
                     if ( currentChar == PLUS || currentChar == MINUS ) {
-                        ensureBufferAccess( 1, "Infinity or NaN or number" );
+                        position--;
+                        ensureBufferAccess( 2 );
+                        position++;
                         if ( buffer[ position ] == 'I' ) {
                             readString( INFINITY );
                             analyzer.putNumber( ModelEvent.DOUBLE );
@@ -376,10 +376,11 @@ final class ModelReaderImpl implements ModelReader {
                 }
                 case 'b' : {
                     position--;
-                    ensureBufferAccess( 2, "big or bytes" );
+                    ensureBufferAccess( 2 );
                     if ( buffer[ position + 1 ] == 'i' ) {
                         readString( BIG );
                         processWhitespaces();
+                        ensureBufferAccess( 1 );
                         if ( buffer[ position ] == 'd' ) {
                             readString( DECIMAL );
                             processWhitespaces();
@@ -401,13 +402,8 @@ final class ModelReaderImpl implements ModelReader {
                                 throw newModelException( "Incorrect big integer value", nfe );
                             }
                         } else {
-                            if ( read() == -1 ) {
-                                throw newModelException( "Unexpected EOF while reading DMR decimal or integer token" );
-                            } else {
-                                position--;
-                                throw newModelException( "Unexpected first character '" + buffer[ position ]
-                                        + "' while reading DMR decimal or integer token" );
-                            }
+                            throw newModelException( "Unexpected first character '" + buffer[ position ]
+                                    + "' while reading DMR decimal or integer token" );
                         }
                     } else if ( buffer[ position + 1 ] == 'y' ) {
                         analyzer.putBytes();
@@ -432,13 +428,10 @@ final class ModelReaderImpl implements ModelReader {
                     position--;
                     readString( EXPRESSION );
                     processWhitespaces();
-                    currentChar = position < limit ? buffer[ position++ ] : read();
+                    ensureBufferAccess( 1 );
+                    currentChar = buffer[ position++ ];
                     if ( currentChar != QUOTE ) {
-                        if ( currentChar == -1 ) {
-                            throw newModelException( "Unexpected EOF while reading DMR expression value" );
-                        } else {
-                            throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
-                        }
+                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
                     }
                     readString();
                     stringValue = new String( buffer, stringOffset, stringLength );
@@ -488,7 +481,7 @@ final class ModelReaderImpl implements ModelReader {
                 }
                 case 'L': {
                     position--;
-                    ensureBufferAccess( 2, "LIST or LONG" );
+                    ensureBufferAccess( 2 );
                     analyzer.putType();
                     if ( buffer[ position + 1 ] == 'I' ) {
                         readString( TYPE_LIST );
@@ -504,10 +497,10 @@ final class ModelReaderImpl implements ModelReader {
                 }
                 case 'B': {
                     position--;
-                    ensureBufferAccess( 2, "BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES" );
+                    ensureBufferAccess( 2 );
                     analyzer.putType();
                     if ( buffer[ position + 1 ] == 'I' ) {
-                        ensureBufferAccess( 5, "BIG_DECIMAL or BIG_INTEGER" );
+                        ensureBufferAccess( 5 );
                         if ( buffer[ position + 4 ] == 'D' ) {
                             readString( TYPE_BIG_DECIMAL );
                             typeValue = ModelType.BIG_DECIMAL;
@@ -532,7 +525,7 @@ final class ModelReaderImpl implements ModelReader {
                 }
                 case 'I': {
                     position--;
-                    ensureBufferAccess( 2, "INT or Infinity" );
+                    ensureBufferAccess( 2 );
                     if ( buffer[ position + 1 ] == 'N' ) {
                         analyzer.putType();
                         readString( TYPE_INT );
@@ -595,12 +588,8 @@ final class ModelReaderImpl implements ModelReader {
                 default: {
                     if ( isWhitespace( currentChar ) ) {
                         processWhitespaces();
-                        continue;
-                    }
-                    if ( currentChar >= 0 ) {
-                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR stream" );
                     } else {
-                        throw newModelException( "Unexpected EOF while reading DMR stream" );
+                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR stream" );
                     }
                 }
             }
@@ -636,7 +625,7 @@ final class ModelReaderImpl implements ModelReader {
         }
     }
 
-    private void ensureBufferAccess( final int charsCount, final String expectedTokens ) throws IOException, ModelException {
+    private void ensureBufferAccess( final int charsCount ) throws IOException, ModelException {
         if ( position + charsCount <= limit ) return;
         if ( position <= limit ) {
             System.arraycopy( buffer, position, buffer, 0, limit - position );
@@ -645,7 +634,7 @@ final class ModelReaderImpl implements ModelReader {
         }
         fillBuffer();
         if ( position + charsCount > limit ) {
-            throw newModelException( "Unexpected EOF while reading DMR " + expectedTokens + " token" );
+            throw newModelException( "Unexpected EOF while reading DMR stream" );
         }
     }
 
@@ -681,7 +670,7 @@ final class ModelReaderImpl implements ModelReader {
                     } else if ( currentChar == 'n' ) {
                         buffer[ stringOffset + stringLength++ ] = NL;
                     } else if ( currentChar == 'r' ) {
-                        buffer[stringOffset + stringLength++] = CR;
+                        buffer[ stringOffset + stringLength++ ] = CR;
                     } else {
                         buffer[ stringOffset + stringLength++ ] = currentChar;
                     }
@@ -706,7 +695,7 @@ final class ModelReaderImpl implements ModelReader {
             } else if ( stringOffset == 0 && limit == buffer.length ) doubleBuffer();
             ensureData();
             if ( position == limit ) {
-                throw newModelException( "Unexpected EOF while reading DMR string" );
+                throw newModelException( "Unexpected EOF while reading DMR stream" );
             }
         }
     }
@@ -733,7 +722,7 @@ final class ModelReaderImpl implements ModelReader {
                 if ( i == expected.length ) return;
                 ensureData();
                 if ( position == limit ) {
-                    throw newModelException( "Unexpected EOF while reading DMR " + new String( expected ) + " token" );
+                    throw newModelException( "Unexpected EOF while reading DMR stream" );
                 }
             }
         }
@@ -763,19 +752,20 @@ final class ModelReaderImpl implements ModelReader {
     }
 
     private void readBytes() throws IOException, ModelException {
-        if ( !( read() == BYTES_START ) ) {
+        ensureBufferAccess( 1 );
+        if ( buffer[ position++ ] != BYTES_START ) {
             throw newModelException( "Incorrect bytes value. It must start with: '{'" );
         }
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         processWhitespaces();
         boolean expectingComma = false;
-        while ( !( read() == BYTES_END ) ) {
-            position--;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ensureBufferAccess( 1 );
+        while ( buffer[ position ] != BYTES_END ) {
             if ( !expectingComma && isNumberChar( buffer[ position ] ) ) {
-                ensureBufferAccess( 2, "number" );
+                ensureBufferAccess( 2 );
                 try {
-                    if ( buffer[position + 1] == 'x' ) {
-                        if ( buffer[position] != '0' ) {
+                    if ( buffer[ position + 1 ] == 'x' ) {
+                        if ( buffer[ position ] != '0' ) {
                             throw newModelException( "Expected integer or hexed integer value inside bytes section" );
                         }
                         position += 2;
@@ -801,7 +791,9 @@ final class ModelReaderImpl implements ModelReader {
                 }
             }
             processWhitespaces();
+            ensureBufferAccess( 1 );
         }
+        position++;
         processWhitespaces();
         bytesValue = baos.toByteArray();
     }
