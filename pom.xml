@@ -42,6 +42,20 @@
     </properties>
 
     <dependencies>
+        <!-- 
+            [DMR-9] COOCKCC based parsers have been deprecated in JBoss DMR 1.4.0 and must be removed in JBoss DMR 1.5.0 or above.
+            The actual removal version depends on which version gets to which EAP. On remove the following classes must be deleted:
+             * src/main/java/org/jboss/dmr/JSONParser.java
+             * src/main/java/org/jboss/dmr/JSONParserImpl.java
+             * src/main/java/org/jboss/dmr/ModelNodeParser.java
+             * src/main/java/org/jboss/dmr/Parser.java
+        -->
+        <dependency>
+            <groupId>com.google.code.cookcc</groupId>
+            <artifactId>cookcc</artifactId>
+            <version>0.3.3</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
@@ -67,7 +81,7 @@
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <excludes>**/*$logger.java,**/*$bundle.java</excludes>
+                    <excludes>**/*$logger.java,**/*$bundle.java,**/dmr/Parser.java,**/dmr/JSONParser.java</excludes>
                     <useFile/>
                 </configuration>
                 <dependencies>
