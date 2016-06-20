@@ -86,10 +86,38 @@ public final class ValidJsonReaderTestCase extends AbstractModelStreamsTestCase 
 
     @Test
     public void simpleObjectWithoutWhitespaces() throws IOException, ModelException {
-        final ModelReader reader = getModelReader( "{\"a\":\"b\"}" );
+        final ModelReader reader = getModelReader( "{\"a\":\"b\","
+                + "\"hexedPositiveIntNoSign\":0xabcdef,\"hexedPositiveIntWithSign\":+0xabcdef,\"hexedNegativeIntWithSign\":-0xFEDCBA,"
+                + "\"hexedPositiveLongNoSign\":0xabcdefabcdef,\"hexedPositiveLongWithSign\":+0xabcdefabcdef,\"hexedNegativeLongWithSign\":-0xFEDCBAFEDCBA,"
+                + "\"octedPositiveIntNoSign\":012345670,\"octedPositiveIntWithSign\":+012345670,\"octedNegativeIntWithSign\":-076543210,"
+                + "\"octedPositiveLongNoSign\":01234567012345670,\"octedPositiveLongWithSign\":+01234567012345670,\"octedNegativeLongWithSign\":-07654321076543210}" );
         assertObjectStartState( reader );
         assertStringState( reader, "a" );
         assertStringState( reader, "b" );
+        assertStringState( reader, "hexedPositiveIntNoSign" );
+        assertNumberState( reader, 11259375 );
+        assertStringState( reader, "hexedPositiveIntWithSign" );
+        assertNumberState( reader, 11259375 );
+        assertStringState( reader, "hexedNegativeIntWithSign" );
+        assertNumberState( reader, -16702650 );
+        assertStringState( reader, "hexedPositiveLongNoSign" );
+        assertNumberState( reader, 188900977659375L );
+        assertStringState( reader, "hexedPositiveLongWithSign" );
+        assertNumberState( reader, 188900977659375L );
+        assertStringState( reader, "hexedNegativeLongWithSign" );
+        assertNumberState( reader, -280223983525050L );
+        assertStringState( reader, "octedPositiveIntNoSign" );
+        assertNumberState( reader, 2739128 );
+        assertStringState( reader, "octedPositiveIntWithSign" );
+        assertNumberState( reader, 2739128 );
+        assertStringState( reader, "octedNegativeIntWithSign" );
+        assertNumberState( reader, -16434824 );
+        assertStringState( reader, "octedPositiveLongNoSign" );
+        assertNumberState( reader, 45954944846776L );
+        assertStringState( reader, "octedPositiveLongWithSign" );
+        assertNumberState( reader, 45954944846776L );
+        assertStringState( reader, "octedNegativeLongWithSign" );
+        assertNumberState( reader, -275730608604808L );
         assertObjectEndState( reader );
         assertFinalState( reader );
         reader.close();

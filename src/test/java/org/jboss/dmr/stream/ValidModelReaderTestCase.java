@@ -125,7 +125,10 @@ public final class ValidModelReaderTestCase extends AbstractModelStreamsTestCase
         final String data = "{\"0\"=>\"0\",\"1\"=>1,\"2\"=>2L,\"3\"=>3.0,\"4\"=>true,\"5\"=>undefined,\"6\"=>"
             + "biginteger60000000000000000000000000000,\"7\"=>bigdecimal70000000000000000000000000000.000000000000001,"
             + "\"8\"=>expression\"env.JAVA_HOME\",\"9\"=>bytes{0x00,0x01,0x02,0x03},\"10\"=>{\"\"=>false},\"11\"=>"
-            + "[OBJECT],\"12\"=>(\"propKey\"=>PROPERTY)}";
+            + "[OBJECT],\"12\"=>(\"propKey\"=>PROPERTY),\"hexedInt\"=>0xFFFFFFFF,\"hexedLong\"=>0xFFFFFFFFFFFFFFFFL,"
+            + "\"minInt\"=>0x" + Integer.toHexString( Integer.MIN_VALUE ) + ",\"maxInt\"=>0x" + Integer.toHexString( Integer.MAX_VALUE ) + ","
+            + "\"zeroInt\"=>0x0,\"zeroLong\"=>0x0L,"
+            + "\"minLong\"=>0x" + Long.toHexString( Long.MIN_VALUE ) + "L,\"maxLong\"=>0x" + Long.toHexString( Long.MAX_VALUE ) + "L}";
         final ModelReader reader = getModelReader( data );
         assertObjectStartState( reader );
         assertStringState( reader, "0" );
@@ -162,6 +165,22 @@ public final class ValidModelReaderTestCase extends AbstractModelStreamsTestCase
         assertStringState( reader, "propKey" );
         assertTypeState( reader, ModelType.PROPERTY );
         assertPropertyEndState( reader );
+        assertStringState( reader, "hexedInt" );
+        assertNumberState( reader, -1 );
+        assertStringState( reader, "hexedLong" );
+        assertNumberState( reader, -1L );
+        assertStringState( reader, "minInt" );
+        assertNumberState( reader, Integer.MIN_VALUE );
+        assertStringState( reader, "maxInt" );
+        assertNumberState( reader, Integer.MAX_VALUE );
+        assertStringState( reader, "zeroInt" );
+        assertNumberState( reader, 0 );
+        assertStringState( reader, "zeroLong" );
+        assertNumberState( reader, 0L );
+        assertStringState( reader, "minLong" );
+        assertNumberState( reader, Long.MIN_VALUE );
+        assertStringState( reader, "maxLong" );
+        assertNumberState( reader, Long.MAX_VALUE );
         assertObjectEndState( reader );
         assertFinalState( reader );
         reader.close();

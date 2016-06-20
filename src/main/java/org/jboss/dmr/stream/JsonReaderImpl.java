@@ -46,6 +46,8 @@ import static org.jboss.dmr.stream.Utils.EMPTY_BYTES;
 import static org.jboss.dmr.stream.Utils.INCORRECT_DATA;
 import static org.jboss.dmr.stream.Utils.isBase64Char;
 import static org.jboss.dmr.stream.Utils.isControl;
+import static org.jboss.dmr.stream.Utils.isDigit;
+import static org.jboss.dmr.stream.Utils.isHexNumberChar;
 import static org.jboss.dmr.stream.Utils.isNumberChar;
 import static org.jboss.dmr.stream.Utils.isWhitespace;
 
@@ -292,6 +294,7 @@ final class JsonReaderImpl implements ModelReader {
         }
         BigInteger bigIntegerValue;
         int currentChar;
+        int radix;
         while ( true ) {
             ensureBufferAccess( 1 );
             currentChar = buffer[ position++ ];
@@ -313,6 +316,7 @@ final class JsonReaderImpl implements ModelReader {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
                 case MINUS: case PLUS: {
+                    radix = 10;
                     if ( currentChar == PLUS || currentChar == MINUS ) {
                         position--;
                         ensureBufferAccess( 2 );
@@ -327,13 +331,37 @@ final class JsonReaderImpl implements ModelReader {
                             analyzer.putNumber( ModelEvent.DOUBLE );
                             doubleValue = Double.NaN;
                             return analyzer.currentEvent;
+                        } else if ( buffer[ position ] == '0' ) {
+                            position--;
+                            if ( ensureBufferAccessNoFail( 3 ) ) {
+                                if ( buffer[ position + 2 ] == 'x' ) {
+                                    radix = 16;
+                                    position += 2;
+                                } else if ( isDigit( buffer[ position + 2 ] ) ) {
+                                    radix = 8;
+                                    position++;
+                                }
+                            }
+                            position++;
                         } else if ( !isNumberChar( buffer[ position ] ) ) {
                             throw newModelException( "Unexpected first character '" + buffer[ position ]
                                     + "' while reading DMR Infinity or NaN or number token" );
                         }
                     }
-                    position--;
-                    readNumber();
+                    if ( currentChar == '0' ) {
+                        position--;
+                        if ( ensureBufferAccessNoFail( 2 ) ) {
+                            if ( buffer[ position + 1 ] == 'x' ) {
+                                radix = 16;
+                                position++;
+                            } else if ( isDigit( buffer[ position + 1 ] ) ) {
+                                radix = 8;
+                            }
+                        }
+                        position++;
+                    }
+                    if ( radix == 10 ) position--;
+                    readNumber( radix > 10 );
                     if ( isDecimalString() ) {
                         try {
                             analyzer.putNumber( ModelEvent.BIG_DECIMAL );
@@ -343,7 +371,11 @@ final class JsonReaderImpl implements ModelReader {
                         }
                     } else {
                         try {
-                            bigIntegerValue = new BigInteger( new String( buffer, numberOffset, numberLength ) );
+                            if ( radix == 10 ) {
+                                bigIntegerValue = new BigInteger( new String( buffer, numberOffset, numberLength ), radix );
+                            } else {
+                                bigIntegerValue = new BigInteger( ( currentChar == MINUS ? "-" : "+" ) + new String( buffer, numberOffset, numberLength ), radix );
+                            }
                             if ( bigIntegerValue.bitLength() <= 31 ) {
                                 analyzer.putNumber( ModelEvent.INT );
                                 intValue = bigIntegerValue.intValue();
@@ -481,6 +513,17 @@ final class JsonReaderImpl implements ModelReader {
         }
     }
 
+    private boolean ensureBufferAccessNoFail( final int charsCount ) throws IOException, ModelException {
+        if ( position + charsCount <= limit ) return true;
+        if ( position <= limit ) {
+            System.arraycopy( buffer, position, buffer, 0, limit - position );
+            limit -= position;
+            position = 0;
+        }
+        fillBuffer();
+        return position + charsCount <= limit;
+    }
+
     private void fillBuffer() throws IOException {
         int read;
         do {
@@ -603,11 +646,11 @@ final class JsonReaderImpl implements ModelReader {
         }
     }
 
-    private void readNumber() throws IOException, ModelException {
+    private void readNumber( final boolean hexed ) throws IOException, ModelException {
         numberOffset = position;
         while ( true ) {
             while ( position < limit ) {
-                if ( isNumberChar( buffer[ position++ ] ) ) continue;
+                if ( hexed ? isHexNumberChar( buffer[ position++ ] ) : isNumberChar( buffer[ position++ ] ) ) continue;
                 position--;
                 break;
             }

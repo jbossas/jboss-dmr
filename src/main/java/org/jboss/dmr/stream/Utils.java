@@ -33,6 +33,7 @@ final class Utils {
     static final char[] BASE64_ENC_TABLE = new char[ 64 ];
     static final char[] BASE64_NEWLINE = "\\r\\n".toCharArray();
     static final int[] BASE64_DEC_TABLE = new int[ 256 ];
+    static final int[] HEX_TABLE = new int[ 256 ];
     static final int INCORRECT_DATA = -1;
 
     static {
@@ -72,6 +73,19 @@ final class Utils {
         }
         BASE64_DEC_TABLE[ '+' ] = j++;
         BASE64_DEC_TABLE[ '/' ] = j;
+        // initialize matrix for hex decoding
+        for ( int i = 0; i < 256; i++ ) {
+            HEX_TABLE[ i ] = INCORRECT_DATA;
+        }
+        for ( char c = 'A'; c <= 'Z'; c++ ) {
+            HEX_TABLE[ c ] = c - 'A' + 10;
+        }
+        for ( char c = 'a'; c <= 'z'; c++ ) {
+            HEX_TABLE[ c ] = c - 'a' + 10;
+        }
+        for ( char c = '0'; c <= '9'; c++ ) {
+            HEX_TABLE[ c ] = c - '0';
+        }
     }
 
     private Utils() {
@@ -92,6 +106,10 @@ final class Utils {
 
     static boolean isNumberChar( final int c ) {
         return '0' <= c && c <= '9' || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E';
+    }
+
+    static boolean isDigit( final int c ) {
+        return '0' <= c && c <= '9';
     }
 
     static boolean isHexNumberChar( final int c ) {

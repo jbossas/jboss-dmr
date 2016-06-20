@@ -41,6 +41,7 @@ import static org.jboss.dmr.stream.ModelConstants.PLUS;
 import static org.jboss.dmr.stream.ModelConstants.PROPERTY_END;
 import static org.jboss.dmr.stream.ModelConstants.PROPERTY_START;
 import static org.jboss.dmr.stream.ModelConstants.QUOTE;
+import static org.jboss.dmr.stream.Utils.HEX_TABLE;
 import static org.jboss.dmr.stream.Utils.isNumberChar;
 import static org.jboss.dmr.stream.Utils.isHexNumberChar;
 import static org.jboss.dmr.stream.Utils.isWhitespace;
@@ -299,6 +300,7 @@ final class ModelReaderImpl implements ModelReader {
             throw new IllegalStateException( "No more DMR tokens available" );
         }
         int currentChar;
+        boolean hexNumber;
         while ( true ) {
             ensureBufferAccess( 1 );
             currentChar = buffer[ position++ ];
@@ -325,6 +327,7 @@ final class ModelReaderImpl implements ModelReader {
                 case '0': case '1': case '2': case '3': case '4':
                 case '5': case '6': case '7': case '8': case '9':
                 case MINUS: case PLUS: {
+                    hexNumber = false;
                     if ( currentChar == PLUS || currentChar == MINUS ) {
                         position--;
                         ensureBufferAccess( 2 );
@@ -344,13 +347,27 @@ final class ModelReaderImpl implements ModelReader {
                                     + "' while reading DMR Infinity or NaN or number token" );
                         }
                     }
-                    position--;
-                    readNumber( false );
+                    if ( currentChar == '0' ) {
+                        position--;
+                        if ( ensureBufferAccessNoFail( 2 ) ) {
+                            if ( buffer[ position + 1 ] == 'x' ) {
+                                hexNumber = true;
+                                position++;
+                            }
+                        }
+                        position++;
+                    }
+                    if ( !hexNumber ) position--;
+                    readNumber( hexNumber );
                     currentChar = position < limit ? buffer[ position++ ] : read();
                     if ( currentChar == 'L' ) {
                         try {
                             analyzer.putNumber( ModelEvent.LONG );
-                            longValue = Long.parseLong( new String( buffer, numberOffset, numberLength ) );
+                            if ( hexNumber ) {
+                                longValue = parseHexLong();
+                            } else {
+                                longValue = Long.parseLong( new String( buffer, numberOffset, numberLength ), 10 );
+                            }
                         } catch ( final NumberFormatException nfe ) {
                             throw newModelException( "Incorrect long value", nfe );
                         }
@@ -366,7 +383,11 @@ final class ModelReaderImpl implements ModelReader {
                         } else {
                             try {
                                 analyzer.putNumber( ModelEvent.INT );
-                                intValue = Integer.parseInt( new String( buffer, numberOffset, numberLength ) );
+                                if ( hexNumber ) {
+                                    intValue = parseHexInt();
+                                } else {
+                                    intValue = Integer.parseInt( new String( buffer, numberOffset, numberLength ), 10 );
+                                }
                             } catch ( final NumberFormatException nfe ) {
                                 throw newModelException( "Incorrect integer value", nfe );
                             }
@@ -638,6 +659,17 @@ final class ModelReaderImpl implements ModelReader {
         }
     }
 
+    private boolean ensureBufferAccessNoFail( final int charsCount ) throws IOException, ModelException {
+        if ( position + charsCount <= limit ) return true;
+        if ( position <= limit ) {
+            System.arraycopy( buffer, position, buffer, 0, limit - position );
+            limit -= position;
+            position = 0;
+        }
+        fillBuffer();
+        return position + charsCount <= limit;
+    }
+
     private void fillBuffer() throws IOException {
         int read;
         do {
@@ -770,7 +802,7 @@ final class ModelReaderImpl implements ModelReader {
                         }
                         position += 2;
                         readNumber( true );
-                        baos.write( Integer.parseInt( new String( buffer, numberOffset, numberLength ), 16 ) );
+                        baos.write( parseHexInt() );
                         expectingComma = true;
                     } else {
                         readNumber( false );
@@ -820,9 +852,38 @@ final class ModelReaderImpl implements ModelReader {
         throw analyzer.newModelException( message, t );
     }
 
+    private int parseHexInt() throws NumberFormatException {
+        if ( numberLength == 0 || numberLength > 8 ) {
+            throw new NumberFormatException( "Not an integer value: " + new String( buffer, numberOffset, numberLength ) );
+        }
+        if ( numberLength == 1 ) return HEX_TABLE[ buffer[ numberOffset ] ];
+        int result = 0;
+        for ( int i = 0; i < numberLength - 1; i++ ) {
+            result |= HEX_TABLE[ buffer[ numberOffset + i ] ];
+            result <<= 4;
+        }
+        result |= HEX_TABLE[ buffer[ numberOffset + numberLength - 1 ] ];
+        return result;
+    }
+
+    private long parseHexLong() throws NumberFormatException {
+        if ( numberLength == 0 || numberLength > 16 ) {
+            throw new NumberFormatException( "Not a long value: " + new String( buffer, numberOffset, numberLength ) );
+        }
+        if ( numberLength == 1 ) return HEX_TABLE[ buffer[ numberOffset ] ];
+        long result = 0;
+        for ( int i = 0; i < numberLength - 1; i++ ) {
+            result |= HEX_TABLE[ buffer[ numberOffset + i ] ];
+            result <<= 4;
+        }
+        result |= HEX_TABLE[ buffer[ numberOffset + numberLength - 1 ] ];
+        return result;
+    }
+
     private void ensureOpen() {
         if ( closed ) {
             throw new IllegalStateException( "DMR reader have been closed" );
         }
     }
+
 }
