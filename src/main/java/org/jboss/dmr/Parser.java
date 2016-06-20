@@ -28,8 +28,9 @@ import java.util.LinkedList;
 import java.util.Vector;
 import java.util.Stack;
 
+// TODO: [DMR-9] Delete this class when DMR release gets it to the JBoss EAP.
 /**
- * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
+ * This class have been deprecated in JBoss DMR 1.4.0 and will be removed in future releases.
  */
 @Deprecated
 public abstract class Parser
