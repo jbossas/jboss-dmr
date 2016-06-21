@@ -1,0 +1,681 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="generator" content="Railroad Diagram Generator 1.44.1240"><style type="text/css" xml:space="preserve">
+    ::-moz-selection
+    {
+      color: #FFFCF0;
+      background: #0F0C00;
+    }
+    ::selection
+    {
+      color: #FFFCF0;
+      background: #0F0C00;
+    }      
+    .ebnf a
+    {
+      text-decoration: none;
+    }
+    .ebnf a:hover
+    {
+      color: #050400;
+      text-decoration: underline;
+    }    
+    .signature
+    {
+      color: #806600;
+      font-size: 11px;
+      text-align: right;
+    }
+    body
+    {
+      font: normal 12px Verdana, sans-serif;
+      color: #0F0C00;
+      background: #FFFCF0;
+    }
+    a:link, a:visited
+    {
+      color: #0F0C00;
+    }
+    a:link.signature, a:visited.signature
+    {
+      color: #806600;
+    }
+    a.button, #tabs li a
+    {
+      padding: 0.25em 0.5em;
+      border: 1px solid #806600;
+      background: #F1E8C6;
+      color: #806600;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a.button:hover, #tabs li a:hover
+    {
+      color: #050400;
+      background: #FFF6D1;
+      border-color: #050400;       
+    }     
+    #tabs
+    {
+      padding: 3px 10px;
+      margin-left: 0;
+      margin-top: 58px;
+      border-bottom: 1px solid #0F0C00;
+    }  
+    #tabs li
+    {
+      list-style: none;
+      margin-left: 5px;
+      display: inline;
+    }
+    #tabs li a
+    {     
+      border-bottom: 1px solid #0F0C00;
+    }
+    #tabs li a.active
+    {
+      color: #0F0C00;
+      background: #FFFCF0;
+      border-color: #0F0C00;
+      border-bottom: 1px solid #FFFCF0;
+      outline: none;
+    }
+    #divs div
+    {
+      display: none;
+      overflow:auto;
+    }
+    #divs div.active
+    {
+      display: block;
+    }
+    #text
+    {
+      border-color: #806600;
+      background: #FFFEFA;
+      color: #050400;
+    }
+    .small
+    {
+      vertical-align: top;
+      text-align: right;
+      font-size: 9px;
+      font-weight: normal;
+      line-height: 120%;
+    }
+    td.small
+    {
+      padding-top: 0px;
+    }
+    .hidden
+    {
+      visibility: hidden;
+    }
+    td:hover .hidden 
+    {
+      visibility: visible;
+    }
+    div.download
+    {
+      display: none;
+      background: #FFFCF0;
+      position: absolute;
+      right: 34px;
+      top: 94px;
+      padding: 10px;
+      border: 1px dotted #0F0C00;
+    }
+    #divs div.ebnf, div.ebnf
+    {
+      display: block;
+      padding-left: 16px;
+      padding-top: 2px; 
+      padding-bottom: 2px; 
+      background: #FFF6D1;
+    }
+    tr.option-line td:first-child
+    {
+      text-align: right
+    }
+    tr.option-text td
+    {
+      padding-bottom: 10px
+    }
+    table.palette
+    {
+      border-top: 1px solid #050400;
+      border-right: 1px solid #050400;
+      margin-bottom: 4px
+    }
+    td.palette
+    {
+      border-bottom: 1px solid #050400;
+      border-left: 1px solid #050400;
+    }
+    a.palette
+    {
+      padding: 2px 3px 2px 10px;
+      text-decoration: none;
+    }
+    .palette
+    {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -ms-user-select: none;
+    }
+  </style></head>
+   <body>
+      
+      <p style="font-size: 14px; font-weight:bold"><a name="value">value:</a></p>
+      <img border="0" src="diagram/value.png" height="432" width="186" usemap="#value.map"><map name="value.map">
+         <area shape="rect" coords="49,1,87,33" href="#list" title="list">
+         <area shape="rect" coords="49,45,107,77" href="#object" title="object">
+         <area shape="rect" coords="49,89,123,121" href="#property" title="property">
+         <area shape="rect" coords="49,133,105,165" href="#string" title="string">
+         <area shape="rect" coords="49,177,117,209" href="#number" title="number">
+         <area shape="rect" coords="49,221,103,253" href="#bytes" title="bytes">
+         <area shape="rect" coords="49,265,137,297" href="#expression" title="expression">
+         <area shape="rect" coords="49,309,97,341" href="#type" title="type">
+         <area shape="rect" coords="49,353,119,385" href="#boolean" title="boolean"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#value" title="value" shape="rect">value</a>    ::= <a href="#list" title="list" shape="rect">list</a>
+           | <a href="#object" title="object" shape="rect">object</a>
+           | <a href="#property" title="property" shape="rect">property</a>
+           | <a href="#string" title="string" shape="rect">string</a>
+           | <a href="#number" title="number" shape="rect">number</a>
+           | <a href="#bytes" title="bytes" shape="rect">bytes</a>
+           | <a href="#expression" title="expression" shape="rect">expression</a>
+           | <a href="#type" title="type" shape="rect">type</a>
+           | <a href="#boolean" title="boolean" shape="rect">boolean</a>
+           | 'undefined'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#list" title="list">list</a></li>
+            
+            <li><a href="#object" title="object">object</a></li>
+            
+            <li><a href="#property" title="property">property</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="list">list:</a></p>
+      <img border="0" src="diagram/list.png" height="128" width="368" usemap="#list.map"><map name="list.map">
+         <area shape="rect" coords="115,45,169,77" href="#value" title="value"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#list" title="list" shape="rect">list</a>     ::= '[' ( <a href="#value" title="value" shape="rect">value</a> ( ',' <a href="#value" title="value" shape="rect">value</a> )* ','? )? ']'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="object">object:</a></p>
+      <img border="0" src="diagram/object.png" height="128" width="508" usemap="#object.map"><map name="object.map">
+         <area shape="rect" coords="117,45,173,77" href="#string" title="string">
+         <area shape="rect" coords="253,45,307,77" href="#value" title="value"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#object" title="object" shape="rect">object</a>   ::= '{' ( <a href="#string" title="string" shape="rect">string</a> '=&gt;' <a href="#value" title="value" shape="rect">value</a> ( ',' <a href="#string" title="string" shape="rect">string</a> '=&gt;' <a href="#value" title="value" shape="rect">value</a> )* ','? )? '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="property">property:</a></p>
+      <img border="0" src="diagram/property.png" height="36" width="340" usemap="#property.map"><map name="property.map">
+         <area shape="rect" coords="75,1,131,33" href="#string" title="string">
+         <area shape="rect" coords="211,1,265,33" href="#value" title="value"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#property" title="property" shape="rect">property</a> ::= '(' <a href="#string" title="string" shape="rect">string</a> '=&gt;' <a href="#value" title="value" shape="rect">value</a> ')'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="string">string:</a></p>
+      <img border="0" src="diagram/string.png" height="200" width="746" usemap="#string.map"><map name="string.map">
+         <area shape="rect" coords="251,149,321,181" href="#hexdigit" title="hexdigit">
+         <area shape="rect" coords="341,149,411,181" href="#hexdigit" title="hexdigit">
+         <area shape="rect" coords="431,149,501,181" href="#hexdigit" title="hexdigit">
+         <area shape="rect" coords="521,149,591,181" href="#hexdigit" title="hexdigit"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#string" title="string" shape="rect">string</a>   ::= '"' ( [^"\] | '\' ( '"' | '\' | 'u' <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a> <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a> <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a> <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a> ) )* '"'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#expression" title="expression">expression</a></li>
+            
+            <li><a href="#object" title="object">object</a></li>
+            
+            <li><a href="#property" title="property">property</a></li>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="number">number:</a></p>
+      <img border="0" src="diagram/number.png" height="212" width="184" usemap="#number.map"><map name="number.map">
+         <area shape="rect" coords="49,1,85,33" href="#int" title="int">
+         <area shape="rect" coords="49,45,95,77" href="#long" title="long">
+         <area shape="rect" coords="49,89,111,121" href="#double" title="double">
+         <area shape="rect" coords="49,133,133,165" href="#biginteger" title="biginteger">
+         <area shape="rect" coords="49,177,135,209" href="#bigdecimal" title="bigdecimal"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#number" title="number" shape="rect">number</a>   ::= <a href="#int" title="int" shape="rect">int</a>
+           | <a href="#long" title="long" shape="rect">long</a>
+           | <a href="#double" title="double" shape="rect">double</a>
+           | <a href="#biginteger" title="biginteger" shape="rect">biginteger</a>
+           | <a href="#bigdecimal" title="bigdecimal" shape="rect">bigdecimal</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="expression">expression:</a></p>
+      <img border="0" src="diagram/expression.png" height="36" width="226" usemap="#expression.map"><map name="expression.map">
+         <area shape="rect" coords="141,1,197,33" href="#string" title="string"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#expression" title="expression" shape="rect">expression</a>
+         ::= 'expression' <a href="#string" title="string" shape="rect">string</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="bytes">bytes:</a></p>
+      <img border="0" src="diagram/bytes.png" height="140" width="504" usemap="#bytes.map"><map name="bytes.map">
+         <area shape="rect" coords="213,45,283,77" href="#decbyte" title="decbyte">
+         <area shape="rect" coords="213,89,283,121" href="#hexbyte" title="hexbyte"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#bytes" title="bytes" shape="rect">bytes</a>    ::= 'bytes' '{' ( ( <a href="#decbyte" title="decbyte" shape="rect">decbyte</a> | <a href="#hexbyte" title="hexbyte" shape="rect">hexbyte</a> ) ( ',' ( <a href="#decbyte" title="decbyte" shape="rect">decbyte</a> | <a href="#hexbyte" title="hexbyte" shape="rect">hexbyte</a> ) )* ','? )? '}'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="boolean">boolean:</a></p>
+      <img border="0" src="diagram/boolean.png" height="80" width="150">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#boolean" title="boolean" shape="rect">boolean</a>  ::= 'false'
+           | 'true'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="type">type:</a></p>
+      <img border="0" src="diagram/type.png" height="520" width="212">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#type" title="type" shape="rect">type</a>     ::= 'BIG_DECIMAL'
+           | 'BIG_INTEGER'
+           | 'BOOLEAN'
+           | 'BYTES'
+           | 'DOUBLE'
+           | 'EXPRESSION'
+           | 'LIST'
+           | 'LONG'
+           | 'INT'
+           | 'OBJECT'
+           | 'PROPERTY'
+           | 'STRING'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#value" title="value">value</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="int">int:</a></p>
+      <img border="0" src="diagram/int.png" height="80" width="186" usemap="#int.map"><map name="int.map">
+         <area shape="rect" coords="49,1,135,33" href="#decinteger" title="decinteger">
+         <area shape="rect" coords="49,45,137,77" href="#hexinteger" title="hexinteger"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#int" title="int" shape="rect">int</a>      ::= <a href="#decinteger" title="decinteger" shape="rect">decinteger</a>
+           | <a href="#hexinteger" title="hexinteger" shape="rect">hexinteger</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#long" title="long">long</a></li>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="long">long:</a></p>
+      <img border="0" src="diagram/long.png" height="36" width="142" usemap="#long.map"><map name="long.map">
+         <area shape="rect" coords="29,1,65,33" href="#int" title="int"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#long" title="long" shape="rect">long</a>     ::= <a href="#int" title="int" shape="rect">int</a> 'L'</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="double">double:</a></p>
+      <img border="0" src="diagram/double.png" height="344" width="648" usemap="#double.map"><map name="double.map">
+         <area shape="rect" coords="223,1,291,33" href="#decdigit" title="decdigit">
+         <area shape="rect" coords="351,35,431,67" href="#exponent" title="exponent">
+         <area shape="rect" coords="351,79,419,111" href="#decdigit" title="decdigit">
+         <area shape="rect" coords="459,111,539,143" href="#exponent" title="exponent">
+         <area shape="rect" coords="49,277,135,309" href="#decinteger" title="decinteger">
+         <area shape="rect" coords="219,243,287,275" href="#decdigit" title="decdigit">
+         <area shape="rect" coords="347,309,427,341" href="#exponent" title="exponent"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#double" title="double" shape="rect">double</a>   ::= [+#x2D]? ( 'Infinity' | 'NaN' | '.' <a href="#decdigit" title="decdigit" shape="rect">decdigit</a>* ( <a href="#exponent" title="exponent" shape="rect">exponent</a> | <a href="#decdigit" title="decdigit" shape="rect">decdigit</a> <a href="#exponent" title="exponent" shape="rect">exponent</a>? ) )
+           | <a href="#decinteger" title="decinteger" shape="rect">decinteger</a> '.' <a href="#decdigit" title="decdigit" shape="rect">decdigit</a>* <a href="#exponent" title="exponent" shape="rect">exponent</a>?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="biginteger">biginteger:</a></p>
+      <img border="0" src="diagram/biginteger.png" height="36" width="290" usemap="#biginteger.map"><map name="biginteger.map">
+         <area shape="rect" coords="175,1,261,33" href="#decinteger" title="decinteger"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#biginteger" title="biginteger" shape="rect">biginteger</a>
+         ::= 'big' 'integer' <a href="#decinteger" title="decinteger" shape="rect">decinteger</a></pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="bigdecimal">bigdecimal:</a></p>
+      <img border="0" src="diagram/bigdecimal.png" height="102" width="606" usemap="#bigdecimal.map"><map name="bigdecimal.map">
+         <area shape="rect" coords="179,35,265,67" href="#decinteger" title="decinteger">
+         <area shape="rect" coords="349,1,417,33" href="#decdigit" title="decdigit">
+         <area shape="rect" coords="477,67,557,99" href="#exponent" title="exponent"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#bigdecimal" title="bigdecimal" shape="rect">bigdecimal</a>
+         ::= 'big' 'decimal' <a href="#decinteger" title="decinteger" shape="rect">decinteger</a> '.' <a href="#decdigit" title="decdigit" shape="rect">decdigit</a>* <a href="#exponent" title="exponent" shape="rect">exponent</a>?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#number" title="number">number</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="decinteger">decinteger:</a></p>
+      <img border="0" src="diagram/decinteger.png" height="146" width="376" usemap="#decinteger.map"><map name="decinteger.map">
+         <area shape="rect" coords="239,1,307,33" href="#decdigit" title="decdigit"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#decinteger" title="decinteger" shape="rect">decinteger</a>
+         ::= [+#x2D]? ( '0' | [1-9] <a href="#decdigit" title="decdigit" shape="rect">decdigit</a>* )</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#bigdecimal" title="bigdecimal">bigdecimal</a></li>
+            
+            <li><a href="#biginteger" title="biginteger">biginteger</a></li>
+            
+            <li><a href="#double" title="double">double</a></li>
+            
+            <li><a href="#int" title="int">int</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="hexinteger">hexinteger:</a></p>
+      <img border="0" src="diagram/hexinteger.png" height="52" width="224" usemap="#hexinteger.map"><map name="hexinteger.map">
+         <area shape="rect" coords="105,17,175,49" href="#hexdigit" title="hexdigit"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#hexinteger" title="hexinteger" shape="rect">hexinteger</a>
+         ::= '0x' <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a>+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#int" title="int">int</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="decbyte">decbyte:</a></p>
+      <img border="0" src="diagram/decbyte.png" height="112" width="376">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#decbyte" title="decbyte" shape="rect">decbyte</a>  ::= [+#x2D]? ( '1' [0-2] [0-8] | [1-9]? [0-9] )</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#bytes" title="bytes">bytes</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="hexbyte">hexbyte:</a></p>
+      <img border="0" src="diagram/hexbyte.png" height="68" width="314" usemap="#hexbyte.map"><map name="hexbyte.map">
+         <area shape="rect" coords="85,1,155,33" href="#hexdigit" title="hexdigit">
+         <area shape="rect" coords="195,33,265,65" href="#hexdigit" title="hexdigit"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#hexbyte" title="hexbyte" shape="rect">hexbyte</a>  ::= '0x' <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a> <a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a>?</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#bytes" title="bytes">bytes</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="decdigit">decdigit:</a></p>
+      <img border="0" src="diagram/decdigit.png" height="36" width="118">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#decdigit" title="decdigit" shape="rect">decdigit</a> ::= [0-9]</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#bigdecimal" title="bigdecimal">bigdecimal</a></li>
+            
+            <li><a href="#decinteger" title="decinteger">decinteger</a></li>
+            
+            <li><a href="#double" title="double">double</a></li>
+            
+            <li><a href="#exponent" title="exponent">exponent</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="hexdigit">hexdigit:</a></p>
+      <img border="0" src="diagram/hexdigit.png" height="124" width="158">
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#hexdigit" title="hexdigit" shape="rect">hexdigit</a> ::= [0-9a-fA-F]</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#hexbyte" title="hexbyte">hexbyte</a></li>
+            
+            <li><a href="#hexinteger" title="hexinteger">hexinteger</a></li>
+            
+            <li><a href="#string" title="string">string</a></li>
+            
+         </ul>
+         
+      </p><br><p style="font-size: 14px; font-weight:bold"><a name="exponent">exponent:</a></p>
+      <img border="0" src="diagram/exponent.png" height="128" width="344" usemap="#exponent.map"><map name="exponent.map">
+         <area shape="rect" coords="227,17,295,49" href="#decdigit" title="decdigit"></map>
+      
+      <p>
+         
+         <div class="ebnf"><pre><a href="#exponent" title="exponent" shape="rect">exponent</a> ::= ( 'e' | 'E' ) [+#x2D]? <a href="#decdigit" title="decdigit" shape="rect">decdigit</a>+</pre></div>
+         
+      </p>
+      
+      <p>referenced by:
+         
+         <ul>
+            
+            <li><a href="#bigdecimal" title="bigdecimal">bigdecimal</a></li>
+            
+            <li><a href="#double" title="double">double</a></li>
+            
+         </ul>
+         
+      </p><br><hr>
+      
+      <p>
+         
+         <table border="0" class="signature">
+            
+            <tr>
+               
+               <td style="width: 100%">&nbsp;</td>
+               
+               <td valign="top">
+                  
+                  <nobr class="signature">... generated by <a name="Railroad-Diagram-Generator" class="signature" title="http://www.bottlecaps.de/rr/ui" href="http://www.bottlecaps.de/rr/ui" target="_blank">Railroad Diagram Generator</a></nobr>
+                  
+               </td>
+               
+               <td><a name="Railroad-Diagram-Generator" title="http://www.bottlecaps.de/rr/ui" href="http://www.bottlecaps.de/rr/ui" target="_blank">
+                     <img border="0" src="diagram/rr-1.44.1240.png" height="16" width="16"></a></td>
+               
+            </tr>
+            
+         </table>
+         
+      </p>
+      
+   </body>
+</html>
