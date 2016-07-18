@@ -1,5 +1,5 @@
 #
-# The following ENBF grammar defines JBoss DMR 'JSON' protocol.
+# The following ENBF grammar defines JBoss DMR 'JSON' format.
 # index.html file contains visual representation of this grammar.
 #
 

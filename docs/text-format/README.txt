@@ -1,5 +1,5 @@
 #
-# The following ENBF grammar defines JBoss DMR 'DMR' protocol.
+# The following ENBF grammar defines JBoss DMR 'Text' format.
 # index.html file contains visual representation of this grammar.
 #
 
