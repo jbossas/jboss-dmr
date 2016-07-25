@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>11</version>
+        <version>20</version>
     </parent>
 
     <groupId>org.jboss</groupId>
@@ -38,8 +38,7 @@
     <name>JBoss Dynamic Model Representation</name>
 
     <properties>
-        <maven.compiler.target>1.6</maven.compiler.target>
-        <maven.compiler.source>1.6</maven.compiler.source>
+        <version.org.wildfly.checkstyle-config>1.0.4.Final</version.org.wildfly.checkstyle-config>
     </properties>
 
     <dependencies>
@@ -48,12 +47,6 @@
             <artifactId>jboss-logmanager</artifactId>
             <version>1.4.3.Final</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.cookcc</groupId>
-            <artifactId>cookcc</artifactId>
-            <version>0.3.3</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -66,41 +59,30 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>${version.antrun.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>make-the-stupid-directory</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <tasks>
-                                <mkdir dir="${project.basedir}/target/generated-sources/apt"/>
-                            </tasks>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>apt-maven-plugin</artifactId>
-                <version>${version.apt.plugin}</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${version.checkstyle.plugin}</version>
                 <configuration>
-                    <additionalSourceRoots>
-                        <additionalSourceRoot>${project.basedir}/src/placeholder/java</additionalSourceRoot>
-                    </additionalSourceRoots>
-                    <encoding>UTF-8</encoding>
-                    <options>
-                        <option>d=${project.basedir}/target/generated-sources/apt</option>
-                    </options>
+                    <configLocation>wildfly-checkstyle/checkstyle.xml</configLocation>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <excludes>**/*$logger.java,**/*$bundle.java,**/dmr/Parser.java,**/dmr/JSONParser.java</excludes>
+                    <useFile/>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.wildfly.checkstyle</groupId>
+                        <artifactId>wildfly-checkstyle-config</artifactId>
+                        <version>${version.org.wildfly.checkstyle-config}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
+                        <id>check-style</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>process</goal>
-                            <goal>test-process</goal>
+                            <goal>checkstyle</goal>
                         </goals>
                     </execution>
                 </executions>

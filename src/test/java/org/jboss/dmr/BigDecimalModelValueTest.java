@@ -28,13 +28,13 @@ public class BigDecimalModelValueTest {
     @Test
     public void testAsLong() {
         final BigDecimalModelValue value = new BigDecimalModelValue(new BigDecimal(5));
-        assertEquals(5l, value.asLong());
+        assertEquals(5L, value.asLong());
     }
 
     @Test
     public void testAsLongWithDefault() {
         final BigDecimalModelValue value = new BigDecimalModelValue(new BigDecimal(5));
-        assertEquals(5l, value.asLong(10l));
+        assertEquals(5L, value.asLong(10L));
     }
 
     @Test

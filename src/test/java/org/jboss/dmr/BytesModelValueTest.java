@@ -28,13 +28,13 @@ public class BytesModelValueTest {
     @Test
     public void testAsLong() {
         final BytesModelValue value = new BytesModelValue(new byte[] { (byte) 0 });
-        assertEquals(0l, value.asLong());
+        assertEquals(0L, value.asLong());
     }
 
     @Test
     public void testAsLongWithDefault() {
         final BytesModelValue value = new BytesModelValue(new byte[] { (byte) 0 });
-        assertEquals(0l, value.asLong(5l));
+        assertEquals(0L, value.asLong(5L));
     }
 
     @Test

@@ -28,13 +28,13 @@ public class DoubleModelValueTest {
     @Test
     public void testAsLong() {
         final DoubleModelValue value = new DoubleModelValue(5.0);
-        assertEquals(5l, value.asLong());
+        assertEquals(5L, value.asLong());
     }
 
     @Test
     public void testAsLongWithDefault() {
         final DoubleModelValue value = new DoubleModelValue(5.0);
-        assertEquals(5l, value.asLong(10l));
+        assertEquals(5L, value.asLong(10L));
     }
 
     @Test

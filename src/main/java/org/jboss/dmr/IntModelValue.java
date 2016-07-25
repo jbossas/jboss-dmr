@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -140,4 +143,10 @@ final class IntModelValue extends ModelValue {
     public int hashCode() {
         return value;
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeInt(value);
+    }
+
 }

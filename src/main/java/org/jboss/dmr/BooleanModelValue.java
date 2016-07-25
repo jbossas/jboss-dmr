@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -129,4 +132,10 @@ final class BooleanModelValue extends ModelValue {
     public int hashCode() {
         return Boolean.valueOf(value).hashCode();
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeBoolean(value);
+    }
+
 }

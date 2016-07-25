@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -175,4 +178,13 @@ final class PropertyModelValue extends ModelValue {
         }
         writer.append('}');
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writePropertyStart();
+        writer.writeString(property.getName());
+        property.getValue().write(writer);
+        writer.writePropertyEnd();
+    }
+
 }

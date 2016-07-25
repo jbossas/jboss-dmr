@@ -2,7 +2,6 @@ package org.jboss.dmr;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
@@ -61,25 +60,25 @@ public class StringModelValueTest {
     @Test
     public void testAsLong() {
         final StringModelValue value = new StringModelValue("5");
-        assertEquals(5l, value.asLong());
+        assertEquals(5L, value.asLong());
     }
 
     @Test(expected = NumberFormatException.class)
     public void testAsLongWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
-        assertEquals(5l, value.asLong());
+        assertEquals(5L, value.asLong());
     }
 
     @Test
     public void testAsLongWithDefault() {
         final StringModelValue value = new StringModelValue("5");
-        assertEquals(5l, value.asLong(10l));
+        assertEquals(5L, value.asLong(10L));
     }
 
     @Test(expected = NumberFormatException.class)
     public void testAsLongWithDefaultWithNumberFormatException() {
         final StringModelValue value = new StringModelValue("hello");
-        assertEquals(5l, value.asLong(10l));
+        assertEquals(5L, value.asLong(10L));
     }
 
     @Test

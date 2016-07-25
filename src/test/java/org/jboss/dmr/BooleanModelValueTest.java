@@ -16,14 +16,14 @@ public class BooleanModelValueTest {
 
     @Test
     public void testAsLong() {
-        assertEquals(0l, BooleanModelValue.FALSE.asLong());
-        assertEquals(1l, BooleanModelValue.TRUE.asLong());
+        assertEquals(0L, BooleanModelValue.FALSE.asLong());
+        assertEquals(1L, BooleanModelValue.TRUE.asLong());
     }
 
     @Test
     public void testAsLongWithDefault() {
-        assertEquals(0l, BooleanModelValue.FALSE.asLong(5l));
-        assertEquals(1l, BooleanModelValue.TRUE.asLong(5l));
+        assertEquals(0L, BooleanModelValue.FALSE.asLong(5L));
+        assertEquals(1L, BooleanModelValue.TRUE.asLong(5L));
     }
 
     @Test

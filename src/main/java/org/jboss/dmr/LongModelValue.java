@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -128,7 +131,7 @@ final class LongModelValue extends ModelValue {
 
     /**
      * Determine whether this object is equal to another.
-     * 
+     *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
@@ -139,7 +142,7 @@ final class LongModelValue extends ModelValue {
 
     /**
      * Determine whether this object is equal to another.
-     * 
+     *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
@@ -151,4 +154,10 @@ final class LongModelValue extends ModelValue {
     public int hashCode() {
         return (int) value;
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeLong(value);
+    }
+
 }

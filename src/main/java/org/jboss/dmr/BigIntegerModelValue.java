@@ -22,6 +22,9 @@
 
 package org.jboss.dmr;
 
+import org.jboss.dmr.stream.ModelException;
+import org.jboss.dmr.stream.ModelWriter;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -124,7 +127,7 @@ final class BigIntegerModelValue extends ModelValue {
 
     /**
      * Determine whether this object is equal to another.
-     * 
+     *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
@@ -135,7 +138,7 @@ final class BigIntegerModelValue extends ModelValue {
 
     /**
      * Determine whether this object is equal to another.
-     * 
+     *
      * @param other the other object
      * @return {@code true} if they are equal, {@code false} otherwise
      */
@@ -147,4 +150,10 @@ final class BigIntegerModelValue extends ModelValue {
     public int hashCode() {
         return value.hashCode();
     }
+
+    @Override
+    void write(final ModelWriter writer) throws IOException, ModelException {
+        writer.writeBigInteger(value);
+    }
+
 }
