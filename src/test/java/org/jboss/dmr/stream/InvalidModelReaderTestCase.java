@@ -68,17 +68,46 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
     }
 
     @Test
+    public void unexpectedContentFollowingDmrData() throws IOException, ModelException {
+        read_list_unexpectedChar();
+        read_object_unexpectedChar();
+        read_property_unexpectedChar();
+        read_string_unexpectedChar();
+        read_int_unexpectedChar();
+        read_long_unexpectedChar();
+        read_double_unexpectedChar();
+        read_bigInteger_unexpectedChar();
+        read_bigDecimal_unexpectedChar();
+        read_bytes_unexpectedChar();
+        read_expression_unexpectedChar();
+        read_listType_unexpectedChar();
+        read_objectType_unexpectedChar();
+        read_propertyType_unexpectedChar();
+        read_stringType_unexpectedChar();
+        read_intType_unexpectedChar();
+        read_longType_unexpectedChar();
+        read_doubleType_unexpectedChar();
+        read_bigIntegerType_unexpectedChar();
+        read_bigDecimalType_unexpectedChar();
+        read_bytesType_unexpectedChar();
+        read_expressionType_unexpectedChar();
+        read_typeType_unexpectedChar();
+        read_booleanType_unexpectedChar();
+        read_undefinedType_unexpectedChar();
+        read_false_unexpectedChar();
+        read_true_unexpectedChar();
+        read_undefined_unexpectedChar();
+    }
+
+    @Test
     public void brokenPrimitives() throws IOException, ModelException {
         // number
         read_brokenInt_tooBigValue();
         read_brokenInt_tooSmallValue();
-        read_brokenInt_unexpectedChar();
         read_brokenLong_tooBigValue();
         read_brokenLong_tooSmallValue();
-        read_brokenLong_unexpectedChar();
         read_brokenDouble_tooBigValue();
         read_brokenDouble_tooSmallValue();
-        read_brokenDouble_unexpectedChar();
         read_brokenBigInteger2_unexpectedChar();
         read_brokenBigInteger2_unexpectedEOF();
         read_brokenBigInteger3_unexpectedChar();
@@ -4667,14 +4696,6 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
         reader.close();
     }
 
-    private void read_brokenInt_unexpectedChar() throws IOException, ModelException {
-        final ModelReader reader = getModelReader( "+2147483647_" );
-        assertInitialState( reader );
-        assertNumberState( reader, Integer.MAX_VALUE );
-        assertFinalNumberState( reader );
-        reader.close();
-    }
-
     private void read_brokenLong_tooBigValue() throws IOException, ModelException {
         final ModelReader reader = getModelReader( "9223372036854775808L" );
         assertInitialState( reader );
@@ -4688,14 +4709,6 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
         assertInitialState( reader );
         assertModelException( reader, "Incorrect long value" );
         assertFinalState( reader );
-        reader.close();
-    }
-
-    private void read_brokenLong_unexpectedChar() throws IOException, ModelException {
-        final ModelReader reader = getModelReader( "+9223372036854775807L_" );
-        assertInitialState( reader );
-        assertNumberState( reader, Long.MAX_VALUE );
-        assertFinalNumberState( reader );
         reader.close();
     }
 
@@ -4715,11 +4728,232 @@ public final class InvalidModelReaderTestCase extends AbstractModelStreamsTestCa
         reader.close();
     }
 
-    private void read_brokenDouble_unexpectedChar() throws IOException, ModelException {
-        final ModelReader reader = getModelReader( "+1.7976931348623157E308_" );
+    private void read_list_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "[]_" );
         assertInitialState( reader );
-        assertNumberState( reader, Double.MAX_VALUE );
+        assertListStartState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalState( reader );
+        reader.close();
+    }
+
+    private void read_object_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "{}_" );
+        assertInitialState( reader );
+        assertObjectStartState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalState( reader );
+        reader.close();
+    }
+
+    private void read_property_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "(\"\"=>\"\")_" );
+        assertInitialState( reader );
+        assertPropertyStartState( reader );
+        assertStringState( reader, "" );
+        assertStringState( reader, "" );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalState( reader );
+        reader.close();
+    }
+
+    private void read_string_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "\"\"_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalStringState( reader );
+        reader.close();
+    }
+
+    private void read_int_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "1_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
         assertFinalNumberState( reader );
+        reader.close();
+    }
+
+    private void read_long_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "1L_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalNumberState( reader );
+        reader.close();
+    }
+
+    private void read_double_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "1.0_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalNumberState( reader );
+        reader.close();
+    }
+
+    private void read_bigInteger_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "big integer 1_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalNumberState( reader );
+        reader.close();
+    }
+
+    private void read_bigDecimal_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "big decimal 1.0_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalNumberState( reader );
+        reader.close();
+    }
+
+    private void read_bytes_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "bytes{}_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalBytesState( reader );
+        reader.close();
+    }
+
+    private void read_expression_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "expression \"\"_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalExpressionState( reader );
+        reader.close();
+    }
+
+    private void read_listType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "LIST_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_objectType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "OBJECT_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_propertyType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "PROPERTY_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_stringType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "STRING_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_intType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "INT_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_longType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "LONG_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_doubleType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "DOUBLE_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_bigIntegerType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "BIG_INTEGER_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_bigDecimalType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "BIG_DECIMAL_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_bytesType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "BYTES_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_expressionType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "EXPRESSION_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_typeType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "TYPE_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_booleanType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "BOOLEAN_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_undefinedType_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "UNDEFINED_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalTypeState( reader );
+        reader.close();
+    }
+
+    private void read_false_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "false_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalBooleanState( reader );
+        reader.close();
+    }
+
+    private void read_true_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "true_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalBooleanState( reader );
+        reader.close();
+    }
+
+    private void read_undefined_unexpectedChar() throws IOException, ModelException {
+        final ModelReader reader = getModelReader( "undefined_" );
+        assertInitialState( reader );
+        assertModelException( reader, "Unexpected content following the DMR stream" );
+        assertFinalState( reader );
         reader.close();
     }
 

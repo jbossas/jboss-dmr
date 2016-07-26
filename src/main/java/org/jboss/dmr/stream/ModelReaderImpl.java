@@ -299,6 +299,23 @@ final class ModelReaderImpl implements ModelReader {
         if ( analyzer.finished ) {
             throw new IllegalStateException( "No more DMR tokens available" );
         }
+        boolean assertEmptyStream = true;
+        try {
+            return _next();
+        } catch ( final Throwable t ) {
+            assertEmptyStream = false;
+            throw t;
+        } finally {
+            if ( analyzer.finished && assertEmptyStream ) {
+                processWhitespaces();
+                if ( read() != -1 ) {
+                    throw new ModelException( "Unexpected content following the DMR stream" );
+                }
+            }
+        }
+    }
+
+    private ModelEvent _next() throws IOException, ModelException {
         int currentChar;
         boolean hexNumber;
         while ( true ) {
