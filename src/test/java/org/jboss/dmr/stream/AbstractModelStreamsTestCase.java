@@ -409,6 +409,101 @@ abstract class AbstractModelStreamsTestCase {
         }
     }
 
+    static void assertFinalStringState( final ModelReader reader ) throws IOException, ModelException {
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertNotTypeException( reader );
+        assertFalse( reader.hasNext() );
+        try {
+            reader.next();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "No more DMR tokens available", e.getMessage() );
+        }
+    }
+
+    static void assertFinalBytesState( final ModelReader reader ) throws IOException, ModelException {
+        assertNotStringException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
+        assertNotBooleanException( reader );
+        assertNotExpressionException( reader );
+        assertNotTypeException( reader );
+        assertFalse( reader.hasNext() );
+        try {
+            reader.next();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "No more DMR tokens available", e.getMessage() );
+        }
+    }
+
+    static void assertFinalExpressionState( final ModelReader reader ) throws IOException, ModelException {
+        assertNotStringException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotTypeException( reader );
+        assertFalse( reader.hasNext() );
+        try {
+            reader.next();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "No more DMR tokens available", e.getMessage() );
+        }
+    }
+
+    static void assertFinalTypeState( final ModelReader reader ) throws IOException, ModelException {
+        assertNotStringException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
+        assertNotBooleanException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertFalse( reader.hasNext() );
+        try {
+            reader.next();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "No more DMR tokens available", e.getMessage() );
+        }
+    }
+
+    static void assertFinalBooleanState( final ModelReader reader ) throws IOException, ModelException {
+        assertNotStringException( reader );
+        assertNotIntException( reader );
+        assertNotLongException( reader );
+        assertNotDoubleException( reader );
+        assertNotBigIntegerException( reader );
+        assertNotBigDecimalException( reader );
+        assertNotTypeException( reader );
+        assertNotBytesException( reader );
+        assertNotExpressionException( reader );
+        assertFalse( reader.hasNext() );
+        try {
+            reader.next();
+            fail();
+        } catch ( final IllegalStateException e ) {
+            assertEquals( "No more DMR tokens available", e.getMessage() );
+        }
+    }
+
     static void assertFinalNumberState( final ModelReader reader ) throws IOException, ModelException {
         assertNotStringException( reader );
         assertNotBooleanException( reader );

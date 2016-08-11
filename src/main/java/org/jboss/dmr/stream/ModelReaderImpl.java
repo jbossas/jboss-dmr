@@ -299,319 +299,332 @@ final class ModelReaderImpl implements ModelReader {
         if ( analyzer.finished ) {
             throw new IllegalStateException( "No more DMR tokens available" );
         }
-        int currentChar;
-        boolean hexNumber;
-        while ( true ) {
-            ensureBufferAccess( 1 );
-            currentChar = buffer[ position++ ];
-            switch ( currentChar ) {
-                case QUOTE: {
-                    analyzer.putString();
-                    readString();
-                    stringValue = new String( buffer, stringOffset, stringLength );
-                    return analyzer.currentEvent;
-                }
-                case EQUAL: {
-                    ensureBufferAccess( 1 );
-                    currentChar = buffer[ position++ ];
-                    if ( currentChar != GREATER_THAN ) {
-                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR arrow" );
+        boolean assertEmptyStream = true;
+        try {
+            int currentChar;
+            boolean hexNumber;
+            while ( true ) {
+                ensureBufferAccess( 1 );
+                currentChar = buffer[ position++ ];
+                switch ( currentChar ) {
+                    case QUOTE: {
+                        analyzer.putString();
+                        readString();
+                        stringValue = new String( buffer, stringOffset, stringLength );
+                        return analyzer.currentEvent;
                     }
-                    analyzer.putArrow();
-                }
-                    break;
-                case COMMA: {
-                    analyzer.putComma();
-                }
-                    break;
-                case '0': case '1': case '2': case '3': case '4':
-                case '5': case '6': case '7': case '8': case '9':
-                case MINUS: case PLUS: {
-                    hexNumber = false;
-                    if ( currentChar == PLUS || currentChar == MINUS ) {
-                        position--;
-                        ensureBufferAccess( 2 );
-                        position++;
-                        if ( buffer[ position ] == 'I' ) {
-                            readString( INFINITY );
-                            analyzer.putNumber( ModelEvent.DOUBLE );
-                            doubleValue = currentChar == PLUS ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
-                            return analyzer.currentEvent;
-                        } else if ( buffer[ position ] == 'N' ) {
-                            readString( NAN );
-                            analyzer.putNumber( ModelEvent.DOUBLE );
-                            doubleValue = Double.NaN;
-                            return analyzer.currentEvent;
-                        } else if ( !isNumberChar( buffer[ position ] ) ) {
-                            throw newModelException( "Unexpected first character '" + buffer[ position ]
-                                    + "' while reading DMR Infinity or NaN or number token" );
+                    case EQUAL: {
+                        ensureBufferAccess( 1 );
+                        currentChar = buffer[ position++ ];
+                        if ( currentChar != GREATER_THAN ) {
+                            throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR arrow" );
                         }
+                        analyzer.putArrow();
                     }
-                    if ( currentChar == '0' ) {
-                        position--;
-                        if ( ensureBufferAccessNoFail( 2 ) ) {
-                            if ( buffer[ position + 1 ] == 'x' ) {
-                                hexNumber = true;
-                                position++;
-                            }
-                        }
-                        position++;
+                        break;
+                    case COMMA: {
+                        analyzer.putComma();
                     }
-                    if ( !hexNumber ) position--;
-                    readNumber( hexNumber );
-                    currentChar = position < limit ? buffer[ position++ ] : read();
-                    if ( currentChar == 'L' ) {
-                        try {
-                            analyzer.putNumber( ModelEvent.LONG );
-                            if ( hexNumber ) {
-                                longValue = parseHexLong();
-                            } else {
-                                longValue = Long.parseLong( new String( buffer, numberOffset, numberLength ), 10 );
-                            }
-                        } catch ( final NumberFormatException nfe ) {
-                            throw newModelException( "Incorrect long value", nfe );
-                        }
-                    } else {
-                        if ( currentChar != -1 ) position--;
-                        if ( isDecimalString() ) {
-                            try {
+                        break;
+                    case '0': case '1': case '2': case '3': case '4':
+                    case '5': case '6': case '7': case '8': case '9':
+                    case MINUS: case PLUS: {
+                        hexNumber = false;
+                        if ( currentChar == PLUS || currentChar == MINUS ) {
+                            position--;
+                            ensureBufferAccess( 2 );
+                            position++;
+                            if ( buffer[ position ] == 'I' ) {
+                                readString( INFINITY );
                                 analyzer.putNumber( ModelEvent.DOUBLE );
-                                doubleValue = Double.parseDouble( new String( buffer, numberOffset, numberLength ) );
-                            } catch ( final NumberFormatException nfe ) {
-                                throw newModelException( "Incorrect double value", nfe );
+                                doubleValue = currentChar == PLUS ? Double.POSITIVE_INFINITY : Double.NEGATIVE_INFINITY;
+                                return analyzer.currentEvent;
+                            } else if ( buffer[ position ] == 'N' ) {
+                                readString( NAN );
+                                analyzer.putNumber( ModelEvent.DOUBLE );
+                                doubleValue = Double.NaN;
+                                return analyzer.currentEvent;
+                            } else if ( !isNumberChar( buffer[ position ] ) ) {
+                                throw newModelException( "Unexpected first character '" + buffer[ position ]
+                                        + "' while reading DMR Infinity or NaN or number token" );
                             }
-                        } else {
+                        }
+                        if ( currentChar == '0' ) {
+                            position--;
+                            if ( ensureBufferAccessNoFail( 2 ) ) {
+                                if ( buffer[ position + 1 ] == 'x' ) {
+                                    hexNumber = true;
+                                    position++;
+                                }
+                            }
+                            position++;
+                        }
+                        if ( !hexNumber ) position--;
+                        readNumber( hexNumber );
+                        currentChar = position < limit ? buffer[ position++ ] : read();
+                        if ( currentChar == 'L' ) {
                             try {
-                                analyzer.putNumber( ModelEvent.INT );
+                                analyzer.putNumber( ModelEvent.LONG );
                                 if ( hexNumber ) {
-                                    intValue = parseHexInt();
+                                    longValue = parseHexLong();
                                 } else {
-                                    intValue = Integer.parseInt( new String( buffer, numberOffset, numberLength ), 10 );
+                                    longValue = Long.parseLong( new String( buffer, numberOffset, numberLength ), 10 );
                                 }
                             } catch ( final NumberFormatException nfe ) {
-                                throw newModelException( "Incorrect integer value", nfe );
+                                throw newModelException( "Incorrect long value", nfe );
+                            }
+                        } else {
+                            if ( currentChar != -1 ) position--;
+                            if ( isDecimalString() ) {
+                                try {
+                                    analyzer.putNumber( ModelEvent.DOUBLE );
+                                    doubleValue = Double.parseDouble( new String( buffer, numberOffset, numberLength ) );
+                                } catch ( final NumberFormatException nfe ) {
+                                    throw newModelException( "Incorrect double value", nfe );
+                                }
+                            } else {
+                                try {
+                                    analyzer.putNumber( ModelEvent.INT );
+                                    if ( hexNumber ) {
+                                        intValue = parseHexInt();
+                                    } else {
+                                        intValue = Integer.parseInt( new String( buffer, numberOffset, numberLength ), 10 );
+                                    }
+                                } catch ( final NumberFormatException nfe ) {
+                                    throw newModelException( "Incorrect integer value", nfe );
+                                }
                             }
                         }
+                        return analyzer.currentEvent;
                     }
-                    return analyzer.currentEvent;
-                }
-                case 'b' : {
-                    position--;
-                    ensureBufferAccess( 2 );
-                    if ( buffer[ position + 1 ] == 'i' ) {
-                        readString( BIG );
+                    case 'b' : {
+                        position--;
+                        ensureBufferAccess( 2 );
+                        if ( buffer[ position + 1 ] == 'i' ) {
+                            readString( BIG );
+                            processWhitespaces();
+                            ensureBufferAccess( 1 );
+                            if ( buffer[ position ] == 'd' ) {
+                                readString( DECIMAL );
+                                processWhitespaces();
+                                readNumber( false );
+                                try {
+                                    analyzer.putNumber( ModelEvent.BIG_DECIMAL );
+                                    bigDecimalValue = new BigDecimal( new String( buffer, numberOffset, numberLength ) );
+                                } catch ( final NumberFormatException nfe ) {
+                                    throw newModelException( "Incorrect big decimal value", nfe );
+                                }
+                            } else if ( buffer[ position ] == 'i' ) {
+                                readString( INTEGER );
+                                processWhitespaces();
+                                readNumber( false );
+                                try {
+                                    analyzer.putNumber( ModelEvent.BIG_INTEGER );
+                                    bigIntegerValue = new BigInteger( new String( buffer, numberOffset, numberLength ) );
+                                } catch ( final NumberFormatException nfe ) {
+                                    throw newModelException( "Incorrect big integer value", nfe );
+                                }
+                            } else {
+                                throw newModelException( "Unexpected first character '" + buffer[ position ]
+                                        + "' while reading DMR decimal or integer token" );
+                            }
+                        } else if ( buffer[ position + 1 ] == 'y' ) {
+                            analyzer.putBytes();
+                            readString( BYTES );
+                            processWhitespaces();
+                            readBytes();
+                        } else {
+                            throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
+                                    + "' while reading DMR big or bytes token" );
+                        }
+                        return analyzer.currentEvent;
+                    }
+                    case 'D': {
+                        analyzer.putType();
+                        position--;
+                        readString( TYPE_DOUBLE );
+                        typeValue = ModelType.DOUBLE;
+                        return analyzer.currentEvent;
+                    }
+                    case 'e': {
+                        analyzer.putExpression();
+                        position--;
+                        readString( EXPRESSION );
                         processWhitespaces();
                         ensureBufferAccess( 1 );
-                        if ( buffer[ position ] == 'd' ) {
-                            readString( DECIMAL );
-                            processWhitespaces();
-                            readNumber( false );
-                            try {
-                                analyzer.putNumber( ModelEvent.BIG_DECIMAL );
-                                bigDecimalValue = new BigDecimal( new String( buffer, numberOffset, numberLength ) );
-                            } catch ( final NumberFormatException nfe ) {
-                                throw newModelException( "Incorrect big decimal value", nfe );
-                            }
-                        } else if ( buffer[ position ] == 'i' ) {
-                            readString( INTEGER );
-                            processWhitespaces();
-                            readNumber( false );
-                            try {
-                                analyzer.putNumber( ModelEvent.BIG_INTEGER );
-                                bigIntegerValue = new BigInteger( new String( buffer, numberOffset, numberLength ) );
-                            } catch ( final NumberFormatException nfe ) {
-                                throw newModelException( "Incorrect big integer value", nfe );
-                            }
-                        } else {
-                            throw newModelException( "Unexpected first character '" + buffer[ position ]
-                                    + "' while reading DMR decimal or integer token" );
+                        currentChar = buffer[ position++ ];
+                        if ( currentChar != QUOTE ) {
+                            throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
                         }
-                    } else if ( buffer[ position + 1 ] == 'y' ) {
-                        analyzer.putBytes();
-                        readString( BYTES );
-                        processWhitespaces();
-                        readBytes();
-                    } else {
-                        throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
-                                + "' while reading DMR big or bytes token" );
+                        readString();
+                        stringValue = new String( buffer, stringOffset, stringLength );
+                        return analyzer.currentEvent;
                     }
-                    return analyzer.currentEvent;
-                }
-                case 'D': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_DOUBLE );
-                    typeValue = ModelType.DOUBLE;
-                    return analyzer.currentEvent;
-                }
-                case 'e': {
-                    analyzer.putExpression();
-                    position--;
-                    readString( EXPRESSION );
-                    processWhitespaces();
-                    ensureBufferAccess( 1 );
-                    currentChar = buffer[ position++ ];
-                    if ( currentChar != QUOTE ) {
-                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR expression value" );
-                    }
-                    readString();
-                    stringValue = new String( buffer, stringOffset, stringLength );
-                    return analyzer.currentEvent;
-                }
-                case 'E': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_EXPRESSION );
-                    typeValue = ModelType.EXPRESSION;
-                    return analyzer.currentEvent;
-                }
-                case 'O': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_OBJECT );
-                    typeValue = ModelType.OBJECT;
-                    return analyzer.currentEvent;
-                }
-                case 'P': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_PROPERTY );
-                    typeValue = ModelType.PROPERTY;
-                    return analyzer.currentEvent;
-                }
-                case 'S': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_STRING );
-                    typeValue = ModelType.STRING;
-                    return analyzer.currentEvent;
-                }
-                case 'T': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_TYPE );
-                    typeValue = ModelType.TYPE;
-                    return analyzer.currentEvent;
-                }
-                case 'U': {
-                    analyzer.putType();
-                    position--;
-                    readString( TYPE_UNDEFINED );
-                    typeValue = ModelType.UNDEFINED;
-                    return analyzer.currentEvent;
-                }
-                case 'L': {
-                    position--;
-                    ensureBufferAccess( 2 );
-                    analyzer.putType();
-                    if ( buffer[ position + 1 ] == 'I' ) {
-                        readString( TYPE_LIST );
-                        typeValue = ModelType.LIST;
-                    } else if ( buffer[ position + 1 ] == 'O' ) {
-                        readString( TYPE_LONG );
-                        typeValue = ModelType.LONG;
-                    } else {
-                        throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
-                                + "' while reading DMR LIST or LONG token" );
-                    }
-                    return analyzer.currentEvent;
-                }
-                case 'B': {
-                    position--;
-                    ensureBufferAccess( 2 );
-                    analyzer.putType();
-                    if ( buffer[ position + 1 ] == 'I' ) {
-                        ensureBufferAccess( 5 );
-                        if ( buffer[ position + 4 ] == 'D' ) {
-                            readString( TYPE_BIG_DECIMAL );
-                            typeValue = ModelType.BIG_DECIMAL;
-                        } else if ( buffer[ position + 4 ] == 'I' ) {
-                            readString( TYPE_BIG_INTEGER );
-                            typeValue = ModelType.BIG_INTEGER;
-                        } else {
-                            throw newModelException( "Unexpected fifth character '" + buffer[ position + 4 ]
-                                    + "' while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
-                        }
-                    } else if ( buffer[ position + 1 ] == 'O' ) {
-                        readString( TYPE_BOOLEAN );
-                        typeValue = ModelType.BOOLEAN;
-                    } else if ( buffer[ position + 1 ] == 'Y' ) {
-                        readString( TYPE_BYTES );
-                        typeValue = ModelType.BYTES;
-                    } else {
-                        throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
-                                + "' while reading DMR BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES token" );
-                    }
-                    return analyzer.currentEvent;
-                }
-                case 'I': {
-                    position--;
-                    ensureBufferAccess( 2 );
-                    if ( buffer[ position + 1 ] == 'N' ) {
+                    case 'E': {
                         analyzer.putType();
-                        readString( TYPE_INT );
-                        typeValue = ModelType.INT;
-                    } else if ( buffer[ position + 1 ] == 'n' ) {
-                        readString( INFINITY );
+                        position--;
+                        readString( TYPE_EXPRESSION );
+                        typeValue = ModelType.EXPRESSION;
+                        return analyzer.currentEvent;
+                    }
+                    case 'O': {
+                        analyzer.putType();
+                        position--;
+                        readString( TYPE_OBJECT );
+                        typeValue = ModelType.OBJECT;
+                        return analyzer.currentEvent;
+                    }
+                    case 'P': {
+                        analyzer.putType();
+                        position--;
+                        readString( TYPE_PROPERTY );
+                        typeValue = ModelType.PROPERTY;
+                        return analyzer.currentEvent;
+                    }
+                    case 'S': {
+                        analyzer.putType();
+                        position--;
+                        readString( TYPE_STRING );
+                        typeValue = ModelType.STRING;
+                        return analyzer.currentEvent;
+                    }
+                    case 'T': {
+                        analyzer.putType();
+                        position--;
+                        readString( TYPE_TYPE );
+                        typeValue = ModelType.TYPE;
+                        return analyzer.currentEvent;
+                    }
+                    case 'U': {
+                        analyzer.putType();
+                        position--;
+                        readString( TYPE_UNDEFINED );
+                        typeValue = ModelType.UNDEFINED;
+                        return analyzer.currentEvent;
+                    }
+                    case 'L': {
+                        position--;
+                        ensureBufferAccess( 2 );
+                        analyzer.putType();
+                        if ( buffer[ position + 1 ] == 'I' ) {
+                            readString( TYPE_LIST );
+                            typeValue = ModelType.LIST;
+                        } else if ( buffer[ position + 1 ] == 'O' ) {
+                            readString( TYPE_LONG );
+                            typeValue = ModelType.LONG;
+                        } else {
+                            throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
+                                    + "' while reading DMR LIST or LONG token" );
+                        }
+                        return analyzer.currentEvent;
+                    }
+                    case 'B': {
+                        position--;
+                        ensureBufferAccess( 2 );
+                        analyzer.putType();
+                        if ( buffer[ position + 1 ] == 'I' ) {
+                            ensureBufferAccess( 5 );
+                            if ( buffer[ position + 4 ] == 'D' ) {
+                                readString( TYPE_BIG_DECIMAL );
+                                typeValue = ModelType.BIG_DECIMAL;
+                            } else if ( buffer[ position + 4 ] == 'I' ) {
+                                readString( TYPE_BIG_INTEGER );
+                                typeValue = ModelType.BIG_INTEGER;
+                            } else {
+                                throw newModelException( "Unexpected fifth character '" + buffer[ position + 4 ]
+                                        + "' while reading DMR BIG_DECIMAL or BIG_INTEGER token" );
+                            }
+                        } else if ( buffer[ position + 1 ] == 'O' ) {
+                            readString( TYPE_BOOLEAN );
+                            typeValue = ModelType.BOOLEAN;
+                        } else if ( buffer[ position + 1 ] == 'Y' ) {
+                            readString( TYPE_BYTES );
+                            typeValue = ModelType.BYTES;
+                        } else {
+                            throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
+                                    + "' while reading DMR BIG_DECIMAL or BIG_INTEGER or BOOLEAN or BYTES token" );
+                        }
+                        return analyzer.currentEvent;
+                    }
+                    case 'I': {
+                        position--;
+                        ensureBufferAccess( 2 );
+                        if ( buffer[ position + 1 ] == 'N' ) {
+                            analyzer.putType();
+                            readString( TYPE_INT );
+                            typeValue = ModelType.INT;
+                        } else if ( buffer[ position + 1 ] == 'n' ) {
+                            readString( INFINITY );
+                            analyzer.putNumber( ModelEvent.DOUBLE );
+                            doubleValue = Double.POSITIVE_INFINITY;
+                        } else {
+                            throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
+                                    + "' while reading DMR INT or Infinity token" );
+                        }
+                        return analyzer.currentEvent;
+                    }
+                    case 'N': {
+                        position--;
+                        readString( NAN );
                         analyzer.putNumber( ModelEvent.DOUBLE );
-                        doubleValue = Double.POSITIVE_INFINITY;
-                    } else {
-                        throw newModelException( "Unexpected second character '" + buffer[ position + 1 ]
-                                + "' while reading DMR INT or Infinity token" );
+                        doubleValue = Double.NaN;
+                        return analyzer.currentEvent;
                     }
-                    return analyzer.currentEvent;
-                }
-                case 'N': {
-                    position--;
-                    readString( NAN );
-                    analyzer.putNumber( ModelEvent.DOUBLE );
-                    doubleValue = Double.NaN;
-                    return analyzer.currentEvent;
-                }
-                case 'f':
-                case 't': {
-                    analyzer.putBoolean();
-                    position--;
-                    booleanValue = currentChar == 't';
-                    readString( booleanValue ? TRUE : FALSE );
-                    return analyzer.currentEvent;
-                }
-                case 'u': {
-                    analyzer.putUndefined();
-                    position--;
-                    readString( UNDEFINED );
-                    return analyzer.currentEvent;
-                }
-                case OBJECT_START: {
-                    analyzer.putObjectStart();
-                    return analyzer.currentEvent;
-                }
-                case LIST_START: {
-                    analyzer.putListStart();
-                    return analyzer.currentEvent;
-                }
-                case PROPERTY_START: {
-                    analyzer.putPropertyStart();
-                    return analyzer.currentEvent;
-                }
-                case OBJECT_END: {
-                    analyzer.putObjectEnd();
-                    return analyzer.currentEvent;
-                }
-                case LIST_END: {
-                    analyzer.putListEnd();
-                    return analyzer.currentEvent;
-                }
-                case PROPERTY_END: {
-                    analyzer.putPropertyEnd();
-                    return analyzer.currentEvent;
-                }
-                default: {
-                    if ( isWhitespace( currentChar ) ) {
-                        processWhitespaces();
-                    } else {
-                        throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR stream" );
+                    case 'f':
+                    case 't': {
+                        analyzer.putBoolean();
+                        position--;
+                        booleanValue = currentChar == 't';
+                        readString( booleanValue ? TRUE : FALSE );
+                        return analyzer.currentEvent;
                     }
+                    case 'u': {
+                        analyzer.putUndefined();
+                        position--;
+                        readString( UNDEFINED );
+                        return analyzer.currentEvent;
+                    }
+                    case OBJECT_START: {
+                        analyzer.putObjectStart();
+                        return analyzer.currentEvent;
+                    }
+                    case LIST_START: {
+                        analyzer.putListStart();
+                        return analyzer.currentEvent;
+                    }
+                    case PROPERTY_START: {
+                        analyzer.putPropertyStart();
+                        return analyzer.currentEvent;
+                    }
+                    case OBJECT_END: {
+                        analyzer.putObjectEnd();
+                        return analyzer.currentEvent;
+                    }
+                    case LIST_END: {
+                        analyzer.putListEnd();
+                        return analyzer.currentEvent;
+                    }
+                    case PROPERTY_END: {
+                        analyzer.putPropertyEnd();
+                        return analyzer.currentEvent;
+                    }
+                    default: {
+                        if ( isWhitespace( currentChar ) ) {
+                            processWhitespaces();
+                        } else {
+                            throw newModelException( "Unexpected character '" + ( char ) currentChar + "' while reading DMR stream" );
+                        }
+                    }
+                }
+            }
+        } catch ( final Throwable t ) {
+            assertEmptyStream = false;
+            throw t;
+        } finally {
+            if ( analyzer.finished && assertEmptyStream ) {
+                processWhitespaces();
+                if ( read() != -1 ) {
+                    throw new ModelException( "Unexpected content following the DMR stream" );
                 }
             }
         }
