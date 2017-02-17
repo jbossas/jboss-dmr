@@ -1,12 +1,25 @@
-package org.jboss.dmr;
+/*
+Copyright 2017 Red Hat, Inc.
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+ */
+package org.jboss.dmr.test;
+
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.hamcrest.CoreMatchers.containsString;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,10 +31,17 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.jboss.dmr.ModelNode;
+import org.jboss.dmr.ModelType;
+import org.jboss.dmr.ValueExpression;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ModelNodeTest {
+/**
+ * Tests of outputting a {@code ModelNode} in various external formats and creating one from
+ * various external formats.
+ */
+public class ModelNodeReadWriteTest {
 
     private ModelNode node;
 
@@ -118,7 +138,7 @@ public class ModelNodeTest {
     public void testFormatAsJSON() {
         final StringWriter stringWriter = new StringWriter();
         final PrintWriter writer = new PrintWriter(stringWriter, true);
-        node.formatAsJSON(writer, 0, true);
+        node.writeJSONString(writer, false);
         final String json = stringWriter.toString();
         assertNotNull(json);
         assertEquals(true, json.contains("\n"));
@@ -333,82 +353,5 @@ public class ModelNodeTest {
         } catch (final IOException e) {
             fail("IOException not expected: " + e.getMessage());
         }
-    }
-
-    @Test
-    public void testRecursiveHas() {
-        String[] names = {"a", "b", "c"};
-
-        ModelNode testee = new ModelNode();
-        assertFalse(testee.toString(), testee.has(names));
-
-        testee.setEmptyList();
-        assertFalse(testee.toString(), testee.has(names));
-
-        testee.set(1);
-        assertFalse(testee.toString(), testee.has(names));
-
-        testee.setEmptyObject();
-        assertFalse(testee.toString(), testee.has(names));
-
-        testee.get("a", "b", "d");
-        assertFalse(testee.toString(), testee.has(names));
-
-        testee.get("a", "b", "c", "d");
-        assertTrue(testee.toString(), testee.has(names));
-
-        testee.get("a").set("b", "d");
-        assertFalse(testee.toString(), testee.has(names));
-
-        testee.get("a").set("b", "c");
-        assertFalse(testee.toString(), testee.has(names));
-
-        ModelNode propVal = new ModelNode().setEmptyObject();
-        propVal.get("c");
-        testee.get("a").set("b", propVal);
-        assertTrue(testee.toString(), testee.has(names));
-    }
-
-    @Test
-    public void testRecursiveHasDefined() {
-        String[] names = {"a", "b", "c"};
-
-        ModelNode testee = new ModelNode();
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.setEmptyList();
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.set(1);
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.setEmptyObject();
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.get("a", "b", "d");
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.get("a", "b", "c");
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.get("a", "b", "c", "d");
-        assertTrue(testee.toString(), testee.hasDefined(names));
-
-        testee.get("a").set("b", "d");
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        testee.get("a").set("b", "c");
-        assertFalse(testee.toString(), testee.hasDefined(names));
-
-        ModelNode propVal = new ModelNode().setEmptyObject();
-        propVal.get("c");
-        testee.get("a").set("b", propVal);
-        assertTrue("a " + testee.toString(), testee.hasDefined("a"));
-        assertTrue("a, b " + testee.toString(), testee.hasDefined("a", "b"));
-        assertFalse("a, b, c " + testee.toString(), testee.hasDefined(names));
-
-        propVal.get("c").set(1);
-        testee.get("a").set("b", propVal);
-        assertTrue(testee.toString(), testee.hasDefined(names));
     }
 }

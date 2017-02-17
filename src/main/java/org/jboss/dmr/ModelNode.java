@@ -64,6 +64,7 @@ import java.util.Set;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
+@SuppressWarnings("SameParameterValue")
 public class ModelNode implements Externalizable, Cloneable {
 
     private static final long serialVersionUID = 2030456323088551487L;
@@ -468,6 +469,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return this node
      * @deprecated Use {@link #set(ValueExpression)} instead.
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public ModelNode setExpression(final String newValue) {
         if (newValue == null) {
@@ -706,7 +708,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public ModelNode setExpression(final String propertyName, final String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
-        node.setExpression(propertyValue);
+        node.set(new ValueExpression(propertyValue));
         value = new PropertyModelValue(propertyName, node);
         return this;
     }
@@ -797,7 +799,7 @@ public class ModelNode implements Externalizable, Cloneable {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
-        final ArrayList<ModelNode> list = new ArrayList<ModelNode>(newValue.size());
+        final ArrayList<ModelNode> list = new ArrayList<>(newValue.size());
         for (final ModelNode node : newValue) {
             if (node == null) {
                 list.add(new ModelNode());
@@ -994,7 +996,7 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     @Deprecated
     public ModelNode addExpression(final String newValue) {
-        add().setExpression(newValue);
+        add().set(new ValueExpression(newValue));
         return this;
     }
 
@@ -1426,6 +1428,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public void writeString(final PrintWriter writer, final boolean compact) {
         if (compact) {
             final ModelWriter modelWriter = ModelStreamFactory.getInstance(false).newModelWriter(writer);
+            //noinspection TryWithIdenticalCatches
             try {
                 value.write(modelWriter);
                 modelWriter.flush();
@@ -1461,6 +1464,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public void writeJSONString(final PrintWriter writer, final boolean compact) {
         if (compact) {
             final ModelWriter modelWriter = ModelStreamFactory.getInstance(true).newModelWriter(writer);
+            //noinspection TryWithIdenticalCatches
             try {
                 value.write(modelWriter);
                 modelWriter.flush();
@@ -1486,13 +1490,14 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the model node
      */
     public static ModelNode fromString(final String input) {
+        //noinspection TryWithIdenticalCatches
         try {
             return ModelNodeFactory.INSTANCE.readFrom(input, false);
         } catch (final IOException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
-        } catch (final ModelException e) {
+        }  catch (final ModelException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
@@ -1500,6 +1505,7 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     public static ModelNode fromJSONString(final String input) {
+        //noinspection TryWithIdenticalCatches
         try {
             return ModelNodeFactory.INSTANCE.readFrom(input, true);
         } catch (final IOException e) {
@@ -1634,6 +1640,7 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @return the clone
      */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public ModelNode clone() {
         final ModelNode clone = new ModelNode();
@@ -1716,6 +1723,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param in the source from which the content should be read
      * @throws IOException if an I/O error occurs
      */
+    @SuppressWarnings("unused")
     public void readExternal(final DataInputStream in) throws IOException {
         readExternal((DataInput) in);
     }
@@ -1736,6 +1744,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param in the source from which the content should be read
      * @throws IOException if an I/O error occurs
      */
+    @SuppressWarnings("WeakerAccess")
     public void readExternal(final DataInput in) throws IOException {
         checkProtect();
         try {
