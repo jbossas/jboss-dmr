@@ -1062,10 +1062,15 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * insert copy of the given value to provided index of this node's value list.  If the node is undefined, it will be initialized to be
-     * of type {@link ModelType#LIST}.
+     * of type {@link ModelType#LIST}. An index equal to the current number of child elements
+     * held by this node is allowed (thus adding a child) but an index greater than that is not allowed (i.e.
+     * adding intervening elements is not supported.)
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IndexOutOfBoundsException if {@code index} is greater than zero and is greater than the number of child nodes currently stored in this node
+     * @throws IllegalArgumentException if {@link #isDefined()} would return {@code true} and {@link #getType()} would not return {@link ModelType#LIST}
      */
     public ModelNode insert(final ModelNode newValue, int index) {
         insert(index).set(newValue);
@@ -1248,10 +1253,15 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * Insert a node at provided index of this node's value list and return it.  If the node is undefined, it
-     * will be initialized to be of type {@link ModelType#LIST}.
+     * will be initialized to be of type {@link ModelType#LIST}. An index equal to the current number of child elements
+     * held by this node is allowed (thus adding a child) but an index greater than that is not allowed (i.e.
+     * adding intervening elements is not supported.)
      *
      * @param index where in list to put it
      * @return the new node
+     *
+     * @throws IndexOutOfBoundsException if {@code index} is greater than zero and is greater than the number of child nodes currently stored in this node
+     * @throws IllegalArgumentException if {@link #isDefined()} would return {@code true} and {@link #getType()} would not return {@link ModelType#LIST}
      */
     public ModelNode insert(final int index) {
         checkProtect();
