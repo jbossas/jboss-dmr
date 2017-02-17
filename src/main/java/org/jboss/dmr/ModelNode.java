@@ -239,6 +239,19 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Get the value of this node as a {@code Long}, or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the long value or {@code null}
+     *
+     * @throws NumberFormatException if this node's {@link #getType() type} is {@link ModelType#STRING} and a numeric conversion of the string value is not possible
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is one where no numeric conversion is possible
+     */
+    public Long asLongOrNull() {
+        return isDefined() ? asLong() : null;
+    }
+
+    /**
      * Get the value of this node as an {@code int}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
@@ -261,6 +274,17 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public int asInt(final int defVal) {
         return value.asInt(defVal);
+    }
+
+    /**
+     * Get the value of this node as an {@code int}, or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the int value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public Integer asIntOrNull() {
+        return isDefined() ? asInt() : null;
     }
 
     /**
@@ -287,6 +311,18 @@ public class ModelNode implements Externalizable, Cloneable {
         return value.asBoolean(defVal);
     }
 
+
+    /**
+     * Get the value of this node as a {@code boolean}, or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types return {@code true} for non-empty collections.  Numerical types return {@code true} for non-zero values.
+     *
+     * @return the boolean value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public Boolean asBooleanOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBoolean() : null;
+    }
+
     /**
      * Get the value as a string.  This is the literal value of this model node.  More than one node type may
      * yield the same value for this method.
@@ -306,6 +342,16 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public String asString(String defVal) {
         return isDefined() ? value.asString() : defVal;
+    }
+
+    /**
+     * Get the value as a string or {@code null} if this node is not {@link #isDefined() defined}.  This is the literal value of this model node.  More than one node type may
+     * yield the same value for this method.
+     *
+     * @return the string value or {@code null}
+     */
+    public String asStringOrNull() {
+        return isDefined() ? value.asString() : null;
     }
 
     /**
@@ -334,6 +380,17 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Get the value of this node as a {@code double} or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the double value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public Double asDoubleOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asDouble() : null;
+    }
+
+    /**
      * Get the value of this node as a type, expressed using the {@code ModelType} enum.  The string
      * value of this node must be convertible to a type.
      *
@@ -345,7 +402,7 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
-     * Get the value of this node as a {@code BigDecimal}.  Collection types will return the size
+     * Get the value of this node as a {@code BigDecimal}. Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
      * @return the {@code BigDecimal} value
@@ -353,6 +410,17 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public BigDecimal asBigDecimal() throws IllegalArgumentException {
         return value.asBigDecimal();
+    }
+
+    /**
+     * Get the value of this node as a {@code BigDecimal} or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the {@code BigDecimal} value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public BigDecimal asBigDecimalOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBigDecimal() : null;
     }
 
     /**
@@ -367,6 +435,17 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Get the value of this node as a {@code BigInteger} or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the {@code BigInteger} value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public BigInteger asBigIntegerOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBigInteger() : null;
+    }
+
+    /**
      * Get the value of this node as a byte array.  Strings and string-like values will return
      * the UTF-8 encoding of the string.  Numerical values will return the byte representation of the
      * number.
@@ -376,6 +455,18 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public byte[] asBytes() throws IllegalArgumentException {
         return value.asBytes();
+    }
+
+    /**
+     * Get the value of this node as a byte array or {@code null} if this node is not {@link #isDefined() defined}.
+     * Strings and string-like values will return the UTF-8 encoding of the string.  Numerical values will return the
+     * byte representation of the number.
+     *
+     * @return the bytes or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public byte[] asBytesOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBytes() : null;
     }
 
     /**

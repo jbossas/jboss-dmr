@@ -47,6 +47,53 @@ public class ModelNodeTest {
         ModelNode testee = new ModelNode();
         assertEquals("undefined", testee.asString());
         assertEquals("a", testee.asString("a"));
+        assertNull(testee.asStringOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsLong() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asLong);
+        assertEquals(Long.MAX_VALUE, testee.asLong(Long.MAX_VALUE));
+        assertNull(testee.asLongOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsInt() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asInt);
+        assertEquals(Integer.MAX_VALUE, testee.asInt(Integer.MAX_VALUE));
+        assertNull(testee.asIntOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsBoolean() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asBoolean);
+        assertTrue(testee.asBoolean(true));
+        assertNull(testee.asBooleanOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsDouble() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asDouble);
+        assertEquals((double) 2, testee.asDouble((double) 2), 0);
+        assertNull(testee.asDoubleOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsBigDecimal() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asBigDecimal);
+        assertNull(testee.asBigDecimalOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsBigInteger() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asBigInteger);
+        assertNull(testee.asBigIntegerOrNull());
+    }
+
+    @Test
+    public void testUndefinedAsBytes() {
+        ModelNode testee = testUndefinedConversion(ModelNode::asBytes);
+        assertNull(testee.asBytesOrNull());
     }
 
     @Test
