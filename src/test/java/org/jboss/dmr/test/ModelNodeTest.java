@@ -168,23 +168,21 @@ public class ModelNodeTest {
 //            //good
 //        }
         testee.setEmptyList();
-        // TODO DMR-32 fails with wrong exception
-//        try {
-//            testee.remove(0);
-//            fail();
-//        } catch (NoSuchElementException expected) {
-//            //good
-//        }
+        try {
+            testee.remove(0);
+            fail();
+        } catch (NoSuchElementException expected) {
+            //good
+        }
         testee.add(true);
         a = testee.remove(0);
         assertTrue(a.asBoolean());
-        // TODO DMR-32 fails with wrong exception
-//        try {
-//            testee.remove(1);
-//            fail();
-//        } catch (NoSuchElementException expected) {
-//            //good
-//        }
+        try {
+            testee.remove(1);
+            fail();
+        } catch (NoSuchElementException expected) {
+            //good
+        }
     }
 
     @Test

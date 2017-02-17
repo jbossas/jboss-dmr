@@ -191,6 +191,7 @@ final class ListModelValue extends ModelValue {
 
     @Override
     ModelNode removeChild(int index) {
+        requireChild(index);
         return list.remove(index);
     }
 
