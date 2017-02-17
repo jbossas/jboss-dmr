@@ -18,6 +18,7 @@ package org.jboss.dmr.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -160,13 +161,7 @@ public class ModelNodeTest {
         testee.get("a").set(1);
         ModelNode a = testee.remove("a");
         assertTrue(a.asBoolean());
-        // TODO DMR-31 this doesn't fail it returns null
-//        try {
-//            testee.remove("b");
-//            fail();
-//        } catch (NoSuchElementException expected) {
-//            //good
-//        }
+        assertNull(testee.remove("b"));
         testee.setEmptyList();
         try {
             testee.remove(0);

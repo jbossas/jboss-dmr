@@ -879,13 +879,13 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * Remove a child of this node, returning the child.  If no such child exists,
-     * an exception is thrown.
+     * {@code null} is returned.
      * <p>
      * When called on property values, the name must match the property name.
      *
      * @param name the child name
-     * @return the child
-     * @throws NoSuchElementException if the element does not exist
+     * @return the child, or {@code null} if no child with the given {@code name} exists
+     *
      */
     public ModelNode remove(final String name) throws NoSuchElementException {
         return value.removeChild(name);
