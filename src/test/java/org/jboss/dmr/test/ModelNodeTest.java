@@ -43,6 +43,13 @@ import org.junit.Test;
 public class ModelNodeTest {
 
     @Test
+    public void testUndefinedAsString() {
+        ModelNode testee = new ModelNode();
+        assertEquals("undefined", testee.asString());
+        assertEquals("a", testee.asString("a"));
+    }
+
+    @Test
     public void testProtect() {
         ModelNode testee = new ModelNode();
         testee.protect();
@@ -52,7 +59,6 @@ public class ModelNodeTest {
         } catch (UnsupportedOperationException ok) {
             // ignore
         }
-
     }
 
     @Test

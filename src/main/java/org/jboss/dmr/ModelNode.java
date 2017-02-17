@@ -298,6 +298,17 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Get the value as a string.  This is the literal value of this model node.  More than one node type may
+     * yield the same value for this method.
+     *
+     * @param defVal the default value to return if this node is not {@link #isDefined() defined}
+     * @return the string value.
+     */
+    public String asString(String defVal) {
+        return isDefined() ? value.asString() : defVal;
+    }
+
+    /**
      * Get the value of this node as a {@code double}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
