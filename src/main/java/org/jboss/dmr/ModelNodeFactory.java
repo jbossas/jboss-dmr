@@ -145,6 +145,7 @@ final class ModelNodeFactory {
         return new ModelNode().set(modelReader.getBytes());
     }
 
+    @SuppressWarnings("deprecation")
     private ModelNode readExpressionFrom(final ModelReader modelReader) throws IOException, ModelException {
         return new ModelNode().setExpression(modelReader.getExpression());
     }

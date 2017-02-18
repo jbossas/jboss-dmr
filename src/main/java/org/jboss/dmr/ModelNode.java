@@ -64,6 +64,7 @@ import java.util.Set;
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  * @author <a href="mailto:ropalka@redhat.com">Richard Opalka</a>
  */
+@SuppressWarnings("SameParameterValue")
 public class ModelNode implements Externalizable, Cloneable {
 
     private static final long serialVersionUID = 2030456323088551487L;
@@ -217,7 +218,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * of the collection for this value.  Other types may attempt a string conversion.
      *
      * @return the long value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public long asLong() throws IllegalArgumentException {
         return value.asLong();
@@ -227,11 +228,27 @@ public class ModelNode implements Externalizable, Cloneable {
      * Get the value of this node as a {@code long}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
-     * @param defVal the default value if no conversion is possible
+     * @param defVal the default value to return if this node is not {@link #isDefined() defined}
      * @return the long value
+     *
+     * @throws NumberFormatException if this node's {@link #getType() type} is {@link ModelType#STRING} and a numeric conversion of the string value is not possible
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is one where no numeric conversion is possible
      */
     public long asLong(final long defVal) {
         return value.asLong(defVal);
+    }
+
+    /**
+     * Get the value of this node as a {@code Long}, or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the long value or {@code null}
+     *
+     * @throws NumberFormatException if this node's {@link #getType() type} is {@link ModelType#STRING} and a numeric conversion of the string value is not possible
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is one where no numeric conversion is possible
+     */
+    public Long asLongOrNull() {
+        return isDefined() ? asLong() : null;
     }
 
     /**
@@ -239,7 +256,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * of the collection for this value.  Other types may attempt a string conversion.
      *
      * @return the int value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public int asInt() throws IllegalArgumentException {
         return value.asInt();
@@ -249,11 +266,25 @@ public class ModelNode implements Externalizable, Cloneable {
      * Get the value of this node as an {@code int}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
-     * @param defVal the default value if no conversion is possible
+     * @param defVal the default value to return if this node is not {@link #isDefined() defined}
      * @return the int value
+     *
+     * @throws NumberFormatException if this node's {@link #getType() type} is {@link ModelType#STRING} and a numeric conversion of the string value is not possible
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is one where no numeric conversion is possible
      */
     public int asInt(final int defVal) {
         return value.asInt(defVal);
+    }
+
+    /**
+     * Get the value of this node as an {@code int}, or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the int value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public Integer asIntOrNull() {
+        return isDefined() ? asInt() : null;
     }
 
     /**
@@ -261,7 +292,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * collections.  Numerical types return {@code true} for non-zero values.
      *
      * @return the boolean value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public boolean asBoolean() throws IllegalArgumentException {
         return value.asBoolean();
@@ -271,29 +302,64 @@ public class ModelNode implements Externalizable, Cloneable {
      * Get the value of this node as a {@code boolean}.  Collection types return {@code true} for non-empty
      * collections.  Numerical types return {@code true} for non-zero values.
      *
-     * @param defVal the default value if no conversion is possible
+     * @param defVal the default value to return if this node is not {@link #isDefined() defined}
      * @return the boolean value
+     *
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is one where no numeric conversion is possible or if the type is {@link ModelType#STRING} and the string value is not equal, ignoring case, to the literal {@code true} or {@code false}
      */
     public boolean asBoolean(final boolean defVal) {
         return value.asBoolean(defVal);
+    }
+
+
+    /**
+     * Get the value of this node as a {@code boolean}, or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types return {@code true} for non-empty collections.  Numerical types return {@code true} for non-zero values.
+     *
+     * @return the boolean value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public Boolean asBooleanOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBoolean() : null;
     }
 
     /**
      * Get the value as a string.  This is the literal value of this model node.  More than one node type may
      * yield the same value for this method.
      *
-     * @return the string value
+     * @return the string value. A node that is not {@link #isDefined() defined} returns the literal string {@code undefined}
      */
     public String asString() {
         return value.asString();
     }
 
     /**
+     * Get the value as a string.  This is the literal value of this model node.  More than one node type may
+     * yield the same value for this method.
+     *
+     * @param defVal the default value to return if this node is not {@link #isDefined() defined}
+     * @return the string value.
+     */
+    public String asString(String defVal) {
+        return isDefined() ? value.asString() : defVal;
+    }
+
+    /**
+     * Get the value as a string or {@code null} if this node is not {@link #isDefined() defined}.  This is the literal value of this model node.  More than one node type may
+     * yield the same value for this method.
+     *
+     * @return the string value or {@code null}
+     */
+    public String asStringOrNull() {
+        return isDefined() ? value.asString() : null;
+    }
+
+    /**
      * Get the value of this node as a {@code double}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
-     * @throws IllegalArgumentException if no conversion is possible
      * @return the double value
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public double asDouble() throws IllegalArgumentException {
         return value.asDouble();
@@ -303,11 +369,25 @@ public class ModelNode implements Externalizable, Cloneable {
      * Get the value of this node as an {@code double}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
-     * @param defVal the default value if no conversion is possible
+     * @param defVal the default value to return if this node is not {@link #isDefined() defined}
      * @return the int value
+     *
+     * @throws NumberFormatException if this node's {@link #getType() type} is {@link ModelType#STRING} and a numeric conversion of the string value is not possible
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is one where no numeric conversion is possible
      */
     public double asDouble(final double defVal) {
         return value.asDouble(defVal);
+    }
+
+    /**
+     * Get the value of this node as a {@code double} or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the double value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public Double asDoubleOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asDouble() : null;
     }
 
     /**
@@ -315,21 +395,32 @@ public class ModelNode implements Externalizable, Cloneable {
      * value of this node must be convertible to a type.
      *
      * @return the {@code ModelType} value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public ModelType asType() throws IllegalArgumentException {
         return value.asType();
     }
 
     /**
-     * Get the value of this node as a {@code BigDecimal}.  Collection types will return the size
+     * Get the value of this node as a {@code BigDecimal}. Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
-     * @throws IllegalArgumentException if no conversion is possible
      * @return the {@code BigDecimal} value
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public BigDecimal asBigDecimal() throws IllegalArgumentException {
         return value.asBigDecimal();
+    }
+
+    /**
+     * Get the value of this node as a {@code BigDecimal} or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the {@code BigDecimal} value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public BigDecimal asBigDecimalOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBigDecimal() : null;
     }
 
     /**
@@ -337,10 +428,21 @@ public class ModelNode implements Externalizable, Cloneable {
      * of the collection for this value.  Other types may attempt a string conversion.
      *
      * @return the {@code BigInteger} value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public BigInteger asBigInteger() throws IllegalArgumentException {
         return value.asBigInteger();
+    }
+
+    /**
+     * Get the value of this node as a {@code BigInteger} or {@code null} if this node is not {@link #isDefined() defined}.
+     * Collection types will return the size of the collection for this value.  Other types may attempt a string conversion.
+     *
+     * @return the {@code BigInteger} value or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public BigInteger asBigIntegerOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBigInteger() : null;
     }
 
     /**
@@ -349,17 +451,29 @@ public class ModelNode implements Externalizable, Cloneable {
      * number.
      *
      * @return the bytes
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public byte[] asBytes() throws IllegalArgumentException {
         return value.asBytes();
     }
 
     /**
+     * Get the value of this node as a byte array or {@code null} if this node is not {@link #isDefined() defined}.
+     * Strings and string-like values will return the UTF-8 encoding of the string.  Numerical values will return the
+     * byte representation of the number.
+     *
+     * @return the bytes or {@code null}
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public byte[] asBytesOrNull() throws IllegalArgumentException {
+        return isDefined() ? value.asBytes() : null;
+    }
+
+    /**
      * Get the value of this node as an expression.
      *
      * @return the expression
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public ValueExpression asExpression() throws IllegalArgumentException {
         return value.asExpression();
@@ -371,7 +485,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * and if the first is convertible to a string.
      *
      * @return the property value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public Property asProperty() throws IllegalArgumentException {
         return value.asProperty();
@@ -383,7 +497,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * values are not convertible to a property value.
      *
      * @return the property list value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public List<Property> asPropertyList() throws IllegalArgumentException {
         return value.asPropertyList();
@@ -398,7 +512,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * key takes precedence.
      *
      * @return the object value
-     * @throws IllegalArgumentException if no conversion is possible
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined} or if no conversion is possible
      */
     public ModelNode asObject() throws IllegalArgumentException {
         return value.asObject();
@@ -468,6 +582,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return this node
      * @deprecated Use {@link #set(ValueExpression)} instead.
      */
+    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public ModelNode setExpression(final String newValue) {
         if (newValue == null) {
@@ -706,7 +821,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public ModelNode setExpression(final String propertyName, final String propertyValue) {
         checkProtect();
         final ModelNode node = new ModelNode();
-        node.setExpression(propertyValue);
+        node.set(new ValueExpression(propertyValue));
         value = new PropertyModelValue(propertyName, node);
         return this;
     }
@@ -797,7 +912,7 @@ public class ModelNode implements Externalizable, Cloneable {
             throw new IllegalArgumentException("newValue is null");
         }
         checkProtect();
-        final ArrayList<ModelNode> list = new ArrayList<ModelNode>(newValue.size());
+        final ArrayList<ModelNode> list = new ArrayList<>(newValue.size());
         for (final ModelNode node : newValue) {
             if (node == null) {
                 list.add(new ModelNode());
@@ -877,13 +992,13 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * Remove a child of this node, returning the child.  If no such child exists,
-     * an exception is thrown.
+     * {@code null} is returned.
      * <p>
      * When called on property values, the name must match the property name.
      *
      * @param name the child name
-     * @return the child
-     * @throws NoSuchElementException if the element does not exist
+     * @return the child, or {@code null} if no child with the given {@code name} exists
+     *
      */
     public ModelNode remove(final String name) throws NoSuchElementException {
         return value.removeChild(name);
@@ -942,6 +1057,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final int newValue) {
         add().set(newValue);
@@ -954,6 +1071,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final long newValue) {
         add().set(newValue);
@@ -966,6 +1085,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final double newValue) {
         add().set(newValue);
@@ -978,6 +1099,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final boolean newValue) {
         add().set(newValue);
@@ -990,11 +1113,13 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      * @deprecated Use {@link #add(ValueExpression)} instead.
      */
     @Deprecated
     public ModelNode addExpression(final String newValue) {
-        add().setExpression(newValue);
+        add().set(new ValueExpression(newValue));
         return this;
     }
 
@@ -1004,6 +1129,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final ValueExpression newValue) {
         add().set(newValue);
@@ -1016,6 +1143,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String newValue) {
         add().set(newValue);
@@ -1028,6 +1157,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final BigDecimal newValue) {
         add().set(newValue);
@@ -1040,6 +1171,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final BigInteger newValue) {
         add().set(newValue);
@@ -1052,6 +1185,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final ModelNode newValue) {
         add().set(newValue);
@@ -1060,10 +1195,15 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * insert copy of the given value to provided index of this node's value list.  If the node is undefined, it will be initialized to be
-     * of type {@link ModelType#LIST}.
+     * of type {@link ModelType#LIST}. An index equal to the current number of child elements
+     * held by this node is allowed (thus adding a child) but an index greater than that is not allowed (i.e.
+     * adding intervening elements is not supported.)
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IndexOutOfBoundsException if {@code index} is greater than zero and is greater than the number of child nodes currently stored in this node
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode insert(final ModelNode newValue, int index) {
         insert(index).set(newValue);
@@ -1081,6 +1221,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param newValue the new value to add
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final byte[] newValue) {
         add().set(newValue);
@@ -1093,6 +1235,8 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @param property the property
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final Property property) {
         add().set(property);
@@ -1106,6 +1250,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final int propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1119,6 +1265,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final long propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1132,6 +1280,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final double propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1145,6 +1295,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final boolean propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1158,6 +1310,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final ValueExpression propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1171,6 +1325,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final String propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1184,6 +1340,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final BigDecimal propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1197,6 +1355,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final BigInteger propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1210,6 +1370,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final ModelNode propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1223,6 +1385,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param propertyName the property name
      * @param propertyValue the property value
      * @return this node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add(final String propertyName, final byte[] propertyValue) {
         add().set(propertyName, propertyValue);
@@ -1234,6 +1398,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * will be initialized to be of type {@link ModelType#LIST}.
      *
      * @return the new node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode add() {
         checkProtect();
@@ -1246,10 +1412,15 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * Insert a node at provided index of this node's value list and return it.  If the node is undefined, it
-     * will be initialized to be of type {@link ModelType#LIST}.
+     * will be initialized to be of type {@link ModelType#LIST}. An index equal to the current number of child elements
+     * held by this node is allowed (thus adding a child) but an index greater than that is not allowed (i.e.
+     * adding intervening elements is not supported.)
      *
      * @param index where in list to put it
      * @return the new node
+     *
+     * @throws IndexOutOfBoundsException if {@code index} is greater than zero and is greater than the number of child nodes currently stored in this node
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode insert(final int index) {
         checkProtect();
@@ -1265,6 +1436,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * undefined, it will be initialized to be of type {@link ModelType#LIST}.
      *
      * @return the new node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode addEmptyList() {
         final ModelNode node = add();
@@ -1277,6 +1450,8 @@ public class ModelNode implements Externalizable, Cloneable {
      * undefined, it will be initialized to be of type {@link ModelType#LIST}.
      *
      * @return the new node
+     *
+     * @throws IllegalArgumentException if this node is {@link #isDefined() defined} and its {@link #getType() type} is not {@link ModelType#LIST}
      */
     public ModelNode addEmptyObject() {
         final ModelNode node = add();
@@ -1370,9 +1545,10 @@ public class ModelNode implements Externalizable, Cloneable {
 
     /**
      * Get the set of keys contained in this object.  Property node types always contain exactly one value with a key
-     * equal to the property name.  Other non-object types will return an empty set.
+     * equal to the property name.  Other non-object types will throw an exception.
      *
      * @return the key set
+     * @throws IllegalArgumentException if this node's {@link #getType() type} is not {@link ModelType#OBJECT} or {@link ModelType#PROPERTY}
      */
     public Set<String> keys() {
         return value.getKeys();
@@ -1381,9 +1557,10 @@ public class ModelNode implements Externalizable, Cloneable {
     /**
      * Get the list of entries contained in this object.  Property node types always contain exactly one entry (itself).
      * Lists will return an unmodifiable view of their contained list.  Objects will return a list of properties corresponding
-     * to the mappings within the object.  Other types will return an empty list.
+     * to the mappings within the object.  Other {@link #isDefined()} types will return an empty list.
      *
      * @return the entry list
+     * @throws IllegalArgumentException if this node is not {@link #isDefined() defined}
      */
     public List<ModelNode> asList() {
         return value.asList();
@@ -1426,6 +1603,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public void writeString(final PrintWriter writer, final boolean compact) {
         if (compact) {
             final ModelWriter modelWriter = ModelStreamFactory.getInstance(false).newModelWriter(writer);
+            //noinspection TryWithIdenticalCatches
             try {
                 value.write(modelWriter);
                 modelWriter.flush();
@@ -1461,6 +1639,7 @@ public class ModelNode implements Externalizable, Cloneable {
     public void writeJSONString(final PrintWriter writer, final boolean compact) {
         if (compact) {
             final ModelWriter modelWriter = ModelStreamFactory.getInstance(true).newModelWriter(writer);
+            //noinspection TryWithIdenticalCatches
             try {
                 value.write(modelWriter);
                 modelWriter.flush();
@@ -1486,13 +1665,14 @@ public class ModelNode implements Externalizable, Cloneable {
      * @return the model node
      */
     public static ModelNode fromString(final String input) {
+        //noinspection TryWithIdenticalCatches
         try {
             return ModelNodeFactory.INSTANCE.readFrom(input, false);
         } catch (final IOException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
-        } catch (final ModelException e) {
+        }  catch (final ModelException e) {
             final IllegalArgumentException n = new IllegalArgumentException(e.getMessage());
             n.setStackTrace(e.getStackTrace());
             throw n;
@@ -1500,6 +1680,7 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     public static ModelNode fromJSONString(final String input) {
+        //noinspection TryWithIdenticalCatches
         try {
             return ModelNodeFactory.INSTANCE.readFrom(input, true);
         } catch (final IOException e) {
@@ -1514,8 +1695,8 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
-     * Get a model node from a text representation of the model node.  The stream must be encoded in
-     * US-ASCII encoding.
+     * Get a model node from a text representation of the model node.  The stream must be decodable using
+     * the UTF-8 charset.
      *
      * @param stream the source stream
      * @return the model node
@@ -1634,6 +1815,7 @@ public class ModelNode implements Externalizable, Cloneable {
      *
      * @return the clone
      */
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     @Override
     public ModelNode clone() {
         final ModelNode clone = new ModelNode();
@@ -1716,6 +1898,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param in the source from which the content should be read
      * @throws IOException if an I/O error occurs
      */
+    @SuppressWarnings("unused")
     public void readExternal(final DataInputStream in) throws IOException {
         readExternal((DataInput) in);
     }
@@ -1736,6 +1919,7 @@ public class ModelNode implements Externalizable, Cloneable {
      * @param in the source from which the content should be read
      * @throws IOException if an I/O error occurs
      */
+    @SuppressWarnings("WeakerAccess")
     public void readExternal(final DataInput in) throws IOException {
         checkProtect();
         try {

@@ -176,6 +176,7 @@ class ModelNodeParser extends Parser {
         return new ModelNode().set(Double.parseDouble(arg));
     }
 
+    @SuppressWarnings("deprecation")
     protected ModelNode parseExpression(final String arg) {
         return new ModelNode().setExpression(arg);
     }
