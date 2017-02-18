@@ -1695,8 +1695,8 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
-     * Get a model node from a text representation of the model node.  The stream must be encoded in
-     * US-ASCII encoding.
+     * Get a model node from a text representation of the model node.  The stream must be decodable using
+     * the UTF-8 charset.
      *
      * @param stream the source stream
      * @return the model node

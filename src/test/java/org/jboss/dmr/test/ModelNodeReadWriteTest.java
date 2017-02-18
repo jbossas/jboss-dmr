@@ -354,4 +354,12 @@ public class ModelNodeReadWriteTest {
             fail("IOException not expected: " + e.getMessage());
         }
     }
+
+    @Test
+    public void testNonAscii() {
+        ModelNode testee = ModelNode.fromString("{\"x\"=>\"jdbc:h2:file:${jboss.server.data.dir}/ô/h2/soa;mvcc=true\"}");
+        assertEquals("jdbc:h2:file:${jboss.server.data.dir}/ô/h2/soa;mvcc=true", testee.get("x").asString());
+        testee = ModelNode.fromString("\"jdbc:h2:file:${jboss.server.data.dir}/ô/h2/soa;mvcc=true\"");
+        assertEquals("jdbc:h2:file:${jboss.server.data.dir}/ô/h2/soa;mvcc=true", testee.asString());
+    }
 }
