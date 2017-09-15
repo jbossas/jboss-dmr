@@ -214,6 +214,15 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Returns whether this node has been {@link #protect() protected}.
+     *
+     * @return {@code true} if {@link #protect()} has been invoked on this node
+     */
+    public boolean isProtected() {
+        return protect;
+    }
+
+    /**
      * Get the value of this node as a {@code long}.  Collection types will return the size
      * of the collection for this value.  Other types may attempt a string conversion.
      *
