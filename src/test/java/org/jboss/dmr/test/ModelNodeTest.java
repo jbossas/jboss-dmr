@@ -19,6 +19,7 @@ package org.jboss.dmr.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -98,10 +99,71 @@ public class ModelNodeTest {
 
     @Test
     public void testProtect() {
+
+        // Protected undefined node
         ModelNode testee = new ModelNode();
+        assertFalse(testee.isProtected());
         testee.protect();
+        assertTrue(testee.isProtected());
         try {
             testee.set(true);
+            fail();
+        } catch (UnsupportedOperationException ok) {
+            // ignore
+        }
+
+        // Protected simple defined node
+        testee = new ModelNode(false);
+        assertFalse(testee.isProtected());
+        testee.protect();
+        assertTrue(testee.isProtected());
+        try {
+            testee.set(true);
+            fail();
+        } catch (UnsupportedOperationException ok) {
+            // ignore
+        }
+
+        // Protected list node
+        testee = new ModelNode();
+        ModelNode element = testee.add();
+        assertFalse(element.isProtected());
+        testee.protect();
+        assertTrue(element.isProtected());
+        assertSame(element, testee.get(0)); // non-writing get works
+        try {
+            element.set(true); // protecting list protects elements
+            fail();
+        } catch (UnsupportedOperationException ok) {
+            // ignore
+        }
+        try {
+            testee.add();
+            fail();
+        } catch (UnsupportedOperationException ok) {
+            // ignore
+        }
+        try {
+            testee.get(1); // equivalent to an add
+            fail();
+        } catch (UnsupportedOperationException ok) {
+            // ignore
+        }
+
+        testee = new ModelNode();
+        element = testee.get("foo");
+        assertFalse(element.isProtected());
+        testee.protect();
+        assertTrue(element.isProtected());
+        assertSame(element, testee.get("foo")); // non-writing get works
+        try {
+            element.set(true); // protecting object protects fields
+            fail();
+        } catch (UnsupportedOperationException ok) {
+            // ignore
+        }
+        try {
+            testee.get("bar"); // writing get fails
             fail();
         } catch (UnsupportedOperationException ok) {
             // ignore
