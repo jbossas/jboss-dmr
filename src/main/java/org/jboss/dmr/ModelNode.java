@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -1573,6 +1574,25 @@ public class ModelNode implements Externalizable, Cloneable {
      */
     public List<ModelNode> asList() {
         return value.asList();
+    }
+
+    /**
+     * Get the value as a list as per {@link #asList}, or return the given default if this node is not {@linkplain #isDefined() defined}.
+     *
+     * @param defVal the default value to return if this node is not {@linkplain #isDefined() defined}
+     * @return the list value or an empty list
+     */
+    public List<ModelNode> asList(List<ModelNode> defVal) {
+        return isDefined() ? value.asList() : defVal;
+    }
+
+    /**
+     * Get the value as a list as per {@link #asList}, or return an empty list if this node is not {@linkplain #isDefined() defined}.
+     *
+     * @return the list value or an empty list (not {@code null})
+     */
+    public List<ModelNode> asListOrEmpty() {
+        return asList(Collections.emptyList());
     }
 
     /**
