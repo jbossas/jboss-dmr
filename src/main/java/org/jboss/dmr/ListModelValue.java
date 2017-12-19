@@ -141,6 +141,8 @@ final class ListModelValue extends ModelValue {
             } else if (i.hasNext()) {
                 final ModelNode value = i.next();
                 propertyList.add(new Property(node.asString(), value));
+            } else {
+                return super.asPropertyList();
             }
         }
         return propertyList;

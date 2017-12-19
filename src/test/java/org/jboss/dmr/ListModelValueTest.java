@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.fail;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ListModelValueTest {
@@ -69,5 +71,28 @@ public class ListModelValueTest {
 
         final ModelNode cloned = model.clone();
         cloned.add(); // Should not fail
+    }
+
+    @Test
+    public void testPrimitiveListAsPropertyList() {
+        ModelNode list = new ModelNode();
+        list.add("a");
+        list.add("b");
+        list.add("c");
+        List<Property> propList;
+        try {
+            propList = list.asPropertyList();
+            fail("unmatched key/value pairs");
+        } catch (IllegalArgumentException good) {
+            // good
+        }
+
+        list.add();
+        propList = list.asPropertyList();
+        Assert.assertEquals(2, propList.size());
+        Assert.assertEquals("a", propList.get(0).getName());
+        Assert.assertEquals("b", propList.get(0).getValue().asString());
+        Assert.assertEquals("c", propList.get(1).getName());
+        Assert.assertFalse(propList.get(1).getValue().isDefined());
     }
 }
