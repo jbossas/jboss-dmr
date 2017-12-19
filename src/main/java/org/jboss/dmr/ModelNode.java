@@ -70,6 +70,22 @@ public class ModelNode implements Externalizable, Cloneable {
 
     private static final long serialVersionUID = 2030456323088551487L;
 
+    /** An {@link #protect() unmodifiable} node of {@link ModelType#BOOLEAN} with a value of {@code true} */
+    public static final ModelNode TRUE  = new ModelNode(true);
+    /** An {@link #protect() unmodifiable} node of {@link ModelType#BOOLEAN} with a value of {@code false} */
+    public static final ModelNode FALSE = new ModelNode(false);
+    /** An {@link #protect() unmodifiable} node of {@link ModelType#INT} with a value of {@code 0} */
+    public static final ModelNode ZERO  = new ModelNode(0);
+    /** An {@link #protect() unmodifiable} node of {@link ModelType#LONG} with a value of {@code 0L} */
+    public static final ModelNode ZERO_LONG  = new ModelNode(0L);
+
+    static {
+        TRUE.protect();
+        FALSE.protect();
+        ZERO.protect();
+        ZERO_LONG.protect();
+    }
+
     private boolean protect = false;
     private ModelValue value = ModelValue.UNDEFINED;
 
