@@ -367,13 +367,13 @@ abstract class ModelValue implements Cloneable {
         formatAsJSON(writer, 0, !compact);
     }
 
-    abstract void write(final ModelWriter writer) throws IOException, ModelException;
+    abstract void write(ModelWriter writer) throws IOException, ModelException;
 
     ModelValue resolve() {
         return copy();
     }
 
-    abstract void writeExternal(final DataOutput out) throws IOException;
+    abstract void writeExternal(DataOutput out) throws IOException;
 
     boolean has(final int index) {
         return false;

@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>20</version>
+        <version>25</version>
     </parent>
 
     <groupId>org.jboss</groupId>
@@ -51,7 +51,8 @@
     </licenses>
 
     <properties>
-        <version.org.wildfly.checkstyle-config>1.0.4.Final</version.org.wildfly.checkstyle-config>
+        <version.org.wildfly.checkstyle-config>1.0.6.Final</version.org.wildfly.checkstyle-config>
+        <version.surefire.plugin>2.19.1</version.surefire.plugin>
         <module.name>org.jboss.dmr</module.name>
     </properties>
 
@@ -59,13 +60,13 @@
         <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
-            <version>1.4.3.Final</version>
+            <version>2.0.9.Final</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -132,7 +133,7 @@
                     <footer><![CDATA[JBoss Dynamic Model Representation API ]]>${project.version}</footer>
                     <bottom><![CDATA[<i>Copyright &#169; 2013 JBoss, a division of Red Hat, Inc.</i>]]></bottom>
                     <links>
-                        <link>http://java.sun.com/javase/6/docs/api/</link>
+                        <link>http://java.sun.com/javase/8/docs/api/</link>
                     </links>
                 </configuration>
             </plugin>
