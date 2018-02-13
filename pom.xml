@@ -52,6 +52,7 @@
 
     <properties>
         <version.org.wildfly.checkstyle-config>1.0.4.Final</version.org.wildfly.checkstyle-config>
+        <module.name>org.jboss.dmr</module.name>
     </properties>
 
     <dependencies>
@@ -133,6 +134,16 @@
                     <links>
                         <link>http://java.sun.com/javase/6/docs/api/</link>
                     </links>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
