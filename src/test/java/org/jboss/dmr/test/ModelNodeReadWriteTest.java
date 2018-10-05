@@ -311,6 +311,12 @@ public class ModelNodeReadWriteTest {
     }    
 
     @Test
+    public void backslashNR() throws IOException {
+	    final ModelNode node = ModelNode.fromJSONString("{\"key\":\"test\n it\"}");
+    }
+
+
+    @Test
     public void testFromString() {
         final ModelNode parsedNode = ModelNode.fromString(node.toString());
         assertEquals(node, parsedNode);

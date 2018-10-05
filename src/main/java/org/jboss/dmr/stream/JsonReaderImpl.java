@@ -611,7 +611,7 @@ final class JsonReaderImpl implements ModelReader {
                         escaped = true;
                         continue;
                     }
-                    if ( isControl( currentChar ) ) {
+                    if ( !isWhitespace( currentChar ) && isControl( currentChar ) ) {
                         throw newModelException( "Unexpected control character '" + currentChar + "' while reading DMR string" );
                     }
                     if ( copy ) {
