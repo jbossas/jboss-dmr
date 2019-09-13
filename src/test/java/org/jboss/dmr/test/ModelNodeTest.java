@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
@@ -192,6 +193,12 @@ public class ModelNodeTest {
     public void testAsPropertyList() {
 
         ModelNode testee = testUndefinedConversion(ModelNode::asPropertyList);
+
+        ModelNode undefined = new ModelNode();
+        assertTrue(undefined.asPropertyListOrEmpty().isEmpty());
+        assertNull(undefined.asPropertyList(null));
+        List<Property> defaultValue = Collections.singletonList(new Property("name", undefined));
+        assertSame(defaultValue, undefined.asPropertyList(defaultValue));
 
         testee.set("a", new ModelNode(true));
         List<Property> list = testee.asPropertyList();

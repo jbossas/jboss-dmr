@@ -530,6 +530,31 @@ public class ModelNode implements Externalizable, Cloneable {
     }
 
     /**
+     * Get the value of this node as a property list.  Object values will return a list of properties representing
+     * each key-value pair in the object.  List values will return all the values of the list, failing if any of the
+     * values are not convertible to a property value.
+     *
+     * @return the property list value or an empty list if not {@link #isDefined() defined}.
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public List<Property> asPropertyListOrEmpty() throws IllegalArgumentException {
+        return asPropertyList(Collections.emptyList());
+    }
+
+    /**
+     * Get the value of this node as a property list.  Object values will return a list of properties representing
+     * each key-value pair in the object.  List values will return all the values of the list, failing if any of the
+     * values are not convertible to a property value.
+     *
+     * @param defaultValue the value to return if not {@link #isDefined() defined}.
+     * @return the property list value or the specified default value if not {@link #isDefined() defined}.
+     * @throws IllegalArgumentException if no conversion is possible
+     */
+    public List<Property> asPropertyList(List<Property> defaultValue) throws IllegalArgumentException {
+        return isDefined() ? value.asPropertyList() : defaultValue;
+    }
+
+    /**
      * Get a copy of this value as an object.  Object values will simply copy themselves as by the {@link #clone()} method.
      * Property values will return a single-entry object whose key and value are copied from the property key and value.
      * List values will attempt to interpolate the list into an object by iterating each item, mapping each property

@@ -86,6 +86,18 @@ public class ListModelValueTest {
         } catch (IllegalArgumentException good) {
             // good
         }
+        try {
+            propList = list.asPropertyList(null);
+            fail("unmatched key/value pairs");
+        } catch (IllegalArgumentException good) {
+            // good
+        }
+        try {
+            propList = list.asPropertyListOrEmpty();
+            fail("unmatched key/value pairs");
+        } catch (IllegalArgumentException good) {
+            // good
+        }
 
         list.add();
         propList = list.asPropertyList();
