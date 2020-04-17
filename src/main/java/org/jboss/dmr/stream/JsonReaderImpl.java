@@ -581,10 +581,12 @@ final class JsonReaderImpl implements ModelReader {
                             }
                             position += 4;
                         } else {
-                            if ( stringOffset != 0 ) {
-                                if ( stringLength > 0 ) System.arraycopy( buffer, stringOffset, buffer, 0, stringLength );
-                                position = stringLength;
-                                limit = stringLength;
+                            if (stringOffset != 0) {
+                                position = position - stringOffset;
+                                limit = limit - stringOffset;
+                                if (stringLength > 0) {
+                                    System.arraycopy(buffer, stringOffset, buffer, 0, limit);
+                                }
                                 stringOffset = 0;
                             }
                             while ( limit + 4 > buffer.length ) doubleBuffer();
@@ -609,7 +611,7 @@ final class JsonReaderImpl implements ModelReader {
                         escaped = true;
                         continue;
                     }
-                    if ( isControl( currentChar ) ) {
+                    if ( !isWhitespace( currentChar ) && isControl( currentChar ) ) {
                         throw newModelException( "Unexpected control character '" + currentChar + "' while reading DMR string" );
                     }
                     if ( copy ) {
