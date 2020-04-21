@@ -34,7 +34,7 @@
 
     <groupId>org.jboss</groupId>
     <artifactId>jboss-dmr</artifactId>
-    <version>1.5.1.Final</version>
+    <version>1.5.2.Final-SNAPSHOT</version>
     <name>JBoss Dynamic Model Representation</name>
 
     <licenses>
