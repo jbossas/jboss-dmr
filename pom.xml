@@ -135,6 +135,7 @@
                     <argLine>-Dfile.encoding=UTF-8</argLine>
                     <environmentVariables>
                         <TEST_ENVIRONMENT_VARIABLE>Hello world</TEST_ENVIRONMENT_VARIABLE>
+                        <lower_case_environment_variable>Hola mundo</lower_case_environment_variable>
                     </environmentVariables>
                     <systemProperties>
                         <property>
