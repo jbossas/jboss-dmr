@@ -107,6 +107,9 @@
                 <version>${version.surefire.plugin}</version>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <environmentVariables>
+                        <TEST_ENVIRONMENT_VARIABLE>Hello world</TEST_ENVIRONMENT_VARIABLE>
+                    </environmentVariables>
                     <systemProperties>
                         <property>
                             <name>java.util.logging.manager</name>

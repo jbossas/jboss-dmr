@@ -194,12 +194,36 @@ public class ValueExpressionResolver {
         } else if (":".equals(name)) {
             return File.pathSeparator;
         }
-        // First check for system property, then env variable
+        // First check for system property, then env variables
         String val = System.getProperty(name);
+
+        if (val == null) {
+            // See if an env var is defined
+            String envVar = replaceNonAlphanumericByUnderscoresAndMakeUpperCase(name);
+            val = System.getenv(envVar);
+        }
+
         if (val == null && name.startsWith("env."))
             val = System.getenv(name.substring(4));
 
         return val;
+    }
+
+
+    private String replaceNonAlphanumericByUnderscoresAndMakeUpperCase(final String name) {
+        int length = name.length();
+        StringBuilder sb = new StringBuilder();
+        int c;
+        for (int i = 0; i < length; i += Character.charCount(c)) {
+            c = Character.toUpperCase(name.codePointAt(i));
+            if ('A' <= c && c <= 'Z' ||
+                    '0' <= c && c <= '9') {
+                sb.appendCodePoint(c);
+            } else {
+                sb.append('_');
+            }
+        }
+        return sb.toString();
     }
 
     private static final int INITIAL = 0;
