@@ -24,6 +24,8 @@ package org.jboss.dmr;
 
 import java.io.File;
 
+import org.jboss.dmr._private.JBossDmrLogger;
+
 /**
  * A resolver for value expressions.
  *
@@ -201,6 +203,9 @@ public class ValueExpressionResolver {
             // See if an env var is defined
             String envVar = replaceNonAlphanumericByUnderscoresAndMakeUpperCase(name);
             val = System.getenv(envVar);
+            if (val != null) {
+                JBossDmrLogger.LOGGER.debugf("Found environment variable '%s' to resolve the expression name '%s'", envVar, name);
+            }
         }
 
         if (val == null && name.startsWith("env."))
