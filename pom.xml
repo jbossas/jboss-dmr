@@ -50,6 +50,13 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git@github.com:jbossas/jboss-dmr.git</connection>
+        <developerConnection>scm:git@github.com:jbossas/jboss-dmr.git</developerConnection>
+        <url>https://github.com/jbossas/jboss-dmr</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <version.org.wildfly.checkstyle-config>1.0.6.Final</version.org.wildfly.checkstyle-config>
         <version.surefire.plugin>2.19.1</version.surefire.plugin>
