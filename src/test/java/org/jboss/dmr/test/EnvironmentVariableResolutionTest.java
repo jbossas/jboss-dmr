@@ -43,4 +43,17 @@ public class EnvironmentVariableResolutionTest {
         ModelNode result = node.resolve();
         Assert.assertEquals("Hello world", result.asString());
     }
+
+    @Test(expected = IllegalStateException.class)
+    public void testLegacyEnviromentVariableCaseSensitiveNotFound() throws Exception {
+        ModelNode node = new ModelNode(new ValueExpression("${env.test_environment_variable}"));
+        ModelNode result = node.resolve();
+    }
+
+    @Test
+    public void testLegacyEnviromentVariableCaseSensitive() throws Exception {
+        ModelNode node = new ModelNode(new ValueExpression("${env.lower_case_environment_variable}"));
+        ModelNode result = node.resolve();
+        Assert.assertEquals("Hola mundo", result.asString());
+    }
 }
