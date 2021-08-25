@@ -20,9 +20,7 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,7 +32,7 @@
 
     <groupId>org.jboss</groupId>
     <artifactId>jboss-dmr</artifactId>
-    <version>1.6.0.Beta2-SNAPSHOT</version>
+    <version>1.6.0.Final</version>
     <name>JBoss Dynamic Model Representation</name>
 
     <licenses>
@@ -54,7 +52,7 @@
         <connection>scm:git:git@github.com:jbossas/jboss-dmr.git</connection>
         <developerConnection>scm:git:git@github.com:jbossas/jboss-dmr.git</developerConnection>
         <url>https://github.com/jbossas/jboss-dmr</url>
-        <tag>HEAD</tag>
+        <tag>1.6.0.Final</tag>
     </scm>
 
     <properties>
@@ -116,7 +114,7 @@
                     <failsOnError>true</failsOnError>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <excludes>**/*$logger.java,**/*$bundle.java,**/dmr/Parser.java,**/dmr/JSONParser.java</excludes>
-                    <useFile/>
+                    <useFile />
                 </configuration>
                 <dependencies>
                     <dependency>
