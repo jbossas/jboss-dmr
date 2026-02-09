@@ -28,13 +28,10 @@ For background, see the Linux Foundation’s guidance:
 To contribute, you will first need to fork the [jboss-dmr](https://github.com/wildfly/jboss-dmr) repository.
 
 This can be done by looking in the top-right corner of the repository page and clicking "Fork".
-![fork](assets/images/fork.jpg)
 
 The next step is to clone your newly forked repository onto your local workspace. This can be done by going to your newly forked repository, which should be at `https://github.com/USERNAME/jboss-dmr`.
 
 Then, there will be a green button that says "Code". Click on that and copy the URL.
-
-![clone](assets/images/clone.png)
 
 Then, in your terminal, paste the following command:
 ```bash
